@@ -451,9 +451,9 @@ export default function Dashboard() {
         }
         setSoftwareOptions(data.software);
         setSoftwareError("");
-        if (!data.software.some((software) => software.id === target)) {
-          setTarget(data.software[0].id);
-        }
+        setTarget((current) => (
+          data.software.some((software) => software.id === current) ? current : data.software[0].id
+        ));
       })
       .catch(() => {
         if (!active) return;
@@ -464,7 +464,7 @@ export default function Dashboard() {
     return () => {
       active = false;
     };
-  }, [target]);
+  }, []);
 
   function handleDocumentFolder(event) {
     const files = Array.from(event.target.files || []);
@@ -1265,29 +1265,37 @@ export default function Dashboard() {
                 <span className="readOnly">Scoped</span>
               </div>
               <form onSubmit={runDiscovery}>
-                <label htmlFor="target">Target folder</label>
-                <div className="inputRow">
-                  <input
+                <label htmlFor="target">Recognized software</label>
+                <div className="inputRow selectRow">
+                  <select
                     id="target"
                     value={target}
                     onChange={(event) => setTarget(event.target.value)}
-                    placeholder="nextjs-storefront"
-                    autoComplete="off"
-                  />
+                  >
+                    {softwareOptions.map((software) => (
+                      <option key={software.id} value={software.id}>
+                        {software.name}
+                      </option>
+                    ))}
+                  </select>
                   <button type="submit" disabled={running || !target.trim()}>
                     {running ? "Inspecting..." : "Run"}
                   </button>
                 </div>
               </form>
+              <div className="softwareMeta targetMeta">
+                <span>Folder: {selectedSoftware?.folder || target}</span>
+                <span>Signals: {(selectedSoftware?.signals || []).join(", ") || "none"}</span>
+              </div>
               {error && <div className="message error" role="alert">{error}</div>}
               {discovery && (
-                <div className="discoveryResult" aria-live="polite">
-                  <div className="resultHeader">
+                <details className="discoveryResult" aria-live="polite">
+                  <summary className="resultHeader">
                     <div><span className="statusDot" /><strong>Proposal generated</strong></div>
                     <span>{discovery.file}</span>
-                  </div>
+                  </summary>
                   <pre>{discovery.yaml}</pre>
-                </div>
+                </details>
               )}
             </section>
 
