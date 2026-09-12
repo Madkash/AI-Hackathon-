@@ -13,9 +13,9 @@ All packages, container images, browser binaries, rules, and advisory databases 
 
 ## Recommended assessment tools
 
-- **Playwright with a preinstalled Chromium browser:** local browser automation.
-- **axe-core:** automated WCAG checks inside Playwright. Human review remains necessary.
-- **OWASP ZAP:** passive scans and explicitly authorized active web tests.
+- **Playwright with a preinstalled Chromium browser:** local browser automation for future route, screenshot, and authenticated-flow harnesses.
+- **axe CLI / axe-core:** automated WCAG readiness checks against approved local URLs. Human review remains necessary.
+- **OWASP ZAP:** passive baseline scans and explicitly authorized active web tests.
 - **Semgrep Community Edition:** static analysis using locally stored, version-pinned rules.
 - **Gitleaks:** local secret scanning with secret values redacted from evidence.
 - **Syft:** local software bill of materials generation.
@@ -30,13 +30,13 @@ SOC 2 and ISO/IEC 27001 do not have a scanner that can establish certification. 
 
 Several of the tools above call home by default. Every adapter must set these before it is trusted to run inside OpenShell:
 
-- **OWASP ZAP:** pass `-config start.checkForUpdates=false -config start.checkAddonUpdates=false`. Without this, ZAP checks its marketplace for addon and application updates on startup.
+- **OWASP ZAP:** use a locally installed ZAP baseline runner such as `zap-baseline.py` against the approved local URL, and configure the ZAP installation to avoid addon or application update checks. Without this, ZAP can check its marketplace for updates on startup.
 - **Semgrep:** always invoke with an explicit local `--config <path>` to a pinned rule file or directory, never a registry shorthand such as `p/ci`, and set `SEMGREP_SEND_METRICS=off`. A local `--config` avoids the registry fetch, but upstream has an open report of residual network calls even with a local config (semgrep/semgrep#8793), so treat this as risk reduction, not a guarantee, and verify with a network-isolated run.
 - **Syft:** set `SYFT_CHECK_FOR_APP_UPDATE=false` to stop its startup update check.
 - **Grype:** set `GRYPE_DB_AUTO_UPDATE=false` and `GRYPE_DB_VALIDATE_AGE=false` so a database that looks stale does not trigger a fetch.
 - **Trivy:** pass `--skip-db-update --skip-java-db-update --offline-scan`, adding `--skip-check-update` when the misconfiguration database is also preloaded.
 - **Playwright:** set `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1` before `npm install`, pre-provision browsers on a connected machine, and point `PLAYWRIGHT_BROWSERS_PATH` at the copied cache. Never let `npx playwright install` run during an assessment.
-- **axe-core:** runs inside the Playwright browser context as a bundled script; install it from the local npm cache rather than a CDN `<script>` tag.
+- **axe CLI / axe-core:** install from the local npm cache or prebuilt local package cache. Do not load axe from a CDN during assessment.
 - **Gitleaks and Nmap:** no known telemetry or update-check behavior. Still bind Nmap's targets to `scope.allowed_hosts` and `scope.allowed_ports` from the approved YAML, never to operator-supplied ranges.
 
 OpenShell's network deny-list is the actual enforcement boundary. These flags reduce the number of tools that ever attempt an outbound call in the first place; they do not replace OpenShell blocking egress.

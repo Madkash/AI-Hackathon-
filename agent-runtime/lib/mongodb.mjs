@@ -17,7 +17,10 @@ export async function getDatabase() {
       serverSelectionTimeoutMS: 2000,
       connectTimeoutMS: 2000,
     });
-    clientPromise = client.connect();
+    clientPromise = client.connect().catch((error) => {
+      clientPromise = undefined;
+      throw error;
+    });
   }
   const client = await clientPromise;
   return client.db(process.env.MONGODB_DATABASE || "compliance_agent");

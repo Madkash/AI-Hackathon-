@@ -459,7 +459,8 @@
         "handler": "source-pattern",
         "config": {
           "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.yaml", "**/*.yml"],
-          "patterns": ["(api[_-]?key|secret|token|password)\\s*[:=]\\s*[\\\"'][^\\\"']{8,}[\\\"']"]
+          "patterns": ["(api[_-]?key|secret|token|password)\\s*[:=]\\s*[\\\"'][^\\\"']{8,}[\\\"']"],
+          "concerning": true
         }
       }
     },

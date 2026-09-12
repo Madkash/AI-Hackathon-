@@ -73,8 +73,8 @@
           "expectedEvidence": ["inventory of non-text elements", "accessible-name and alternative-text findings", "DOM locator and screenshot"],
           "limitations": "Automation can detect absent or suspicious alternatives but cannot determine whether an alternative serves the same purpose.",
           "executor": {
-            "handler": "local-http",
-            "config": { "path": "/", "method": "GET", "document_checks": ["img-alt"] }
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["image-alt"], "document_checks": ["img-alt"] }
           },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#non-text-content"
         },
@@ -101,8 +101,8 @@
           "expectedEvidence": ["caption-track presence", "caption parse result", "timing coverage summary"],
           "limitations": "Automation cannot reliably judge caption accuracy, speaker identification, or meaningful sound descriptions.",
           "executor": {
-            "handler": "local-http",
-            "config": { "path": "/", "method": "GET", "document_checks": ["video-captions"] }
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["video-caption"], "document_checks": ["video-captions"] }
           },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#captions-prerecorded"
         },
@@ -117,8 +117,8 @@
           "expectedEvidence": ["audio-description track or alternate-version presence", "media metadata"],
           "limitations": "Track presence does not establish that important visual information is adequately described.",
           "executor": {
-            "handler": "local-http",
-            "config": { "path": "/", "method": "GET", "document_checks": ["video-audio-description"] }
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["video-description"], "document_checks": ["video-audio-description"] }
           },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#audio-description-prerecorded"
         },
@@ -181,8 +181,8 @@
           "expectedEvidence": ["autoplay observations", "pause/stop/volume control presence", "interaction trace"],
           "limitations": "Browser autoplay policy can hide application behavior; a human must verify controls are usable and independent of system volume.",
           "executor": {
-            "handler": "local-http",
-            "config": { "path": "/", "method": "GET", "document_checks": ["autoplay-media"] }
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["no-autoplay-audio"], "document_checks": ["autoplay-media"] }
           },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#audio-control"
         },
@@ -209,8 +209,8 @@
           "expectedEvidence": ["before/after screenshots", "clipping and overlap findings", "function availability trace"],
           "limitations": "Machine checks can detect likely clipping but cannot guarantee all content and functionality remain usable.",
           "executor": {
-            "handler": "local-http",
-            "config": { "path": "/", "method": "GET", "document_checks": ["viewport-zoom"] }
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["meta-viewport"], "document_checks": ["viewport-zoom"] }
           },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#resize-text"
         },
@@ -285,8 +285,8 @@
           "expectedEvidence": ["bypass mechanism inventory", "skip-link destination checks", "landmark structure"],
           "limitations": "Automation cannot always identify which blocks repeat or whether a provided mechanism is effective for users.",
           "executor": {
-            "handler": "local-http",
-            "config": { "path": "/", "method": "GET", "document_checks": ["landmarks"] }
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["region", "landmark-one-main"], "document_checks": ["landmarks"] }
           },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#bypass-blocks"
         },
@@ -301,10 +301,13 @@
           "expectedEvidence": ["missing/duplicate title findings", "route-to-title inventory"],
           "limitations": "A human must judge whether each title describes the page's topic or purpose.",
           "executor": {
-            "handler": "local-http",
+            "handler": "axe-cli",
             "config": {
+              "url_source": "local_base_url",
               "path": "/",
-              "method": "GET",
+              "local_only": true,
+              "no_update_check": true,
+              "rules": ["document-title"],
               "document_checks": ["title"]
             }
           },
@@ -321,8 +324,8 @@
           "expectedEvidence": ["empty/ambiguous link findings", "accessible-name and context capture", "destination inventory"],
           "limitations": "Human judgment is required to determine purpose from context and whether the ambiguity exception applies.",
           "executor": {
-            "handler": "local-http",
-            "config": { "path": "/", "method": "GET", "document_checks": ["link-text"] }
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["link-name"], "document_checks": ["link-text"] }
           },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#link-purpose-in-context"
         },
@@ -397,10 +400,13 @@
           "expectedEvidence": ["declared language", "validity result", "route and DOM locator"],
           "limitations": "Automated language detection is probabilistic and a human may need to verify that the declared language matches the content.",
           "executor": {
-            "handler": "local-http",
+            "handler": "axe-cli",
             "config": {
+              "url_source": "local_base_url",
               "path": "/",
-              "method": "GET",
+              "local_only": true,
+              "no_update_check": true,
+              "rules": ["html-has-lang", "html-lang-valid"],
               "document_checks": ["html-lang"]
             }
           },
@@ -465,8 +471,8 @@
           "expectedEvidence": ["unlabeled-control findings", "instruction associations", "DOM locator and screenshot"],
           "limitations": "Automation cannot reliably judge whether instructions are sufficient for the expected input.",
           "executor": {
-            "handler": "local-http",
-            "config": { "path": "/", "method": "GET", "document_checks": ["form-labels"] }
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["label", "aria-input-field-name"], "document_checks": ["form-labels"] }
           },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#labels-or-instructions"
         },
@@ -493,8 +499,8 @@
           "expectedEvidence": ["name/role/state/value findings", "state-change accessibility snapshots", "DOM locators"],
           "limitations": "Automation cannot establish support across every assistive-technology and user-agent combination or judge whether exposed semantics are correct in context.",
           "executor": {
-            "handler": "local-http",
-            "config": { "path": "/", "method": "GET", "document_checks": ["duplicate-ids"] }
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["duplicate-id", "aria-valid-attr", "aria-roles"], "document_checks": ["duplicate-ids"] }
           },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#name-role-value"
         },

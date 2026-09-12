@@ -338,7 +338,9 @@ The target discovery skill, YAML generator, catalog schema, and headless suite r
 
 Existing SOC 2 and ISO 27001 evidence import is implemented in `agent-runtime/bin/evidence.mjs`. Reviewed evidence records can be evaluated from a local JSON library, included in `localproof plan`, and persisted to MongoDB when `MONGODB_URI` is configured. See `agent-runtime/README.md` for the runnable evidence examples and review metadata fields.
 
-The next implementation work is to add adapters for Playwright/axe-core, OWASP ZAP, Semgrep, Gitleaks, Syft, and an offline vulnerability scanner, then add the operator review surface for evidence decisions in the console.
+The runner now includes CLI-backed adapters for Semgrep, Gitleaks, Syft, Grype, Trivy, OWASP ZAP baseline scans, and axe CLI accessibility checks. These handlers are mapped into the security and WCAG catalogs where the checks can be expressed as bounded local tool execution. Missing tools return `not-run`; the CLI does not download scanners, browser binaries, rule packs, or advisory databases during an assessment.
+
+The next implementation work is to add deeper first-party harnesses for authenticated browser flows, OpenAPI authorization scenarios, Playwright route coverage, offline advisory database freshness checks, and the operator review surface for evidence decisions in the console.
 
 ---
 

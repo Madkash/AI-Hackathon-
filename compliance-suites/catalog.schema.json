@@ -70,7 +70,7 @@
             "type": ["object", "null"],
             "properties": {
               "handler": {
-                "enum": ["file-presence", "source-pattern", "local-http", "local-command", "local-tcp-probe", "manual", "unimplemented"]
+                "enum": ["file-presence", "source-pattern", "local-http", "local-command", "local-tcp-probe", "semgrep", "gitleaks", "syft", "grype", "trivy", "zap-baseline", "axe-cli", "manual", "unimplemented"]
               },
               "config": { "type": "object" }
             },

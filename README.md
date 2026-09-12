@@ -11,4 +11,4 @@ node bin/localproof.mjs plan --target ../examples/localproof-console-target.yaml
 node bin/localproof.mjs run --target ../examples/localproof-console-target.yaml --suite all --output ../examples/results
 ```
 
-Start with [COMPLIANCE_AGENT_WORKFLOW.md](./COMPLIANCE_AGENT_WORKFLOW.md), [agent-runtime/README.md](./agent-runtime/README.md), and [LOCAL_SOFTWARE.md](./LOCAL_SOFTWARE.md). The Next.js console in `compliance-console/` is an optional operator view.
+Start with [COMPLIANCE_AGENT_WORKFLOW.md](./COMPLIANCE_AGENT_WORKFLOW.md), [RFP_EVIDENCE_FRAMEWORK.md](./RFP_EVIDENCE_FRAMEWORK.md), [agent-runtime/README.md](./agent-runtime/README.md), and [LOCAL_SOFTWARE.md](./LOCAL_SOFTWARE.md). The Next.js console in `compliance-console/` is an optional operator view.

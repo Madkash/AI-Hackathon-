@@ -92,7 +92,7 @@ test("expired ISO 27001 evidence is not accepted as coverage", async (t) => {
   assert.equal(coverage.iso27001.covered, false);
   assert.equal(
     coverage.iso27001.reason,
-    "Approved evidence is expired or outside the accepted SOC 2 recency window",
+    "Approved evidence has expired (past its valid_until date)",
   );
 });
 
@@ -127,7 +127,7 @@ test("SOC 2 Type II evidence outside the 455-day window is not accepted as cover
   assert.equal(coverage.soc2.covered, false);
   assert.equal(
     coverage.soc2.reason,
-    "Approved evidence is expired or outside the accepted SOC 2 recency window",
+    "Approved evidence is outside the accepted SOC 2 Type II recency window",
   );
 });
 

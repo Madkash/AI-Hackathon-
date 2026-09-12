@@ -38,7 +38,13 @@ if (command === "import") {
       metadata,
       library: path.resolve(library),
     });
-    const mongo_persisted = await persistEvidence(imported.record);
+    let mongo_persisted = false;
+    let mongo_error = null;
+    try {
+      mongo_persisted = await persistEvidence(imported.record);
+    } catch (error) {
+      mongo_error = error.message;
+    }
     await closeDatabase();
     console.log(JSON.stringify({
       status: "imported",
@@ -47,6 +53,7 @@ if (command === "import") {
       extracted: imported.record.fields,
       review_status: imported.record.extraction.review_status,
       mongo_persisted,
+      ...(mongo_error ? { mongo_error } : {}),
     }, null, 2));
   } catch (error) {
     await closeDatabase();

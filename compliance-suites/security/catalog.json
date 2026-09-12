@@ -119,8 +119,11 @@
           "evidence": ["authentication endpoint list", "transport observations", "alternate authentication paths"],
           "limitations": "A local HTTP-only development target cannot demonstrate production TLS configuration.",
           "executor": {
-            "handler": "local-http",
+            "handler": "zap-baseline",
             "config": {
+              "url_source": "local_base_url",
+              "local_only": true,
+              "no_update_check": true,
               "path": "/",
               "method": "GET",
               "capture_headers": ["strict-transport-security"]
@@ -251,8 +254,11 @@
           "evidence": ["Set-Cookie headers", "Secure HttpOnly SameSite scope", "redacted cookie names"],
           "limitations": "Non-cookie tokens and environment-specific proxy rewriting require separate review.",
           "executor": {
-            "handler": "local-http",
+            "handler": "zap-baseline",
             "config": {
+              "url_source": "local_base_url",
+              "local_only": true,
+              "no_update_check": true,
               "path": "/",
               "method": "GET",
               "document_checks": ["cookie-flags"]
@@ -322,8 +328,13 @@
           "evidence": ["validation boundaries", "client-only validation candidates", "file and line references"],
           "limitations": "Static findings require runtime confirmation and framework-specific interpretation.",
           "executor": {
-            "handler": "source-pattern",
+            "handler": "semgrep",
             "config": {
+              "source_root": ".",
+              "rules_path": "semgrep-rules/localproof-javascript.yml",
+              "rule_source": "local-pinned",
+              "no_remote_rules": true,
+              "no_update_check": true,
               "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
               "patterns": ["require\\([\"']joi[\"']\\)", "from [\"']joi[\"']", "from [\"']zod[\"']", "express-validator", "class-validator", "yup\\."]
             }
@@ -342,6 +353,16 @@
           "suggested_local_tool": "OWASP ZAP automation framework in bounded local mode",
           "evidence": ["reflection context", "encoding transformation", "request and redacted response pair"],
           "limitations": "Inert markers identify reflection and encoding concerns but do not prove exploitability.",
+          "executor": {
+            "handler": "zap-baseline",
+            "config": {
+              "url_source": "allowlisted_input_points",
+              "local_only": true,
+              "no_update_check": true,
+              "request_mode": "bounded-inert-markers",
+              "max_requests": 20
+            }
+          },
           "references": [
             {"id": "WSTG-v42-INPV-01", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting/"},
             {"id": "v5.0.0-1.2.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
@@ -358,8 +379,13 @@
           "evidence": ["query construction sites", "parameterization evidence", "file and line references"],
           "limitations": "Generated queries, stored procedures, and ORM escape hatches may require manual review.",
           "executor": {
-            "handler": "source-pattern",
+            "handler": "semgrep",
             "config": {
+              "source_root": ".",
+              "rules_path": "semgrep-rules/localproof-javascript.yml",
+              "rule_source": "local-pinned",
+              "no_remote_rules": true,
+              "no_update_check": true,
               "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
               "patterns": ["\\.query\\(\\s*[`'\"].*\\$\\{", "\\.query\\(\\s*[\"'].*\\+"]
             }
@@ -379,8 +405,13 @@
           "evidence": ["command execution sites", "untrusted-data flow candidates", "file and line references"],
           "limitations": "This scaffold does not execute commands or attempt exploitation; data-flow confirmation may need specialist review.",
           "executor": {
-            "handler": "source-pattern",
+            "handler": "semgrep",
             "config": {
+              "source_root": ".",
+              "rules_path": "semgrep-rules/localproof-javascript.yml",
+              "rule_source": "local-pinned",
+              "no_remote_rules": true,
+              "no_update_check": true,
               "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
               "patterns": ["exec\\(\\s*[`].*\\$\\{", "execSync\\(\\s*[`].*\\$\\{", "spawn\\(.*\\+"]
             }
@@ -410,7 +441,8 @@
             "handler": "source-pattern",
             "config": {
               "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.yaml", "**/*.yml"],
-              "patterns": ["debug\\s*[:=]\\s*true", "NODE_ENV\\s*!==?\\s*[\"']production[\"']", "err\\.stack", "X-Powered-By"]
+              "patterns": ["debug\\s*[:=]\\s*true", "NODE_ENV\\s*!==?\\s*[\"']production[\"']", "err\\.stack", "X-Powered-By"],
+              "concerning": true
             }
           },
           "references": [
@@ -430,8 +462,12 @@
           "evidence": ["secret type", "file and line", "fingerprint without secret value"],
           "limitations": "Pattern matching produces false positives and cannot determine whether a credential is valid.",
           "executor": {
-            "handler": "source-pattern",
+            "handler": "gitleaks",
             "config": {
+              "source_root": ".",
+              "scan_mode": "filesystem",
+              "redact": true,
+              "no_update_check": true,
               "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.yaml", "**/*.yml"],
               "patterns": ["(api[_-]?key|secret|token|password)\\s*[:=]\\s*[\\\"'][^\\\"']{8,}[\\\"']"]
             }
@@ -448,10 +484,14 @@
           "inputs": ["source_path_or_container_image", "local_advisory_database", "remediation_policy"],
           "suggested_local_tool": "Syft plus Grype or Trivy in offline mode",
           "evidence": ["SBOM", "component versions", "matched advisories", "database timestamp"],
-          "limitations": "Coverage is limited by the freshness and ecosystem support of the preloaded advisory database.",
+          "limitations": "The concrete executor creates the local SBOM first; vulnerability matching requires a separate offline Grype or Trivy pass and is limited by the freshness and ecosystem support of the preloaded advisory database.",
           "executor": {
-            "handler": "file-presence",
+            "handler": "syft",
             "config": {
+              "source_root": ".",
+              "output_format": "spdx-json",
+              "local_only": true,
+              "no_update_check": true,
               "patterns": ["package-lock.json", "pnpm-lock.yaml", "yarn.lock", "requirements.txt", "poetry.lock", "Pipfile.lock", "pom.xml", "gradle.lockfile", "**/*.spdx.json", "**/*sbom*.json"]
             }
           },
@@ -471,8 +511,11 @@
           "evidence": ["response headers", "method status matrix", "redirect behavior"],
           "limitations": "Headers may be added by production gateways absent from the local target.",
           "executor": {
-            "handler": "local-http",
+            "handler": "zap-baseline",
             "config": {
+              "url_source": "allowlisted_local_urls",
+              "local_only": true,
+              "no_update_check": true,
               "path": "/",
               "method": "GET",
               "capture_headers": ["content-security-policy", "x-content-type-options", "referrer-policy", "permissions-policy"]
@@ -533,7 +576,8 @@
             "handler": "source-pattern",
             "config": {
               "include": ["**/*.js", "**/*.ts"],
-              "patterns": ["introspection\\s*:\\s*true", "playground\\s*:\\s*true"]
+              "patterns": ["introspection\\s*:\\s*true", "playground\\s*:\\s*true"],
+              "concerning": true
             }
           },
           "references": [

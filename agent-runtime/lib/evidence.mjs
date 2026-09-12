@@ -60,7 +60,7 @@ function heuristicFields(text) {
     scope: labelled(text, ["certification scope", "system scope", "scope"]),
     issuer: labelled(text, ["certification body", "independent service auditor", "auditor", "cpa firm", "issuer"]),
     accreditation_body: labelled(text, ["accreditation body", "accredited by"]),
-    standard: iso ? "ISO/IEC 27001" : soc2 ? "AICPA SOC 2 Type II" : null,
+    standard: soc2 ? "AICPA SOC 2 Type II" : iso ? "ISO/IEC 27001" : null,
     issue_date: parseDate(labelled(text, ["issue date", "issued", "report date"])),
     period_start: parseDate(labelled(text, ["period start", "review period from", "audit period from"])),
     period_end: parseDate(labelled(text, ["period end", "review period to", "audit period to"])),
@@ -75,7 +75,7 @@ export async function importEvidence({ target, document, metadata = {}, library 
   const sha256 = crypto.createHash("sha256").update(bytes).digest("hex");
   const extracted = await readText(document);
   const heuristic = heuristicFields(extracted.text);
-  const suppliedFields = metadata.fields ?? metadata;
+  const suppliedFields = metadata.fields ?? {};
   const fields = { ...heuristic, ...suppliedFields };
   fields.kind = suppliedFields.kind ?? heuristic.kind;
 
@@ -152,6 +152,9 @@ export function evaluateCoverage(target, records, now = new Date()) {
       const ageDays = (now.getTime() - periodEnd) / 86_400_000;
       return Number.isFinite(periodEnd) && ageDays >= 0 && ageDays <= 455;
     });
+    const staleReason = suite === "iso27001"
+      ? "Approved evidence has expired (past its valid_until date)"
+      : "Approved evidence is outside the accepted SOC 2 Type II recency window";
     decisions[suite] = valid ? {
       covered: true,
       evidence_id: valid.evidence_id,
@@ -162,7 +165,7 @@ export function evaluateCoverage(target, records, now = new Date()) {
       period_end: valid.fields?.period_end ?? null,
     } : {
       covered: false,
-      reason: candidates.length ? "Approved evidence is expired or outside the accepted SOC 2 recency window" : "No approved, scope-matched evidence with verified issuing authority",
+      reason: candidates.length ? staleReason : "No approved, scope-matched evidence with verified issuing authority",
     };
   }
   return decisions;

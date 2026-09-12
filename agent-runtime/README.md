@@ -7,9 +7,11 @@ This is the primary, headless interface for OpenClaw. The Next.js console is opt
 ```bash
 node bin/localproof.mjs plan --target ../compliance-target.yaml --suite all
 node bin/localproof.mjs run --target ../compliance-target.yaml --suite wcag --output ../results
+node bin/rfp-export.mjs --assessment ../results/assessment.json --output ../results/rfp-summary.json
 ```
 
 `plan` resolves applicable tests without executing them. `run` executes implemented local checks and creates JSON evidence files.
+`rfp-export` transforms a completed assessment into a buyer-safe RFP security summary that omits raw findings, source locations, request/response details, secrets, internal hosts, ports, and command output.
 
 ## Runtime guarantees
 
@@ -19,6 +21,27 @@ node bin/localproof.mjs run --target ../compliance-target.yaml --suite wcag --ou
 - Active tests remain disabled unless `scope.active_testing` is `true`
 - Intrusive tests are never executed by this scaffold
 - Missing tools produce `not-run` results rather than attempted downloads
+
+## Implemented local test handlers
+
+`localproof run` currently executes these catalog handlers:
+
+| Handler | Purpose |
+| --- | --- |
+| `file-presence` | Finds required local files such as policy, config, manifest, or evidence artifacts. |
+| `source-pattern` | Performs bounded source matching for deterministic readiness signals. |
+| `local-http` | Calls approved local HTTP URLs and captures selected headers or lightweight document observations. |
+| `local-tcp-probe` | Checks only approved local host and port combinations. |
+| `local-command` | Runs explicit catalog commands without a shell, with bounded output and timeout. |
+| `semgrep` | Runs Semgrep with a local pinned rules/config path. |
+| `gitleaks` | Runs local secret detection with redacted JSON output. |
+| `syft` | Generates local SBOM inventory evidence. |
+| `grype` | Performs local vulnerability matching with auto-update disabled. |
+| `trivy` | Performs local filesystem vulnerability, secret, and misconfiguration checks with offline flags. |
+| `zap-baseline` | Runs an OWASP ZAP baseline scan against the approved local web URL. |
+| `axe-cli` | Runs axe CLI against the approved local web URL for automated accessibility findings. |
+
+The external scanner handlers require their tools, rules, browser support, and advisory databases to be installed before the assessment starts. The adapters parse JSON output into compact evidence, redact obvious secrets, preserve tool limitations, and return `not-run` when a required executable is missing.
 
 Install dependencies during device setup, before offline assessment:
 

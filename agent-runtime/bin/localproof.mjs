@@ -13,12 +13,14 @@ import YAML from "yaml";
 import { evaluateCoverage, loadEvidenceLibrary } from "../lib/evidence.mjs";
 import { closeDatabase, persistAssessment } from "../lib/mongodb.mjs";
 import { buildAssessmentReport } from "../lib/reporting.mjs";
+import { runToolAdapter } from "../lib/tool-adapters.mjs";
 
 const execFileAsync = promisify(execFile);
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, "..", "..");
 const catalogRoot = path.join(repositoryRoot, "compliance-suites");
 const supportedSuites = ["soc2", "iso27001", "security", "wcag"];
+const externalToolHandlers = new Set(["semgrep", "gitleaks", "syft", "grype", "trivy", "zap-baseline", "axe-cli"]);
 
 function fail(message) {
   console.error(JSON.stringify({ status: "error", error: message }, null, 2));
@@ -148,18 +150,18 @@ async function loadCatalogs(names) {
 
 function normalizeTest(suite, test, target, coverage) {
   const executor = test.executor ?? { handler: test.automation === "manual" ? "manual" : "unimplemented" };
-  const active = executor.handler === "local-http" || executor.handler === "local-command" || executor.handler === "local-tcp-probe";
+  const active = ["local-http", "local-command", "local-tcp-probe", "zap-baseline", "axe-cli"].includes(executor.handler);
   const intrusive = test.safety === "intrusive";
   let disposition = "ready";
   let reason = null;
 
   const coveredEvidence = coverage?.[suite]?.covered ? coverage[suite] : null;
-  if (coveredEvidence && test.automation !== "automated") {
-    disposition = "covered-by-existing-evidence";
-    reason = `Approved evidence ${coveredEvidence.evidence_id} covers this target and readiness suite`;
-  } else if (intrusive) {
+  if (intrusive) {
     disposition = "blocked";
     reason = "Intrusive tests are disabled by policy";
+  } else if (coveredEvidence && test.automation !== "automated") {
+    disposition = "covered-by-existing-evidence";
+    reason = `Approved evidence ${coveredEvidence.evidence_id} covers this target and readiness suite`;
   } else if (active && target.scope.active_testing !== true) {
     disposition = "blocked";
     reason = "Active testing is not enabled in the approved target YAML";
@@ -224,8 +226,10 @@ async function runFilePresence(config, target) {
   const files = await walkFiles(targetSourceRoot(target));
   const patterns = config.patterns ?? [];
   const matches = files.filter((file) => patterns.some((pattern) => wildcardMatches(file.relative, pattern)));
+  const found = matches.length > 0;
+  const concerning = config.concerning === true;
   return {
-    result: matches.length > 0 ? "observed" : "not-observed",
+    result: (concerning ? !found : found) ? "observed" : "not-observed",
     evidence: matches.slice(0, 25).map((file) => ({ type: "file", path: file.relative })),
     limitations: ["File presence does not prove that a control operates effectively"],
   };
@@ -251,8 +255,10 @@ async function runSourcePattern(config, target) {
     if (matches.length >= 100) break;
   }
 
+  const found = matches.length > 0;
+  const concerning = config.concerning === true;
   return {
-    result: matches.length > 0 ? "observed" : "not-observed",
+    result: (concerning ? !found : found) ? "observed" : "not-observed",
     evidence: matches.slice(0, 100),
     limitations: ["Source pattern matches require human validation and may include false positives"],
   };
@@ -260,28 +266,38 @@ async function runSourcePattern(config, target) {
 
 function analyzeDocumentChecks(body, checks) {
   const observations = {};
+  const violations = [];
+  const flag = (name, isViolation) => {
+    if (isViolation) violations.push(name);
+  };
+
   if (checks.includes("title")) {
     const title = body.match(/<title(?:\s[^>]*)?>([^<]*)<\/title>/i)?.[1]?.trim() ?? null;
     observations.title = { present: Boolean(title), length: title?.length ?? 0 };
+    flag("title", !observations.title.present);
   }
   if (checks.includes("html-lang")) {
     const language = body.match(/<html(?:\s[^>]*)?\slang=["']([^"']+)["']/i)?.[1] ?? null;
     observations.html_lang = { present: Boolean(language), value: language };
+    flag("html-lang", !observations.html_lang.present);
   }
   if (checks.includes("img-alt")) {
     const images = [...body.matchAll(/<img\b[^>]*>/gi)];
     const missingAlt = images.filter((match) => !/\salt\s*=/i.test(match[0]));
     observations.img_alt = { images_found: images.length, missing_alt: missingAlt.length };
+    flag("img-alt", missingAlt.length > 0);
   }
+  const needsVideos = checks.includes("video-captions") || checks.includes("video-audio-description");
+  const videos = needsVideos ? [...body.matchAll(/<video\b[^>]*>[\s\S]*?<\/video>/gi)] : [];
   if (checks.includes("video-captions")) {
-    const videos = [...body.matchAll(/<video\b[^>]*>[\s\S]*?<\/video>/gi)];
     const withCaptions = videos.filter((match) => /<track\b[^>]*\bkind\s*=\s*["'](captions|subtitles)["']/i.test(match[0]));
     observations.video_captions = { videos_found: videos.length, with_caption_track: withCaptions.length };
+    flag("video-captions", videos.length > 0 && withCaptions.length < videos.length);
   }
   if (checks.includes("video-audio-description")) {
-    const videos = [...body.matchAll(/<video\b[^>]*>[\s\S]*?<\/video>/gi)];
     const withDescriptions = videos.filter((match) => /<track\b[^>]*\bkind\s*=\s*["']descriptions["']/i.test(match[0]));
     observations.video_audio_description = { videos_found: videos.length, with_description_track: withDescriptions.length };
+    flag("video-audio-description", videos.length > 0 && withDescriptions.length < videos.length);
   }
   if (checks.includes("autoplay-media")) {
     const autoplayTags = [...body.matchAll(/<(audio|video)\b[^>]*>/gi)].filter((match) => /\sautoplay(\s|=|>)/i.test(match[0]));
@@ -289,13 +305,16 @@ function analyzeDocumentChecks(body, checks) {
       (match) => !(/\smuted(\s|=|>)/i.test(match[0]) && /\scontrols(\s|=|>)/i.test(match[0])),
     );
     observations.autoplay_media = { autoplay_elements: autoplayTags.length, without_mute_and_controls: withoutMuteAndControls.length };
+    flag("autoplay-media", withoutMuteAndControls.length > 0);
   }
   if (checks.includes("landmarks")) {
+    const hasMainLandmark = /<main\b/i.test(body) || /role\s*=\s*["']main["']/i.test(body);
     observations.landmarks = {
-      has_main_landmark: /<main\b/i.test(body) || /role\s*=\s*["']main["']/i.test(body),
+      has_main_landmark: hasMainLandmark,
       has_nav_landmark: /<nav\b/i.test(body) || /role\s*=\s*["']navigation["']/i.test(body),
       has_skip_link: /<a\b[^>]*href\s*=\s*["']#[^"']+["'][^>]*>[\s\S]{0,80}?(skip|jump)/i.test(body),
     };
+    flag("landmarks", !hasMainLandmark);
   }
   if (checks.includes("link-text")) {
     const links = [...body.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)];
@@ -306,6 +325,7 @@ function analyzeDocumentChecks(body, checks) {
       return text.length === 0 || vague.test(text);
     });
     observations.link_text = { links_found: links.length, empty_or_ambiguous: ambiguous.length };
+    flag("link-text", ambiguous.length > 0);
   }
   if (checks.includes("form-labels")) {
     const controls = [...body.matchAll(/<(input|select|textarea)\b[^>]*>/gi)].filter(
@@ -318,28 +338,27 @@ function analyzeDocumentChecks(body, checks) {
       return !id || !labeledIds.has(id);
     });
     observations.form_labels = { controls_found: controls.length, unlabeled: unlabeled.length };
+    flag("form-labels", unlabeled.length > 0);
   }
   if (checks.includes("duplicate-ids")) {
     const ids = [...body.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map((match) => match[1]);
     const counts = ids.reduce((map, id) => map.set(id, (map.get(id) ?? 0) + 1), new Map());
-    observations.duplicate_ids = {
-      total_ids: ids.length,
-      duplicate_ids: [...counts.entries()].filter(([, count]) => count > 1).map(([id]) => id),
-    };
+    const duplicateIds = [...counts.entries()].filter(([, count]) => count > 1).map(([id]) => id);
+    observations.duplicate_ids = { total_ids: ids.length, duplicate_ids: duplicateIds };
+    flag("duplicate-ids", duplicateIds.length > 0);
   }
   if (checks.includes("viewport-zoom")) {
     const viewportContent =
       body.match(/<meta\b[^>]*name\s*=\s*["']viewport["'][^>]*content\s*=\s*["']([^"']+)["']/i)?.[1] ??
       body.match(/<meta\b[^>]*content\s*=\s*["']([^"']+)["'][^>]*name\s*=\s*["']viewport["']/i)?.[1] ??
       null;
-    observations.viewport_zoom = {
-      viewport_present: Boolean(viewportContent),
-      blocks_zoom: Boolean(
-        viewportContent && (/user-scalable\s*=\s*no/i.test(viewportContent) || /maximum-scale\s*=\s*1(\.0)?\b/i.test(viewportContent)),
-      ),
-    };
+    const blocksZoom = Boolean(
+      viewportContent && (/user-scalable\s*=\s*no/i.test(viewportContent) || /maximum-scale\s*=\s*1(\.0)?\b/i.test(viewportContent)),
+    );
+    observations.viewport_zoom = { viewport_present: Boolean(viewportContent), blocks_zoom: blocksZoom };
+    flag("viewport-zoom", blocksZoom);
   }
-  return observations;
+  return { observations, violations };
 }
 
 async function runLocalHttp(config, target) {
@@ -355,28 +374,33 @@ async function runLocalHttp(config, target) {
   for (const name of config.capture_headers ?? []) selectedHeaders[name] = response.headers.get(name);
   const documentChecks = config.document_checks ?? [];
   const observations = {};
+  const violations = [];
   if (documentChecks.includes("cookie-flags")) {
     const setCookieValues =
       typeof response.headers.getSetCookie === "function"
         ? response.headers.getSetCookie()
         : [response.headers.get("set-cookie")].filter(Boolean);
-    observations.cookie_flags = setCookieValues.map((raw) => ({
+    const cookieFlags = setCookieValues.map((raw) => ({
       name: raw.split("=")[0],
       secure: /;\s*Secure/i.test(raw),
       http_only: /;\s*HttpOnly/i.test(raw),
       same_site: raw.match(/;\s*SameSite=([^;]+)/i)?.[1] ?? null,
     }));
+    observations.cookie_flags = cookieFlags;
+    if (cookieFlags.some((cookie) => !cookie.secure || !cookie.http_only)) violations.push("cookie-flags");
   }
   const bodyChecks = documentChecks.filter((check) => check !== "cookie-flags");
   if (bodyChecks.length > 0) {
     const contentLength = Number(response.headers.get("content-length") || 0);
     if (contentLength > 2_000_000) throw new Error("Response is too large for the local document checker");
     const body = await response.text();
-    Object.assign(observations, analyzeDocumentChecks(body, bodyChecks));
+    const analyzed = analyzeDocumentChecks(body, bodyChecks);
+    Object.assign(observations, analyzed.observations);
+    violations.push(...analyzed.violations);
   }
   return {
-    result: "observed",
-    evidence: [{ type: "local-http", url: url.toString(), status: response.status, headers: selectedHeaders, observations }],
+    result: documentChecks.length > 0 ? (violations.length > 0 ? "not-observed" : "observed") : "observed",
+    evidence: [{ type: "local-http", url: url.toString(), status: response.status, headers: selectedHeaders, observations, violations }],
     limitations: ["A single response does not establish control effectiveness across the application"],
   };
 }
@@ -418,7 +442,7 @@ async function runLocalTcpProbe(config, target) {
 }
 
 function localCommandEnvironment() {
-  const allowed = ["PATH", "Path", "SystemRoot", "WINDIR", "TEMP", "TMP", "HOME", "USERPROFILE"];
+  const allowed = ["PATH", "Path", "PATHEXT", "SystemRoot", "WINDIR", "TEMP", "TMP", "HOME", "USERPROFILE"];
   return Object.fromEntries(allowed.filter((name) => process.env[name]).map((name) => [name, process.env[name]]));
 }
 
@@ -507,6 +531,33 @@ async function runLocalCommand(config, target) {
   };
 }
 
+function configuredTargetUrl(config, target) {
+  const base = target.interfaces?.web?.base_url;
+  if (!base) return null;
+  return assertLocalUrl(new URL(config.path ?? "/", base).toString(), target).toString();
+}
+
+function externalToolConfig(handler, config, target) {
+  const sourceRoot = targetSourceRoot(target);
+  const next = {
+    ...config,
+    sourceRoot,
+    sourcePath: config.source_path ?? config.source_root ?? ".",
+    approvedConfigRoots: [
+      catalogRoot,
+      path.join(catalogRoot, "security"),
+      path.join(catalogRoot, "wcag"),
+    ],
+  };
+
+  if (handler === "zap-baseline" || handler === "axe-cli") {
+    const targetUrl = configuredTargetUrl(config, target);
+    if (targetUrl) next.targetUrl = targetUrl;
+  }
+
+  return next;
+}
+
 async function execute(test, target) {
   if (test.disposition === "covered-by-existing-evidence") {
     return {
@@ -537,6 +588,10 @@ async function execute(test, target) {
     else if (executor?.handler === "local-http") execution = await runLocalHttp(executor.config ?? {}, target);
     else if (executor?.handler === "local-tcp-probe") execution = await runLocalTcpProbe(executor.config ?? {}, target);
     else if (executor?.handler === "local-command") execution = await runLocalCommand(executor.config ?? {}, target);
+    else if (externalToolHandlers.has(executor?.handler)) execution = await runToolAdapter(
+      executor.handler,
+      externalToolConfig(executor.handler, executor.config ?? {}, target),
+    );
     else execution = {
       result: "not-implemented",
       evidence: [],

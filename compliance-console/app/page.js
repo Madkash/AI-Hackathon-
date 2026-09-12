@@ -65,6 +65,7 @@ export default function Dashboard() {
       .catch(() => {
         if (!active) return;
         setAssessmentError("Assessment state is unavailable.");
+        setAssessment((current) => current ?? { services: { app: "unavailable", mongodb: "unavailable", inference: "unavailable" } });
       });
 
     return () => {

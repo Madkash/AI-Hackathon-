@@ -40,10 +40,13 @@ function toPercent(value, total) {
   return total > 0 ? Math.round((value / total) * 100) : 0;
 }
 
+// Weights mirror agent-runtime/lib/reporting.mjs's resultWeight() so the console's
+// displayed score always matches the score already computed into the persisted
+// assessment's `report` field for the same run.
 function scoreResult(result) {
-  if (result.result === "observed" || result.result === "skipped-covered") return 1;
-  if (result.result === "not-run" && result.disposition === "manual-review") return 0.45;
-  if (result.result === "not-implemented" || result.disposition === "blocked") return 0.2;
+  if (["observed", "pass", "passed", "covered"].includes(result.result)) return 1;
+  if (result.result === "skipped-covered" || result.disposition === "covered-by-existing-evidence") return 0.85;
+  if (result.result === "manual-review" || result.disposition === "manual-review") return 0.25;
   return 0;
 }
 
