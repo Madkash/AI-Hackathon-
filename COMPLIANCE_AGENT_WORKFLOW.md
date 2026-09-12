@@ -316,7 +316,7 @@ discovery:
 - A secrets detector that prevents secret values from entering YAML
 - A YAML generator
 - A JSON Schema validator for the YAML contract
-- An OpenShell policy generator derived from the approved scope
+- An OpenShell policy generator derived from the approved scope (implemented: `agent-runtime/bin/generate-openshell-policy.mjs`, run as `npm run policy -- --target <compliance-target.yaml> --output <policy.json>`). It refuses to emit a policy unless `data_handling.external_network` is `deny` and `scope.allowed_hosts` is non-empty, and the output declares default-deny egress with only the approved hosts and ports allowed.
 - A provenance recorder stored in MongoDB
 
 ## Phase 1 completion criteria

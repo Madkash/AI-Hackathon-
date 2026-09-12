@@ -10,7 +10,8 @@
     "plan": "node bin/localproof.mjs plan",
     "run": "node bin/localproof.mjs run",
     "tools": "node bin/check-tools.mjs",
-    "check": "node --check bin/localproof.mjs"
+    "policy": "node bin/generate-openshell-policy.mjs",
+    "check": "node --check bin/localproof.mjs && node --check bin/generate-openshell-policy.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
