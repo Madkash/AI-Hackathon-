@@ -249,6 +249,32 @@ nav { display: grid; gap: 6px; }
 .folderDrop span, .folderDrop small { display: block; color: #68756d; }
 .folderDrop strong { display: block; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
 .folderDrop small { font-size: 9px; line-height: 1.45; }
+.rfpFilePicker {
+  display: flex !important;
+  align-items: center;
+  min-height: 34px;
+  margin-bottom: 8px !important;
+  padding: 7px 9px;
+  border: 1px dashed #aebbb2;
+  border-radius: 7px;
+  color: #68756d;
+  background: #f8faf8;
+  cursor: pointer;
+}
+.rfpFilePicker input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.rfpFilePicker span {
+  overflow: hidden;
+  color: #68756d;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .intakeMetrics {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -889,6 +915,8 @@ form label { display: block; margin-bottom: 7px; color: #4f5b54; font-size: 10px
 .message { margin-top: 12px; padding: 10px; border-radius: 7px; font-size: 10px; }
 .message.error { color: #883d36; background: #faecea; }
 .discoveryResult { margin-top: 13px; overflow: hidden; border: 1px solid #dce4df; border-radius: 8px; }
+.discoveryResult.skipped { border-style: dashed; }
+.discoveryResult.skipped .resultHeader { cursor: default; }
 .resultHeader { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 11px; background: #f4f8f5; color: #66716a; font-size: 8px; cursor: pointer; }
 .resultHeader div { display: flex; align-items: center; gap: 8px; color: var(--green); font-size: 9px; }
 .discoveryResult pre { max-height: 180px; margin: 0; overflow: auto; padding: 12px; color: #d7e5db; background: #16221b; font: 9px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; }

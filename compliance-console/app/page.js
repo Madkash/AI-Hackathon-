@@ -398,12 +398,13 @@ function downloadFile(filename, type, content) {
 }
 
 export default function Dashboard() {
-  const [target, setTarget] = useState("nextjs-storefront");
+  const [target, setTarget] = useState("");
   const [softwareOptions, setSoftwareOptions] = useState(fallbackSoftwareOptions);
   const [softwareError, setSoftwareError] = useState("");
   const [documentInventory, setDocumentInventory] = useState(createEmptyInventory);
   const [documentFolderName, setDocumentFolderName] = useState("");
   const [rfpRequest, setRfpRequest] = useState("");
+  const [rfpFileName, setRfpFileName] = useState("");
   const [analysisStarted, setAnalysisStarted] = useState(false);
   const [rfpProfile, setRfpProfile] = useState(defaultRfpProfile);
   const [responseRows, setResponseRows] = useState(requirementRows);
@@ -452,13 +453,13 @@ export default function Dashboard() {
         setSoftwareOptions(data.software);
         setSoftwareError("");
         setTarget((current) => (
-          data.software.some((software) => software.id === current) ? current : data.software[0].id
+          current && data.software.some((software) => software.id === current) ? current : ""
         ));
       })
       .catch(() => {
         if (!active) return;
         setSoftwareOptions(fallbackSoftwareOptions);
-        setSoftwareError("Software inventory is unavailable, so the demo target is selected.");
+        setSoftwareError("Software inventory is unavailable. You can continue with evidence and RFP only.");
       });
 
     return () => {
@@ -472,6 +473,26 @@ export default function Dashboard() {
     setDocumentFolderName(files[0]?.webkitRelativePath?.split(/[\\/]/)[0] || "");
   }
 
+  function handleTargetChange(value) {
+    setTarget(value);
+    setDiscovery(null);
+  }
+
+  function handleRfpFile(event) {
+    const file = event.target.files?.[0];
+    setRfpFileName(file?.name || "");
+
+    if (!file || file.size > 750_000 || !/(\.txt|\.md|\.csv|\.json)$/i.test(file.name)) {
+      return;
+    }
+
+    file.text()
+      .then((text) => setRfpRequest(text))
+      .catch(() => {
+        setError("The RFP file was selected, but its text could not be read locally.");
+      });
+  }
+
   async function runDiscovery(event) {
     event.preventDefault();
     setRunning(true);
@@ -479,14 +500,20 @@ export default function Dashboard() {
     setDiscovery(null);
 
     try {
-      const response = await fetch("/api/discovery", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ target }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Discovery failed");
-      setDiscovery(data);
+      if (!canStartAnalysis) {
+        throw new Error("Choose a software target, evidence folder, or buyer RFP before running analysis.");
+      }
+
+      if (softwareSelected) {
+        const response = await fetch("/api/discovery", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ target }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Discovery failed");
+        setDiscovery(data);
+      }
 
       const assessmentResponse = await fetch("/api/assessment", { cache: "no-store" });
       if (assessmentResponse.ok) {
@@ -558,20 +585,30 @@ export default function Dashboard() {
   const findings = assessment?.concerns || [];
   const resultCounts = countEntries(assessment?.counts?.by_result);
   const dispositionCounts = countEntries(assessment?.counts?.by_disposition);
-  const selectedSoftware = softwareOptions.find((software) => software.id === target) || softwareOptions[0] || fallbackSoftwareOptions[0];
+  const softwareSelected = Boolean(target.trim());
+  const selectedSoftware = softwareSelected
+    ? softwareOptions.find((software) => software.id === target) || null
+    : null;
   const documentSummary = summarizeDocumentInventory(documentInventory);
+  const rfpLoaded = Boolean(rfpRequest.trim() || rfpFileName);
+  const canStartAnalysis = Boolean(softwareSelected || documentSummary.files || rfpLoaded);
+  const intakeMode = softwareSelected ? selectedSoftware?.name || "Selected software" : "Evidence and RFP only";
+  const softwareSignals = (selectedSoftware?.signals || []).join(", ");
+  const documentCoverage = documentSummary.total ? Math.round((documentSummary.ready / documentSummary.total) * 100) : 0;
   const coveredFrameworks = useMemo(
     () => frameworkCards.filter((card) => card.evidence?.covered).length,
     [frameworkCards],
   );
   const frameworkCoverage = frameworkCards.length ? Math.round((coveredFrameworks / frameworkCards.length) * 100) : 0;
   const forecastScore = clampPercent(forecast.score);
-  const rfpReadiness = Math.round((forecastScore * 0.62) + (frameworkCoverage * 0.38));
+  const effectiveForecastScore = softwareSelected ? forecastScore : documentCoverage;
+  const effectiveFrameworkCoverage = softwareSelected ? frameworkCoverage : documentCoverage;
+  const rfpReadiness = Math.round((effectiveForecastScore * 0.62) + (effectiveFrameworkCoverage * 0.38));
   const suitePreview = frameworkCards.slice(0, 4);
   const averageConfidence = responseRows.length
     ? Math.round(responseRows.reduce((sum, row) => sum + clampPercent(row.confidence), 0) / responseRows.length)
     : 0;
-  const evidenceMatch = Math.round((averageConfidence * 0.7) + (frameworkCoverage * 0.3));
+  const evidenceMatch = Math.round((averageConfidence * 0.7) + (effectiveFrameworkCoverage * 0.3));
   const openRows = responseRows.filter((row) => row.decision !== "accepted" && row.answer !== "Not applicable").length;
   const rfpSignals = [
     { label: "RFP rows", value: responseRows.length, detail: `${openRows} need review` },
@@ -580,17 +617,17 @@ export default function Dashboard() {
     { label: "Buyer due", value: shortDate(rfpProfile.dueDate), detail: rfpProfile.classification },
   ];
   const intakeSignals = [
-    { label: "Software", value: selectedSoftware?.name || "No target", detail: selectedSoftware?.framework || "Unknown" },
+    { label: "Software", value: selectedSoftware?.name || "Optional", detail: selectedSoftware?.framework || "code checks skipped" },
     { label: "Documents", value: `${documentSummary.ready}/${documentSummary.total}`, detail: `${documentSummary.missing} missing` },
     { label: "Duplicates", value: documentSummary.duplicated, detail: `${documentSummary.extra} extra files` },
-    { label: "RFP request", value: rfpRequest.trim() ? "Loaded" : "Optional", detail: rfpRequest.trim() ? "buyer request attached" : "can run without it" },
+    { label: "RFP request", value: rfpLoaded ? "Loaded" : "Optional", detail: rfpLoaded ? rfpFileName || "buyer request attached" : "can run without it" },
   ];
   const complianceChecklist = [
     {
-      label: "Target software selected",
-      detail: selectedSoftware ? `${selectedSoftware.folder} | ${selectedSoftware.framework}` : "No software selected",
-      tone: selectedSoftware ? "green" : "red",
-      status: selectedSoftware ? "Ready" : "Missing",
+      label: "Target software path",
+      detail: selectedSoftware ? `${selectedSoftware.folder} | ${selectedSoftware.framework}` : "Not provided; code, URL, and dependency checks are skipped",
+      tone: selectedSoftware ? "green" : "blue",
+      status: selectedSoftware ? "Ready" : "Optional",
     },
     {
       label: "RFP evidence folder categorized",
@@ -600,15 +637,19 @@ export default function Dashboard() {
     },
     {
       label: "Buyer request loaded",
-      detail: rfpRequest.trim() ? `${rfpRequest.trim().length} characters available for response drafting` : "Proceeding without buyer-supplied request text",
-      tone: rfpRequest.trim() ? "green" : "blue",
-      status: rfpRequest.trim() ? "Ready" : "Optional",
+      detail: rfpLoaded
+        ? rfpFileName || `${rfpRequest.trim().length} characters available for response drafting`
+        : "Proceeding without buyer-supplied request text",
+      tone: rfpLoaded ? "green" : "blue",
+      status: rfpLoaded ? "Ready" : "Optional",
     },
     {
       label: "LocalProof discovery",
-      detail: discovery ? discovery.file : "Discovery has not produced a target proposal yet",
-      tone: discovery ? "green" : "amber",
-      status: discovery ? "Ready" : "Pending",
+      detail: softwareSelected
+        ? discovery ? discovery.file : "Discovery has not produced a target proposal yet"
+        : "Skipped until a software target is provided",
+      tone: softwareSelected ? discovery ? "green" : "amber" : "blue",
+      status: softwareSelected ? discovery ? "Ready" : "Pending" : "Optional",
     },
     {
       label: "Compliance readiness snapshot",
@@ -663,10 +704,10 @@ export default function Dashboard() {
       forecast.summary,
       "",
       "## Local Evidence Snapshot",
-      `Target: ${latestTarget?.name || "No target loaded"}`,
-      `Source revision: ${latestTarget?.version || "unknown"}`,
+      `Target: ${selectedSoftware?.name || "Evidence/RFP only; software target not provided"}`,
+      `Source revision: ${softwareSelected ? latestTarget?.version || "unknown" : "not applicable"}`,
       `Generated: ${formatDate(assessment?.generated_at)}`,
-      `Checks observed: ${assessment?.counts?.total ?? 0}`,
+      `Checks observed: ${softwareSelected ? assessment?.counts?.total ?? 0 : 0}`,
       `Document groups ready: ${documentSummary.ready}/${documentSummary.total}`,
       `Document gaps: ${documentSummary.missing} missing, ${documentSummary.duplicated} duplicate groups, ${documentSummary.extra} extra files`,
       "",
@@ -724,11 +765,12 @@ export default function Dashboard() {
         extraDocumentFiles: documentSummary.extra,
       },
       localProof: {
-        target: latestTarget?.name || null,
-        sourceRevision: latestTarget?.version || null,
+        target: selectedSoftware?.name || null,
+        sourceRevision: softwareSelected ? latestTarget?.version || null : null,
         generatedAt: assessment?.generated_at || null,
         runId: assessment?.run_id || null,
-        counts: assessment?.counts || null,
+        counts: softwareSelected ? assessment?.counts || null : null,
+        discoverySkipped: !softwareSelected,
       },
       intake: {
         software: selectedSoftware,
@@ -748,6 +790,7 @@ export default function Dashboard() {
           path: file.path,
           size: file.size,
         })),
+        rfpFile: rfpFileName || null,
         rfpRequest: rfpRequest.trim() || null,
       },
       rows: responseRows.map((row) => ({
@@ -826,7 +869,7 @@ export default function Dashboard() {
               <div>
                 <span className="sectionLabel">LOCAL INTAKE</span>
                 <h2>Scope the RFP response</h2>
-                <p>{selectedSoftware?.name || "Select a software target"} with {documentSummary.ready} evidence groups ready for review.</p>
+                <p>{intakeMode} with {documentSummary.ready} evidence groups ready for review.</p>
               </div>
               <div className="intakeStatus">
                 <strong>{analysisStarted ? "Analysis loaded" : "Ready to run"}</strong>
@@ -838,14 +881,15 @@ export default function Dashboard() {
               <section className="slotPanel softwareSlot">
                 <div className="slotHeading">
                   <span className="sectionLabel">TARGET SOFTWARE</span>
-                  <strong>{selectedSoftware?.framework || "Unknown"}</strong>
+                  <strong>{selectedSoftware?.framework || "Optional"}</strong>
                 </div>
-                <label htmlFor="softwareTarget">Recognized software</label>
+                <label htmlFor="softwareTarget">Recognized software path</label>
                 <select
                   id="softwareTarget"
                   value={target}
-                  onChange={(event) => setTarget(event.target.value)}
+                  onChange={(event) => handleTargetChange(event.target.value)}
                 >
+                  <option value="">No software target - evidence/RFP only</option>
                   {softwareOptions.map((software) => (
                     <option key={software.id} value={software.id}>
                       {software.name}
@@ -853,8 +897,8 @@ export default function Dashboard() {
                   ))}
                 </select>
                 <div className="softwareMeta">
-                  <span>Folder: {selectedSoftware?.folder || target}</span>
-                  <span>Signals: {(selectedSoftware?.signals || []).join(", ") || "none"}</span>
+                  <span>Folder: {selectedSoftware?.folder || "not provided"}</span>
+                  <span>Signals: {softwareSignals || "software checks skipped"}</span>
                 </div>
                 {softwareError && <div className="message error" role="alert">{softwareError}</div>}
               </section>
@@ -881,9 +925,17 @@ export default function Dashboard() {
               <section className="slotPanel rfpSlot">
                 <div className="slotHeading">
                   <span className="sectionLabel">OPTIONAL RFP</span>
-                  <strong>{rfpRequest.trim() ? "Loaded" : "Open"}</strong>
+                  <strong>{rfpLoaded ? "Loaded" : "Open"}</strong>
                 </div>
                 <label htmlFor="rfpRequest">Buyer request</label>
+                <label className="rfpFilePicker">
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,.txt,.md,.csv,.json,.xlsx"
+                    onChange={handleRfpFile}
+                  />
+                  <span>{rfpFileName || "Choose RFP file"}</span>
+                </label>
                 <textarea
                   id="rfpRequest"
                   value={rfpRequest}
@@ -902,8 +954,8 @@ export default function Dashboard() {
                     </div>
                   ))}
                 </div>
-                <button className="primaryRun" type="submit" disabled={running || !target.trim()}>
-                  {running ? "Running analysis..." : "Run analysis"}
+                <button className="primaryRun" type="submit" disabled={running || !canStartAnalysis}>
+                  {running ? "Running analysis..." : softwareSelected ? "Run analysis" : "Build RFP dashboard"}
                 </button>
                 {error && <div className="message error" role="alert">{error}</div>}
               </section>
@@ -962,13 +1014,16 @@ export default function Dashboard() {
 
           <div className={`postAnalysis ${analysisStarted ? "visible" : ""}`} id="dashboard">
           <section className="dashboardHero">
-            <div className="heroCopy">
-              <span className="sectionLabel">ACTIVE RESPONSE</span>
-              <h2>{rfpProfile.buyer} {rfpProfile.project}</h2>
-              <p>{forecast.summary}</p>
-              {assessment?.note && <p className="fallbackNotice">{assessment.note}</p>}
-              {assessmentError && <p className="fallbackNotice error">{assessmentError}</p>}
-            </div>
+              <div className="heroCopy">
+                <span className="sectionLabel">ACTIVE RESPONSE</span>
+                <h2>{rfpProfile.buyer} {rfpProfile.project}</h2>
+                <p>{forecast.summary}</p>
+                {!softwareSelected && analysisStarted && (
+                  <p className="fallbackNotice">Software target omitted; code, URL, and dependency checks are skipped for this response.</p>
+                )}
+                {assessment?.note && <p className="fallbackNotice">{assessment.note}</p>}
+                {assessmentError && <p className="fallbackNotice error">{assessmentError}</p>}
+              </div>
 
             <div className="heroMetrics" aria-label="RFP summary">
               {rfpSignals.map((signal) => (
@@ -1265,27 +1320,28 @@ export default function Dashboard() {
                 <span className="readOnly">Scoped</span>
               </div>
               <form onSubmit={runDiscovery}>
-                <label htmlFor="target">Recognized software</label>
+                <label htmlFor="target">Recognized software path</label>
                 <div className="inputRow selectRow">
                   <select
                     id="target"
                     value={target}
-                    onChange={(event) => setTarget(event.target.value)}
+                    onChange={(event) => handleTargetChange(event.target.value)}
                   >
+                    <option value="">No software target - evidence/RFP only</option>
                     {softwareOptions.map((software) => (
                       <option key={software.id} value={software.id}>
                         {software.name}
                       </option>
                     ))}
                   </select>
-                  <button type="submit" disabled={running || !target.trim()}>
-                    {running ? "Inspecting..." : "Run"}
+                  <button type="submit" disabled={running || !canStartAnalysis}>
+                    {running ? "Inspecting..." : softwareSelected ? "Run" : "Build"}
                   </button>
                 </div>
               </form>
               <div className="softwareMeta targetMeta">
-                <span>Folder: {selectedSoftware?.folder || target}</span>
-                <span>Signals: {(selectedSoftware?.signals || []).join(", ") || "none"}</span>
+                <span>Folder: {selectedSoftware?.folder || "not provided"}</span>
+                <span>Signals: {softwareSignals || "software checks skipped"}</span>
               </div>
               {error && <div className="message error" role="alert">{error}</div>}
               {discovery && (
@@ -1296,6 +1352,14 @@ export default function Dashboard() {
                   </summary>
                   <pre>{discovery.yaml}</pre>
                 </details>
+              )}
+              {!softwareSelected && analysisStarted && (
+                <div className="discoveryResult skipped" aria-live="polite">
+                  <div className="resultHeader">
+                    <div><span className="statusDot" /><strong>Software discovery skipped</strong></div>
+                    <span>Evidence/RFP only</span>
+                  </div>
+                </div>
               )}
             </section>
 
