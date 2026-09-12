@@ -1,0 +1,22 @@
+kind: soc2-type2-report
+fields:
+  kind: soc2-type2-report
+  subject: Example Software Company
+  covered_product: localproof-compliance-console
+  scope: Development and operation of the LocalProof software service
+  issuer: Example CPA Firm LLP
+  standard: AICPA SOC 2 Type II
+  issue_date: 2026-07-15
+  period_start: 2025-07-01
+  period_end: 2026-06-30
+  certificate_number: EXAMPLE-SOC2-ONLY-001
+covered_target_names:
+  - localproof-compliance-console
+scope_covers_target: true
+review_status: approved
+verification:
+  issuer_verified: true
+  accreditation_verified: false
+  auditor_eligibility_verified: true
+notes:
+  - Example metadata only; do not use it as SOC 2 evidence.

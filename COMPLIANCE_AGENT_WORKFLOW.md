@@ -336,7 +336,9 @@ Phase 1 is complete when:
 
 The target discovery skill, YAML generator, catalog schema, and headless suite runner (the LocalProof CLI) are now scaffolded. OpenClaw can inspect a repository, propose `compliance-target.yaml`, validate the offline execution policy, plan applicable checks, and run the implemented deterministic adapters.
 
-The next implementation work is to add adapters for Playwright/axe-core, OWASP ZAP, Semgrep, Gitleaks, Syft, and an offline vulnerability scanner, then persist normalized evidence and review decisions in local MongoDB.
+Existing SOC 2 and ISO 27001 evidence import is implemented in `agent-runtime/bin/evidence.mjs`. Reviewed evidence records can be evaluated from a local JSON library, included in `localproof plan`, and persisted to MongoDB when `MONGODB_URI` is configured. See `agent-runtime/README.md` for the runnable evidence examples and review metadata fields.
+
+The next implementation work is to add adapters for Playwright/axe-core, OWASP ZAP, Semgrep, Gitleaks, Syft, and an offline vulnerability scanner, then add the operator review surface for evidence decisions in the console.
 
 ---
 

@@ -16,7 +16,9 @@
       "title": "2017 Trust Services Criteria (With Revised Points of Focus - 2022)",
       "publisher": "AICPA & CIMA",
       "authority": "official",
+      "version": "2017 criteria; revised points of focus 2022",
       "url": "https://www.aicpa-cima.com/resources/download/2017-trust-services-criteria-with-revised-points-of-focus-2022",
+      "retrieved": "2026-09-12",
       "use": "Stable Trust Services Criteria identifiers and category structure."
     },
     {
@@ -24,7 +26,9 @@
       "title": "2018 SOC 2 Description Criteria (With Revised Implementation Guidance - 2022)",
       "publisher": "AICPA & CIMA",
       "authority": "official",
+      "version": "2018 criteria; revised implementation guidance 2022",
       "url": "https://www.aicpa-cima.com/category/resources/technology?type=framework",
+      "retrieved": "2026-09-12",
       "use": "Readiness review of management's system description."
     },
     {
@@ -32,7 +36,9 @@
       "title": "System and Organization Controls: SOC Suite of Services",
       "publisher": "AICPA & CIMA",
       "authority": "official",
+      "version": "Web guidance; retrieved 2026-09-12",
       "url": "https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services",
+      "retrieved": "2026-09-12",
       "use": "Authoritative boundary: SOC services are CPA assurance services."
     },
     {
@@ -40,7 +46,9 @@
       "title": "SOC 2 Reporting on an Examination of Controls at a Service Organization Relevant to Security, Availability, Processing Integrity, Confidentiality, or Privacy",
       "publisher": "AICPA & CIMA",
       "authority": "authoritative-paid-guide",
+      "version": "2022 guide",
       "url": "https://www.aicpa-cima.com/cpe-learning/publication/soc-2-reporting-on-an-examination-of-controls-at-a-service-organization-relevant-to-security-availability-processing-integrity-confidentiality-or-privacy",
+      "retrieved": "2026-09-12",
       "use": "Authoritative examination guidance for CPAs; not embedded or reproduced by this catalog."
     }
   ],
@@ -217,7 +225,14 @@
       "inputs": ["source repository", "dependency manifests", "authentication configuration", "route and middleware definitions"],
       "local_only_tool": "static-access-control-inspector",
       "expected_evidence": ["authentication entry points", "authorization middleware coverage", "privileged routes", "session configuration", "file and line references"],
-      "limitations": "Static findings are indicators. They do not prove production configuration, identity-provider enforcement, correct business authorization, or operation throughout a period."
+      "limitations": "Static findings are indicators. They do not prove production configuration, identity-provider enforcement, correct business authorization, or operation throughout a period.",
+      "executor": {
+        "handler": "source-pattern",
+        "config": {
+          "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+          "patterns": ["passport\\.(authenticate|use)\\(", "requireAuth", "isAuthenticated", "authorize\\(", "requireRole", "checkPermission", "jwt\\.verify"]
+        }
+      }
     },
     {
       "id": "SOC2-ACCESS-002",
@@ -329,7 +344,14 @@
       "inputs": ["availability commitments", "architecture", "resource limits", "monitoring export", "capacity plan"],
       "local_only_tool": "availability-config-analyzer",
       "expected_evidence": ["stated commitments", "single points of failure", "resource thresholds", "capacity-review dates", "configuration references"],
-      "limitations": "A configuration review cannot prove achieved uptime, environmental safeguards, production capacity, or historical operating effectiveness."
+      "limitations": "A configuration review cannot prove achieved uptime, environmental safeguards, production capacity, or historical operating effectiveness.",
+      "executor": {
+        "handler": "source-pattern",
+        "config": {
+          "include": ["**/docker-compose*.yml", "**/docker-compose*.yaml", "**/*.yaml", "**/*.yml"],
+          "patterns": ["mem_limit\\s*:", "cpus\\s*:", "limits\\s*:", "memory\\s*:"]
+        }
+      }
     },
     {
       "id": "SOC2-AVAIL-002",
@@ -340,7 +362,13 @@
       "inputs": ["local encrypted backup", "restore procedure", "disposable target", "expected integrity manifest"],
       "local_only_tool": "sandboxed-backup-restore-runner",
       "expected_evidence": ["start and completion timestamps", "restore logs", "integrity comparison", "observed recovery duration", "failures"],
-      "limitations": "A single local exercise does not prove production recovery objectives, environmental protections, or operation throughout the examination period."
+      "limitations": "A single local exercise does not prove production recovery objectives, environmental protections, or operation throughout the examination period.",
+      "executor": {
+        "handler": "file-presence",
+        "config": {
+          "patterns": ["**/*backup*.sh", "**/*restore*.sh", "**/*backup*.yml", "**/*backup*.yaml", "**/*.dump", "**/pg_dump*", "**/mongodump*"]
+        }
+      }
     },
     {
       "id": "SOC2-PI-001",
@@ -351,7 +379,13 @@
       "inputs": ["processing objectives", "local API or CLI contract", "test vectors", "expected outputs", "error-handling rules"],
       "local_only_tool": "contract-and-reconciliation-test-runner",
       "expected_evidence": ["accepted and rejected inputs", "processing results", "output reconciliation", "error behavior", "stored-record comparison"],
-      "limitations": "Tests only supplied scenarios in a local environment and do not establish completeness, accuracy, timeliness, authorization, or operation for the full transaction population."
+      "limitations": "Tests only supplied scenarios in a local environment and do not establish completeness, accuracy, timeliness, authorization, or operation for the full transaction population.",
+      "executor": {
+        "handler": "file-presence",
+        "config": {
+          "patterns": ["**/*.contract.test.*", "**/*contract*.json", "**/test/**", "**/tests/**", "openapi.yaml", "openapi.yml"]
+        }
+      }
     },
     {
       "id": "SOC2-CONF-001",
@@ -362,7 +396,14 @@
       "inputs": ["data classification policy", "data inventory", "storage configuration", "retention schedule", "disposal records"],
       "local_only_tool": "confidential-data-control-analyzer",
       "expected_evidence": ["unclassified repositories", "unencrypted local stores", "retention mismatches", "missing disposal evidence", "source references"],
-      "limitations": "Pattern scanning is incomplete and can produce false positives. It cannot prove all confidential information is identified or protected across production."
+      "limitations": "Pattern scanning is incomplete and can produce false positives. It cannot prove all confidential information is identified or protected across production.",
+      "executor": {
+        "handler": "source-pattern",
+        "config": {
+          "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.yaml", "**/*.yml"],
+          "patterns": ["bcrypt", "argon2", "createCipheriv", "crypto\\.createHash", "AES-256", "encrypt\\("]
+        }
+      }
     },
     {
       "id": "SOC2-PRIV-001",

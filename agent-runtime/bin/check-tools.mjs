@@ -11,6 +11,8 @@ const tools = [
   { name: "OpenShell", commands: [["openshell", "--version"]], tier: "required-on-gb10", purpose: "Sandbox and deny-by-default network policy" },
   { name: "Git", commands: [["git", "--version"]], tier: "recommended", purpose: "Source revision and change-control evidence" },
   { name: "ripgrep", commands: [["rg", "--version"]], tier: "recommended", purpose: "Fast local source discovery" },
+  { name: "Playwright", commands: [["playwright", "--version"], ["npx", "playwright", "--version"]], tier: "assessment", purpose: "Local browser automation against approved targets" },
+  { name: "axe", commands: [["axe", "--version"], ["npx", "axe", "--version"]], tier: "assessment", purpose: "Local automated accessibility checks" },
   { name: "OWASP ZAP", commands: [["zap.sh", "-version"], ["zap.bat", "-version"]], tier: "assessment", purpose: "Local passive and authorized web testing" },
   { name: "Semgrep", commands: [["semgrep", "--version"]], tier: "assessment", purpose: "Static analysis with locally pinned rules" },
   { name: "Gitleaks", commands: [["gitleaks", "version"]], tier: "assessment", purpose: "Offline secret detection with redacted output" },

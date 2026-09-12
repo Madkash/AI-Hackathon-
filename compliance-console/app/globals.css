@@ -93,12 +93,18 @@ nav { display: grid; gap: 6px; }
 .runtimePills i, .liveTag i { width: 6px; height: 6px; border-radius: 50%; background: #a5ada8; }
 .runtimePills i.online, .liveTag i { background: #56a871; }
 .runtimePills i.waiting { background: #c6964d; }
+.runtimePills i.offline { background: #c65c4d; }
 
 .content { max-width: 1280px; margin: 0 auto; padding: 34px 42px 24px; }
 .heroPanel { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; padding: 24px 27px; border: 1px solid #d8e1db; border-radius: 13px; background: linear-gradient(105deg, #edf4ef, #fafcf9); }
+.heroPanel.fallback { border-color: #e2cfa9; background: linear-gradient(105deg, #f5f1e8, #fbfcf9); }
 .heroPanel h2 { margin: 8px 0 5px; font-family: Georgia, serif; font-size: 25px; font-weight: 500; }
 .heroPanel p { margin: 0; color: var(--muted); font-size: 12px; }
 .heroPanel code { padding: 2px 5px; border-radius: 4px; background: #dfe9e2; font-size: 10px; }
+.fallbackNotice { max-width: 640px; margin-top: 10px !important; color: #856128 !important; }
+.fallbackNotice.error { color: #883d36 !important; }
+.scoreWrap { display: grid; justify-items: center; gap: 8px; margin-left: 18px; }
+.scoreWrap > span { color: #56645b; font-size: 9px; font-weight: 800; text-align: center; text-transform: uppercase; }
 .scoreRing { display: flex; width: 78px; height: 78px; align-items: baseline; justify-content: center; padding-top: 21px; border: 7px solid #d9e6dd; border-top-color: var(--green); border-right-color: var(--green); border-radius: 50%; background: white; }
 .scoreRing strong { font-family: Georgia, serif; font-size: 24px; font-weight: 500; }
 .scoreRing span { color: var(--muted); font-size: 9px; }
@@ -154,6 +160,16 @@ form small { display: block; margin-top: 6px; color: #8b948f; font-size: 8px; }
 .stackRoute { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 7px; padding: 11px; border-radius: 7px; color: #708078; background: #f4f7f5; font-size: 8px; font-weight: 800; }
 .stackRoute b { color: #a3ada7; }
 
+.runMeta { display: grid; grid-template-columns: 1.2fr .7fr .9fr; gap: 8px; margin: 17px 0; }
+.runMeta div { min-width: 0; padding: 10px; border: 1px solid #e3e9e5; border-radius: 7px; background: #f8faf8; }
+.runMeta span { display: block; margin-bottom: 5px; color: #87918b; font-size: 8px; font-weight: 800; text-transform: uppercase; }
+.runMeta strong { display: block; overflow: hidden; color: #3e4a43; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.countColumns { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-bottom: 14px; }
+.countColumns h3 { margin: 0 0 8px; color: #4f5b54; font-size: 10px; }
+.countRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #edf0ee; color: #657168; font-size: 9px; text-transform: capitalize; }
+.countRow strong { color: var(--ink); font-size: 10px; }
+.emptyMini { padding: 9px; border-radius: 7px; color: #89938d; background: #f6f8f7; font-size: 9px; }
+
 .findingsPanel { padding-bottom: 9px; }
 .secondaryButton { padding: 7px 10px; border: 1px solid #d6ded9; border-radius: 6px; color: #4f5d54; background: white; font-size: 9px; font-weight: 700; }
 .findingList { margin-top: 14px; }
@@ -164,7 +180,9 @@ form small { display: block; margin-top: 6px; color: #8b948f; font-size: 8px; }
 .severity.high { color: #9b4138; background: #f9e9e7; }
 .severity.medium { color: #936220; background: #f8efdf; }
 .severity.review { color: #4c648f; background: #eaf0f8; }
+.severity.low { color: #456d55; background: #eaf4ed; }
 .finding button { border: 0; color: #86908a; background: transparent; font-size: 24px; }
+.emptyState { padding: 18px 3px; border-top: 1px solid #edf0ee; color: #818b85; font-size: 10px; }
 
 footer { display: flex; justify-content: space-between; padding: 22px 3px 0; color: #89938d; font-size: 8px; }
 
@@ -184,7 +202,9 @@ footer { display: flex; justify-content: space-between; padding: 22px 3px 0; col
   .runtimePills { display: none; }
   .frameworkGrid { grid-template-columns: 1fr; }
   .heroPanel { align-items: flex-start; gap: 15px; }
+  .scoreWrap { margin-left: 0; }
   .scoreRing { width: 64px; height: 64px; padding-top: 15px; }
   .inputRow { align-items: stretch; flex-direction: column; }
+  .runMeta, .countColumns { grid-template-columns: 1fr; }
   footer { gap: 10px; flex-direction: column; }
 }

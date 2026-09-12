@@ -35,6 +35,24 @@
           "id": { "type": "string", "minLength": 1 },
           "title": { "type": "string", "minLength": 1 },
           "control": { "type": ["string", "null"] },
+          "source_ids": {
+            "type": ["array", "null"],
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "references": {
+            "type": ["array", "null"],
+            "items": {
+              "type": "object",
+              "required": ["id", "url"],
+              "properties": {
+                "id": { "type": "string", "minLength": 1 },
+                "url": { "type": "string", "minLength": 1 },
+                "source_id": { "type": ["string", "null"] },
+                "retrieved": { "type": ["string", "null"] }
+              },
+              "additionalProperties": true
+            }
+          },
           "category": { "type": ["string", "null"] },
           "type": { "type": ["string", "null"] },
           "automation": {
@@ -52,7 +70,7 @@
             "type": ["object", "null"],
             "properties": {
               "handler": {
-                "enum": ["file-presence", "source-pattern", "local-http", "local-command", "manual", "unimplemented"]
+                "enum": ["file-presence", "source-pattern", "local-http", "local-command", "local-tcp-probe", "manual", "unimplemented"]
               },
               "config": { "type": "object" }
             },

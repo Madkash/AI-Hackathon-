@@ -33,6 +33,25 @@ services:
     networks:
       - compliance-local
 
+  agent-runtime:
+    profiles: ["agent-tools"]
+    build:
+      context: ..
+      dockerfile: agent-runtime/Dockerfile
+    working_dir: /workspace/agent-runtime
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017
+      MONGODB_DATABASE: compliance_agent
+    volumes:
+      - ..:/workspace/project:ro
+      - ../examples:/workspace/examples
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - compliance-local
+
+
 networks:
   compliance-local:
     internal: true

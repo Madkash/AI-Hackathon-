@@ -34,6 +34,7 @@
       "title": "Information security, cybersecurity and privacy protection — Information security management systems — Requirements",
       "version": "Edition 3; 2022-10",
       "url": "https://www.iso.org/standard/27001",
+      "retrieved": "2026-09-12",
       "use": "Official identity, status, edition, scope summary, and certification context; protected normative text is not included."
     },
     {
@@ -43,6 +44,7 @@
       "title": "Climate action changes",
       "version": "Edition 3 amendment; 2024-02",
       "url": "https://www.iso.org/standard/88435.html",
+      "retrieved": "2026-09-12",
       "use": "Official amendment identity and applicability metadata."
     },
     {
@@ -52,6 +54,7 @@
       "title": "Information security, cybersecurity and privacy protection — Information security controls",
       "version": "Edition 3; 2022-02; corrected 2022-03",
       "url": "https://www.iso.org/standard/75652.html",
+      "retrieved": "2026-09-12",
       "use": "Official public description of implementation guidance and the organizational, people, physical, and technological control themes."
     },
     {
@@ -61,6 +64,7 @@
       "title": "Requirements for bodies providing audit and certification of information security management systems — Part 1: General",
       "version": "Edition 1; 2024-03",
       "url": "https://www.iso.org/standard/82908.html",
+      "retrieved": "2026-09-12",
       "use": "Official certification-body competence, consistency, and impartiality context."
     },
     {
@@ -70,6 +74,7 @@
       "title": "Certification and accreditation",
       "version": "Web guidance; retrieved 2026-09-12",
       "url": "https://www.iso.org/certification.html",
+      "retrieved": "2026-09-12",
       "use": "Distinguishes independent certification from accreditation of certification bodies."
     },
     {
@@ -79,6 +84,7 @@
       "title": "Copyright",
       "version": "Web guidance; retrieved 2026-09-12",
       "url": "https://www.iso.org/copyright.html",
+      "retrieved": "2026-09-12",
       "use": "Defines the content-handling boundary for this original, non-normative catalog."
     }
   ],
@@ -97,6 +103,7 @@
       "title": "ISMS context and boundary evidence",
       "type": "manual-evidence",
       "theme": "clause-4-context",
+      "source_ids": ["ISO/IEC 27001:2022 Clause 4"],
       "applicability": "All organizations seeking readiness assessment.",
       "inputs": ["ISMS scope statement", "organization and system boundaries", "interested-party register", "legal and contractual obligations register"],
       "localOnlyTool": "evidence-indexer: index and cross-reference approved local documents without external access",
@@ -108,6 +115,7 @@
       "title": "Climate relevance consideration record",
       "type": "manual-evidence",
       "theme": "clause-4-context",
+      "source_ids": ["ISO/IEC 27001:2022 Clause 4", "ISO/IEC 27001:2022/Amd 1:2024"],
       "applicability": "All assessments using the 2024 amendment.",
       "inputs": ["Context review", "interested-party register", "risk register", "management review records"],
       "localOnlyTool": "document-query: locate an explicit, dated consideration and linked decisions in local records",
@@ -119,6 +127,7 @@
       "title": "Leadership, policy, and assigned responsibilities",
       "type": "manual-evidence",
       "theme": "clause-5-leadership",
+      "source_ids": ["ISO/IEC 27001:2022 Clause 5"],
       "applicability": "All organizations.",
       "inputs": ["Information security policy", "role descriptions", "responsibility matrix", "leadership approvals", "communications"],
       "localOnlyTool": "governance-evidence-checker: inspect local approvals, ownership, versions, and policy references",
@@ -130,6 +139,7 @@
       "title": "Risk assessment and treatment traceability",
       "type": "mixed",
       "theme": "clause-6-planning",
+      "source_ids": ["ISO/IEC 27001:2022 Clause 6"],
       "applicability": "All organizations; methods and selected treatments vary by context.",
       "inputs": ["Risk method", "risk register", "risk treatment plan", "control applicability record", "risk acceptance records", "security objectives"],
       "localOnlyTool": "risk-traceability-checker: validate local record completeness, links, owners, dates, and orphaned treatments",
@@ -141,6 +151,7 @@
       "title": "Resources, competence, awareness, communication, and controlled documentation",
       "type": "mixed",
       "theme": "clause-7-support",
+      "source_ids": ["ISO/IEC 27001:2022 Clause 7"],
       "applicability": "All organizations.",
       "inputs": ["Training and competence records", "awareness evidence", "communication plan", "document repository", "retention and change history"],
       "localOnlyTool": "support-record-auditor: inspect approved local records for owners, review dates, approvals, completion, and version history",
@@ -152,6 +163,7 @@
       "title": "Operational execution of risk treatment",
       "type": "mixed",
       "theme": "clause-8-operation",
+      "source_ids": ["ISO/IEC 27001:2022 Clause 8"],
       "applicability": "Organizations with approved risk treatments and operational security processes.",
       "inputs": ["Operational plans", "tickets", "change records", "risk reassessments", "outsourced-process records"],
       "localOnlyTool": "operation-sampler: correlate local plans with sampled tickets, system records, and reassessment dates",
@@ -163,6 +175,7 @@
       "title": "Measurement, internal audit, and management review evidence",
       "type": "manual-evidence",
       "theme": "clause-9-performance-evaluation",
+      "source_ids": ["ISO/IEC 27001:2022 Clause 9"],
       "applicability": "All operational ISMS programs.",
       "inputs": ["Metrics and monitoring results", "internal audit program and reports", "auditor independence records", "management review minutes", "action logs"],
       "localOnlyTool": "assurance-calendar-checker: verify local schedules, coverage, approvals, independence declarations, and action traceability",
@@ -174,6 +187,7 @@
       "title": "Corrective action and continual improvement trail",
       "type": "mixed",
       "theme": "clause-10-improvement",
+      "source_ids": ["ISO/IEC 27001:2022 Clause 10"],
       "applicability": "Organizations with incidents, audit findings, exceptions, or improvement opportunities.",
       "inputs": ["Findings", "incident records", "root-cause analyses", "corrective actions", "effectiveness reviews", "improvement backlog"],
       "localOnlyTool": "corrective-action-tracer: find unowned, overdue, recurring, or unverified actions in local systems",
@@ -185,17 +199,25 @@
       "title": "Information asset inventory and ownership consistency",
       "type": "mixed",
       "theme": "annex-a-organizational",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 5.9", "ISO/IEC 27001:2022 Annex A 5.12"],
       "applicability": "Where information, systems, repositories, services, or devices are within ISMS scope.",
       "inputs": ["Asset inventory", "repository inventory", "container manifests", "service catalog", "owner directory"],
       "localOnlyTool": "asset-reconciler: compare local inventories with discovered repositories, services, databases, and containers",
       "expectedEvidence": ["Identified assets", "Assigned owners", "Classification or criticality", "Lifecycle status", "Unregistered-asset exceptions"],
-      "limitations": "Discovery is limited to authorized sources and may not find offline, SaaS, shadow, or physical assets."
+      "limitations": "Discovery is limited to authorized sources and may not find offline, SaaS, shadow, or physical assets.",
+      "executor": {
+        "handler": "file-presence",
+        "config": {
+          "patterns": ["docker-compose*.yml", "Dockerfile", "**/*.tf", "package.json", "**/k8s/**", "**/*.spdx.json"]
+        }
+      }
     },
     {
       "id": "ISO27-ORG-002",
       "title": "Access governance and periodic review trail",
       "type": "mixed",
       "theme": "annex-a-organizational",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 5.15", "ISO/IEC 27001:2022 Annex A 5.16", "ISO/IEC 27001:2022 Annex A 5.17", "ISO/IEC 27001:2022 Annex A 5.18"],
       "applicability": "Systems with identities, roles, privileged access, or external users.",
       "inputs": ["Identity export", "role matrix", "joiner-mover-leaver records", "access-review records", "exception approvals"],
       "localOnlyTool": "access-review-analyzer: correlate approved local identity and HR exports and flag stale, orphaned, conflicting, or excessive access",
@@ -207,6 +229,7 @@
       "title": "Supplier and external-service security oversight",
       "type": "manual-evidence",
       "theme": "annex-a-organizational",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 5.19", "ISO/IEC 27001:2022 Annex A 5.20", "ISO/IEC 27001:2022 Annex A 5.21", "ISO/IEC 27001:2022 Annex A 5.22"],
       "applicability": "Where suppliers or external services can affect in-scope information or operations.",
       "inputs": ["Supplier inventory", "contracts", "risk reviews", "assurance reports", "service-change records", "exit plans"],
       "localOnlyTool": "supplier-evidence-indexer: cross-reference local supplier records, review dates, scopes, obligations, and unresolved findings",
@@ -218,6 +241,7 @@
       "title": "Incident readiness and case traceability",
       "type": "mixed",
       "theme": "annex-a-organizational",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 5.24", "ISO/IEC 27001:2022 Annex A 5.25", "ISO/IEC 27001:2022 Annex A 5.26", "ISO/IEC 27001:2022 Annex A 5.27", "ISO/IEC 27001:2022 Annex A 5.28"],
       "applicability": "All organizations operating information systems.",
       "inputs": ["Incident plan", "roles and contact lists", "incident tickets", "exercise results", "lessons learned", "evidence handling procedure"],
       "localOnlyTool": "incident-readiness-checker: validate local playbook coverage and trace sampled alerts through triage, response, closure, and lessons",
@@ -229,6 +253,7 @@
       "title": "Continuity and ICT recovery evidence",
       "type": "mixed",
       "theme": "annex-a-organizational",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 5.29", "ISO/IEC 27001:2022 Annex A 5.30", "ISO/IEC 27001:2022 Annex A 8.13", "ISO/IEC 27001:2022 Annex A 8.14"],
       "applicability": "Services requiring continued operation or recoverability.",
       "inputs": ["Business impact analysis", "continuity plan", "recovery procedures", "recovery objectives", "exercise results", "dependency map"],
       "localOnlyTool": "recovery-evidence-checker: compare local plans, declared objectives, dependencies, and recorded exercise outcomes",
@@ -240,6 +265,7 @@
       "title": "Legal, contractual, privacy, and records obligations register",
       "type": "manual-evidence",
       "theme": "annex-a-organizational",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 5.31", "ISO/IEC 27001:2022 Annex A 5.32", "ISO/IEC 27001:2022 Annex A 5.33", "ISO/IEC 27001:2022 Annex A 5.34"],
       "applicability": "Where legal, regulatory, contractual, privacy, intellectual-property, or recordkeeping duties apply.",
       "inputs": ["Obligations register", "contracts", "privacy records", "retention schedule", "license inventory", "compliance reviews"],
       "localOnlyTool": "obligation-mapper: map approved local obligations to owners, systems, evidence, and review dates",
@@ -251,6 +277,7 @@
       "title": "Personnel security lifecycle evidence",
       "type": "manual-evidence",
       "theme": "annex-a-people",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 6.1", "ISO/IEC 27001:2022 Annex A 6.2", "ISO/IEC 27001:2022 Annex A 6.5"],
       "applicability": "Employees, contractors, and relevant third parties with in-scope responsibilities or access.",
       "inputs": ["Role risk criteria", "screening records", "employment terms", "confidentiality agreements", "role-change and termination checklists"],
       "localOnlyTool": "personnel-lifecycle-checker: inspect minimally necessary local metadata for completeness and timely lifecycle actions",
@@ -262,6 +289,7 @@
       "title": "Security awareness and role-based competence coverage",
       "type": "mixed",
       "theme": "annex-a-people",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 6.3"],
       "applicability": "Personnel whose actions can affect information security.",
       "inputs": ["Training catalog", "role mapping", "completion exports", "exercise results", "policy acknowledgement records"],
       "localOnlyTool": "training-coverage-analyzer: compare local role requirements with assigned, completed, expired, and overdue learning records",
@@ -273,6 +301,7 @@
       "title": "Remote-working and security-event reporting readiness",
       "type": "manual-evidence",
       "theme": "annex-a-people",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 6.7", "ISO/IEC 27001:2022 Annex A 6.8"],
       "applicability": "Remote or hybrid personnel and anyone expected to report suspected security events.",
       "inputs": ["Remote-work rules", "device and access standards", "reporting instructions", "awareness records", "sample reports"],
       "localOnlyTool": "policy-evidence-checker: inspect local policy coverage, communications, acknowledgement, and reporting-channel evidence",
@@ -284,6 +313,7 @@
       "title": "Physical access and protected-area evidence",
       "type": "manual-evidence",
       "theme": "annex-a-physical",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 7.1", "ISO/IEC 27001:2022 Annex A 7.2", "ISO/IEC 27001:2022 Annex A 7.3", "ISO/IEC 27001:2022 Annex A 7.4"],
       "applicability": "Facilities and locations containing in-scope information or equipment.",
       "inputs": ["Site scope", "access-control procedures", "visitor records", "physical access reviews", "facility risk assessments"],
       "localOnlyTool": "physical-evidence-indexer: sample approved local access and visitor records against site procedures and review schedules",
@@ -295,6 +325,7 @@
       "title": "Equipment, environmental threat, and media lifecycle evidence",
       "type": "mixed",
       "theme": "annex-a-physical",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 7.8", "ISO/IEC 27001:2022 Annex A 7.10", "ISO/IEC 27001:2022 Annex A 7.11", "ISO/IEC 27001:2022 Annex A 7.12", "ISO/IEC 27001:2022 Annex A 7.13", "ISO/IEC 27001:2022 Annex A 7.14"],
       "applicability": "Physical equipment, storage media, utilities, cabling, and facilities in scope.",
       "inputs": ["Equipment inventory", "maintenance logs", "environmental monitoring exports", "media register", "disposal certificates", "clear-desk rules"],
       "localOnlyTool": "physical-asset-reconciler: correlate local inventories, maintenance, monitoring, movement, reuse, and disposal records",
@@ -306,6 +337,7 @@
       "title": "Endpoint and secure-configuration baseline drift",
       "type": "automated-technical",
       "theme": "annex-a-technological",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 8.9"],
       "applicability": "Authorized local endpoint, server, container, and application configuration exports.",
       "inputs": ["Approved configuration baselines", "system configuration exports", "container definitions", "application settings"],
       "localOnlyTool": "configuration-diff: compare local snapshots with organization-approved baselines",
@@ -317,17 +349,28 @@
       "title": "Authentication and privileged-access configuration",
       "type": "automated-technical",
       "theme": "annex-a-technological",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 5.15", "ISO/IEC 27001:2022 Annex A 5.16", "ISO/IEC 27001:2022 Annex A 5.17", "ISO/IEC 27001:2022 Annex A 5.18", "ISO/IEC 27001:2022 Annex A 8.2", "ISO/IEC 27001:2022 Annex A 8.5"],
       "applicability": "Locally accessible applications, identity configurations, and test accounts within approved scope.",
       "inputs": ["Local target URL", "test accounts", "role model", "authentication configuration", "session settings"],
       "localOnlyTool": "auth-config-tester: inspect configuration and perform bounded local authentication/session tests",
       "expectedEvidence": ["Authentication settings", "Privileged-role assignments", "Session behavior", "Failed-login handling", "Timestamped test traces"],
-      "limitations": "Tests use authorized accounts only and do not prove organization-wide identity governance or resistance to every attack."
+      "limitations": "Tests use authorized accounts only and do not prove organization-wide identity governance or resistance to every attack.",
+      "executor": {
+        "handler": "local-http",
+        "config": {
+          "path": "/",
+          "method": "GET",
+          "capture_headers": ["strict-transport-security", "www-authenticate"],
+          "document_checks": ["cookie-flags"]
+        }
+      }
     },
     {
       "id": "ISO27-TEC-003",
       "title": "Known-vulnerability and patch exposure scan",
       "type": "automated-technical",
       "theme": "annex-a-technological",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 8.8"],
       "applicability": "Source trees, dependency manifests, operating-system package inventories, and container images supplied locally.",
       "inputs": ["Dependency lockfiles", "local advisory database snapshot", "package inventory", "container image or SBOM", "approved risk exceptions"],
       "localOnlyTool": "offline-vulnerability-scanner: match local packages against a preloaded, versioned advisory database",
@@ -345,6 +388,7 @@
       "title": "Malware-protection and execution-control evidence",
       "type": "mixed",
       "theme": "annex-a-technological",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 8.7", "ISO/IEC 27001:2022 Annex A 8.19"],
       "applicability": "Systems where malicious code or unauthorized execution presents a relevant risk.",
       "inputs": ["Protection configuration", "signature or model version", "scan logs", "application-control policy", "exception records"],
       "localOnlyTool": "endpoint-protection-evidence-parser: inspect local configuration and sampled logs without uploading files",
@@ -356,17 +400,25 @@
       "title": "Backup, restore, and redundancy evidence",
       "type": "mixed",
       "theme": "annex-a-technological",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 8.13", "ISO/IEC 27001:2022 Annex A 8.14"],
       "applicability": "Information and services with backup, restoration, or availability requirements.",
       "inputs": ["Backup configuration", "job logs", "restore-test records", "recovery targets", "redundancy architecture"],
       "localOnlyTool": "backup-evidence-checker: evaluate local job history, retention, failures, and recorded restore tests",
       "expectedEvidence": ["Protected backup scope", "Successful jobs", "Retention evidence", "Restore-test results", "Failures and remediation"],
-      "limitations": "No destructive restore or failover is attempted unless separately authorized; logs alone may not prove recoverability."
+      "limitations": "No destructive restore or failover is attempted unless separately authorized; logs alone may not prove recoverability.",
+      "executor": {
+        "handler": "file-presence",
+        "config": {
+          "patterns": ["**/*backup*.sh", "**/*restore*.sh", "**/*backup*.yml", "**/*backup*.yaml", "**/*.dump", "**/pg_dump*", "**/mongodump*"]
+        }
+      }
     },
     {
       "id": "ISO27-TEC-006",
       "title": "Logging, monitoring, and time consistency",
       "type": "automated-technical",
       "theme": "annex-a-technological",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 8.15", "ISO/IEC 27001:2022 Annex A 8.16", "ISO/IEC 27001:2022 Annex A 8.17"],
       "applicability": "Locally available application, identity, operating-system, database, and network logs.",
       "inputs": ["Logging configuration", "sample logs", "alert rules", "retention settings", "local time-source configuration"],
       "localOnlyTool": "log-coverage-analyzer: test expected local events, required fields, retention metadata, alert routing, and clock consistency",
@@ -378,17 +430,26 @@
       "title": "Network exposure and service segregation",
       "type": "automated-technical",
       "theme": "annex-a-technological",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 8.20", "ISO/IEC 27001:2022 Annex A 8.21", "ISO/IEC 27001:2022 Annex A 8.22"],
       "applicability": "Explicitly authorized local hosts, containers, ports, and network configuration.",
       "inputs": ["Approved host and port scope", "network diagrams", "firewall exports", "container networks", "service inventory"],
       "localOnlyTool": "bounded-local-network-inspector: enumerate only approved local endpoints and compare exposure with declared architecture",
       "expectedEvidence": ["Observed services", "Declared owner and purpose", "Unexpected exposure", "Segmentation configuration", "Timestamped scan scope"],
-      "limitations": "No internet scanning, denial-of-service behavior, or scope expansion is allowed; architecture effectiveness requires expert review."
+      "limitations": "No internet scanning, denial-of-service behavior, or scope expansion is allowed; architecture effectiveness requires expert review.",
+      "executor": {
+        "handler": "local-tcp-probe",
+        "config": {
+          "timeout_ms": 1000,
+          "max_targets": 25
+        }
+      }
     },
     {
       "id": "ISO27-TEC-008",
       "title": "Cryptography and secret-handling configuration",
       "type": "automated-technical",
       "theme": "annex-a-technological",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 8.24"],
       "applicability": "Software, configuration, repositories, and local endpoints using encryption, keys, tokens, or certificates.",
       "inputs": ["Cryptography policy", "source and configuration", "certificate metadata", "secret-store metadata", "key lifecycle records"],
       "localOnlyTool": "crypto-secret-inspector: detect exposed secrets and compare local configuration metadata with organization-approved policy",
@@ -407,6 +468,7 @@
       "title": "Information deletion, masking, leakage prevention, and test-data safeguards",
       "type": "mixed",
       "theme": "annex-a-technological",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 8.10", "ISO/IEC 27001:2022 Annex A 8.11", "ISO/IEC 27001:2022 Annex A 8.12", "ISO/IEC 27001:2022 Annex A 8.33"],
       "applicability": "Systems processing sensitive information or using production-like test data.",
       "inputs": ["Data inventory", "retention and deletion rules", "masking configuration", "DLP configuration", "test-data procedure", "approved local samples"],
       "localOnlyTool": "data-handling-checker: trace approved local samples and configurations for retention, masking, deletion, and leakage-control evidence",
@@ -418,6 +480,7 @@
       "title": "Secure development, change, and testing workflow",
       "type": "mixed",
       "theme": "annex-a-technological",
+      "source_ids": ["ISO/IEC 27001:2022 Annex A 8.25", "ISO/IEC 27001:2022 Annex A 8.26", "ISO/IEC 27001:2022 Annex A 8.27", "ISO/IEC 27001:2022 Annex A 8.28", "ISO/IEC 27001:2022 Annex A 8.29", "ISO/IEC 27001:2022 Annex A 8.31", "ISO/IEC 27001:2022 Annex A 8.32", "ISO/IEC 27001:2022 Annex A 8.33"],
       "applicability": "Organizations developing or changing software and information systems.",
       "inputs": ["Development policy", "repository history", "review rules", "CI configuration", "security test results", "change tickets", "environment separation evidence"],
       "localOnlyTool": "secure-sdlc-analyzer: inspect local repository and pipeline artifacts for review, testing, approval, and deployment traceability",

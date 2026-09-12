@@ -5,6 +5,10 @@ const databaseName = process.env.MONGODB_DATABASE || "compliance_agent";
 
 let clientPromise;
 
+export function hasMongoConfiguration() {
+  return Boolean(uri);
+}
+
 export function getMongoClient() {
   if (!uri) return null;
 
@@ -13,7 +17,10 @@ export function getMongoClient() {
       serverSelectionTimeoutMS: 1200,
       connectTimeoutMS: 1200,
     });
-    clientPromise = client.connect();
+    clientPromise = client.connect().catch((error) => {
+      clientPromise = undefined;
+      throw error;
+    });
   }
 
   return clientPromise;

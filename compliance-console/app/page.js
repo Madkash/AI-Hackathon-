@@ -2,68 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-const frameworkCards = [
-  {
-    code: "SOC",
-    name: "SOC 2 Type II",
-    description: "Security controls and operating evidence",
-    status: "Evidence review",
-    tone: "violet",
-    progress: 64,
-  },
-  {
-    code: "ISO",
-    name: "ISO/IEC 27001",
-    description: "ISMS controls, policies, and risk process",
-    status: "12 gaps",
-    tone: "amber",
-    progress: 48,
-  },
-  {
-    code: "SEC",
-    name: "Application Security",
-    description: "OWASP ASVS and authorized local tests",
-    status: "Ready to test",
-    tone: "blue",
-    progress: 22,
-  },
-  {
-    code: "A11Y",
-    name: "WCAG 2.2",
-    description: "Automated checks and manual review queue",
-    status: "3 concerns",
-    tone: "green",
-    progress: 76,
-  },
-];
-
-const findings = [
-  {
-    severity: "High",
-    title: "Administrator session lacks idle timeout evidence",
-    framework: "SOC 2 · CC6.1",
-    source: "Authentication configuration",
-  },
-  {
-    severity: "Medium",
-    title: "Keyboard focus is obscured by the sticky header",
-    framework: "WCAG 2.2 · 2.4.11",
-    source: "Local browser test",
-  },
-  {
-    severity: "Review",
-    title: "Annual risk assessment document is eleven months old",
-    framework: "ISO 27001 · 6.1.2",
-    source: "Evidence library",
-  },
-];
-
-const activity = [
-  ["09:42", "Evidence agent", "Indexed security policies and audit artifacts"],
-  ["09:38", "Discovery agent", "Identified Next.js application on port 3000"],
-  ["09:37", "OpenShell", "Applied deny-by-default network policy"],
-];
-
 function Icon({ name }) {
   const paths = {
     overview: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z",
@@ -80,18 +18,58 @@ function Icon({ name }) {
   );
 }
 
+function serviceClass(status) {
+  if (status === "available") return "online";
+  if (status === "unavailable") return "offline";
+  return "waiting";
+}
+
+function formatDate(value) {
+  if (!value) return "No run yet";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function readableKey(key) {
+  return String(key || "unknown").replaceAll("-", " ");
+}
+
+function countEntries(counts) {
+  return Object.entries(counts || {}).sort((left, right) => right[1] - left[1]);
+}
+
 export default function Dashboard() {
   const [target, setTarget] = useState("nextjs-storefront");
+  const [assessment, setAssessment] = useState(null);
+  const [assessmentError, setAssessmentError] = useState("");
   const [discovery, setDiscovery] = useState(null);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState("");
-  const [services, setServices] = useState({ app: "checking", mongodb: "checking" });
 
   useEffect(() => {
-    fetch("/api/status")
+    let active = true;
+
+    fetch("/api/assessment", { cache: "no-store" })
       .then((response) => response.json())
-      .then((data) => setServices(data.services))
-      .catch(() => setServices({ app: "available", mongodb: "unavailable" }));
+      .then((data) => {
+        if (!active) return;
+        setAssessment(data);
+        setAssessmentError("");
+      })
+      .catch(() => {
+        if (!active) return;
+        setAssessmentError("Assessment state is unavailable.");
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   async function runDiscovery(event) {
@@ -115,6 +93,14 @@ export default function Dashboard() {
       setRunning(false);
     }
   }
+
+  const services = assessment?.services || { app: "checking", mongodb: "checking", inference: "checking" };
+  const latestTarget = assessment?.latest_target;
+  const forecast = assessment?.forecast || { score: 0, label: "Loading", summary: "Loading latest local readiness state." };
+  const frameworkCards = assessment?.suites || [];
+  const findings = assessment?.concerns || [];
+  const resultCounts = countEntries(assessment?.counts?.by_result);
+  const dispositionCounts = countEntries(assessment?.counts?.by_disposition);
 
   return (
     <main className="shell">
@@ -151,26 +137,37 @@ export default function Dashboard() {
             <h1>Compliance overview</h1>
           </div>
           <div className="runtimePills" aria-label="Service status">
-            <span><i className={services.mongodb === "available" ? "online" : "waiting"} />MongoDB</span>
-            <span><i className="online" />GB10 local inference</span>
+            <span><i className={serviceClass(services.mongodb)} />MongoDB</span>
+            <span><i className={serviceClass(services.inference === "configured-by-nemoclaw" ? "available" : services.inference)} />GB10 local inference</span>
           </div>
         </header>
 
         <div className="content" id="overview">
-          <section className="heroPanel">
+          <section className={`heroPanel ${assessment?.fallback ? "fallback" : ""}`}>
             <div>
               <span className="sectionLabel">CURRENT TARGET</span>
-              <h2>Example Next.js Storefront</h2>
-              <p>Local readiness assessment · source revision <code>demo-abc123</code></p>
+              <h2>{latestTarget?.name || "Loading latest assessment"}</h2>
+              <p>
+                Readiness forecast
+                {" · "}
+                source revision <code>{latestTarget?.version || "unknown"}</code>
+                {" · "}
+                generated {formatDate(assessment?.generated_at)}
+              </p>
+              {assessment?.note && <p className="fallbackNotice">{assessment.note}</p>}
+              {assessmentError && <p className="fallbackNotice error">{assessmentError}</p>}
             </div>
-            <div className="scoreRing" aria-label="Readiness score 58 percent">
-              <strong>58</strong><span>/100</span>
+            <div className="scoreWrap">
+              <div className="scoreRing" aria-label={`Readiness forecast score ${forecast.score} percent`}>
+                <strong>{forecast.score}</strong><span>/100</span>
+              </div>
+              <span>{forecast.label}</span>
             </div>
           </section>
 
           <section className="frameworkGrid" aria-label="Assessment frameworks">
             {frameworkCards.map((card) => (
-              <article className="frameworkCard" key={card.code}>
+              <article className="frameworkCard" key={card.suite}>
                 <div className={`frameworkIcon ${card.tone}`}>{card.code}</div>
                 <div className="frameworkHeading">
                   <h3>{card.name}</h3>
@@ -178,7 +175,10 @@ export default function Dashboard() {
                 </div>
                 <p>{card.description}</p>
                 <div className="progress"><span style={{ width: `${card.progress}%` }} /></div>
-                <small>{card.progress}% evidence coverage</small>
+                <small>{card.coveredChecks}/{card.totalChecks} checks observed or covered</small>
+                {card.evidence?.covered && (
+                  <small>Evidence: {card.evidence.document || card.evidence.evidence_id}</small>
+                )}
               </article>
             ))}
           </section>
@@ -225,18 +225,32 @@ export default function Dashboard() {
 
             <section className="panel" id="evidence">
               <div className="panelHeading">
-                <div><span className="sectionLabel">AGENT ACTIVITY</span><h2>Local workflow</h2></div>
-                <span className="liveTag"><i />Live</span>
+                <div><span className="sectionLabel">LATEST RUN</span><h2>Assessment state</h2></div>
+                <span className="liveTag"><i />{assessment?.fallback ? "Fallback" : "MongoDB"}</span>
               </div>
-              <div className="timeline">
-                {activity.map(([time, agent, message]) => (
-                  <div className="timelineItem" key={time + agent}>
-                    <time>{time}</time>
-                    <span className="timelineDot" />
-                    <div><strong>{agent}</strong><p>{message}</p></div>
-                  </div>
-                ))}
+              <p>{forecast.summary}</p>
+
+              <div className="runMeta">
+                <div><span>Run</span><strong>{assessment?.run_id || "pending"}</strong></div>
+                <div><span>Total checks</span><strong>{assessment?.counts?.total ?? 0}</strong></div>
+                <div><span>Generated</span><strong>{formatDate(assessment?.generated_at)}</strong></div>
               </div>
+
+              <div className="countColumns">
+                <div>
+                  <h3>Results</h3>
+                  {resultCounts.length > 0 ? resultCounts.map(([key, value]) => (
+                    <div className="countRow" key={key}><span>{readableKey(key)}</span><strong>{value}</strong></div>
+                  )) : <div className="emptyMini">Waiting for a run</div>}
+                </div>
+                <div>
+                  <h3>Disposition</h3>
+                  {dispositionCounts.length > 0 ? dispositionCounts.map(([key, value]) => (
+                    <div className="countRow" key={key}><span>{readableKey(key)}</span><strong>{value}</strong></div>
+                  )) : <div className="emptyMini">Waiting for a run</div>}
+                </div>
+              </div>
+
               <div className="stackRoute">
                 <span>OpenClaw</span><b>→</b><span>OpenShell</span><b>→</b><span>GB10</span>
               </div>
@@ -245,23 +259,27 @@ export default function Dashboard() {
 
           <section className="panel findingsPanel" id="findings">
             <div className="panelHeading">
-              <div><span className="sectionLabel">PRIORITY QUEUE</span><h2>Recent findings</h2></div>
-              <button className="secondaryButton" type="button">View all findings</button>
+              <div><span className="sectionLabel">PRIORITY QUEUE</span><h2>Top points of concern</h2></div>
+              <button className="secondaryButton" type="button">Readiness forecast</button>
             </div>
             <div className="findingList">
-              {findings.map((finding) => (
-                <article className="finding" key={finding.title}>
+              {findings.length > 0 ? findings.map((finding) => (
+                <article className="finding" key={`${finding.framework}-${finding.title}`}>
                   <span className={`severity ${finding.severity.toLowerCase()}`}>{finding.severity}</span>
                   <div><h3>{finding.title}</h3><p>{finding.framework} · {finding.source}</p></div>
                   <button aria-label={`Open ${finding.title}`} type="button">›</button>
                 </article>
-              ))}
+              )) : (
+                <div className="emptyState">
+                  No top concerns are present in the latest readiness snapshot.
+                </div>
+              )}
             </div>
           </section>
 
           <footer>
             <span>All assessment data remains on this device.</span>
-            <span>NemoClaw managed · OpenShell policy enforced</span>
+            <span>Readiness forecast only; not a certification or attestation.</span>
           </footer>
         </div>
       </section>

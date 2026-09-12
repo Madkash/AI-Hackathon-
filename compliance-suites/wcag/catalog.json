@@ -1,13 +1,42 @@
 {
   "catalogVersion": "0.1.0",
+  "disclaimer": "Results are WCAG readiness observations and cannot establish conformance. A knowledgeable human must evaluate complete pages, complete processes, accessibility-supported use, and all applicable Level A and AA success criteria.",
   "standard": {
     "name": "Web Content Accessibility Guidelines (WCAG) 2.2",
+    "version": "W3C Recommendation; retrieved 2026-09-12",
     "targetConformance": "Level AA (all Level A and Level AA success criteria)",
     "normativeSpecification": "https://www.w3.org/TR/WCAG22/",
     "conformanceRequirements": "https://www.w3.org/TR/WCAG22/#conformance-reqs",
     "officialEvaluationGuidance": "https://www.w3.org/WAI/test-evaluate/",
-    "officialToolGuidance": "https://www.w3.org/WAI/test-evaluate/tools/selecting/"
+    "officialToolGuidance": "https://www.w3.org/WAI/test-evaluate/tools/selecting/",
+    "retrieved": "2026-09-12"
   },
+  "sources": [
+    {
+      "id": "W3C-WCAG22",
+      "name": "Web Content Accessibility Guidelines (WCAG) 2.2",
+      "version": "W3C Recommendation; retrieved 2026-09-12",
+      "url": "https://www.w3.org/TR/WCAG22/",
+      "retrieved": "2026-09-12",
+      "role": "Normative specification and success-criterion anchors for readiness mapping."
+    },
+    {
+      "id": "W3C-WAI-EVALUATE",
+      "name": "W3C WAI test and evaluate guidance",
+      "version": "Web guidance; retrieved 2026-09-12",
+      "url": "https://www.w3.org/WAI/test-evaluate/",
+      "retrieved": "2026-09-12",
+      "role": "Evaluation-process context; human judgment remains required."
+    },
+    {
+      "id": "W3C-WAI-TOOLS",
+      "name": "W3C WAI selecting evaluation tools guidance",
+      "version": "Web guidance; retrieved 2026-09-12",
+      "url": "https://www.w3.org/WAI/test-evaluate/tools/selecting/",
+      "retrieved": "2026-09-12",
+      "role": "Tool-selection context for automated readiness observations."
+    }
+  ],
   "runtimePolicy": {
     "remoteApiCalls": "forbidden",
     "network": "Tests run against an authorized local target and locally installed tools only.",
@@ -43,6 +72,10 @@
           "suggestedLocalTool": "Playwright with a local DOM/accessibility rule runner",
           "expectedEvidence": ["inventory of non-text elements", "accessible-name and alternative-text findings", "DOM locator and screenshot"],
           "limitations": "Automation can detect absent or suspicious alternatives but cannot determine whether an alternative serves the same purpose.",
+          "executor": {
+            "handler": "local-http",
+            "config": { "path": "/", "method": "GET", "document_checks": ["img-alt"] }
+          },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#non-text-content"
         },
         {
@@ -67,6 +100,10 @@
           "suggestedLocalTool": "Playwright plus local WebVTT/TTML parser",
           "expectedEvidence": ["caption-track presence", "caption parse result", "timing coverage summary"],
           "limitations": "Automation cannot reliably judge caption accuracy, speaker identification, or meaningful sound descriptions.",
+          "executor": {
+            "handler": "local-http",
+            "config": { "path": "/", "method": "GET", "document_checks": ["video-captions"] }
+          },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#captions-prerecorded"
         },
         {
@@ -79,6 +116,10 @@
           "suggestedLocalTool": "Playwright plus local ffprobe metadata inspection",
           "expectedEvidence": ["audio-description track or alternate-version presence", "media metadata"],
           "limitations": "Track presence does not establish that important visual information is adequately described.",
+          "executor": {
+            "handler": "local-http",
+            "config": { "path": "/", "method": "GET", "document_checks": ["video-audio-description"] }
+          },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#audio-description-prerecorded"
         },
         {
@@ -139,6 +180,10 @@
           "suggestedLocalTool": "Playwright media-state runner",
           "expectedEvidence": ["autoplay observations", "pause/stop/volume control presence", "interaction trace"],
           "limitations": "Browser autoplay policy can hide application behavior; a human must verify controls are usable and independent of system volume.",
+          "executor": {
+            "handler": "local-http",
+            "config": { "path": "/", "method": "GET", "document_checks": ["autoplay-media"] }
+          },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#audio-control"
         },
         {
@@ -163,6 +208,10 @@
           "suggestedLocalTool": "Playwright text-resize runner with screenshot comparison",
           "expectedEvidence": ["before/after screenshots", "clipping and overlap findings", "function availability trace"],
           "limitations": "Machine checks can detect likely clipping but cannot guarantee all content and functionality remain usable.",
+          "executor": {
+            "handler": "local-http",
+            "config": { "path": "/", "method": "GET", "document_checks": ["viewport-zoom"] }
+          },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#resize-text"
         },
         {
@@ -235,6 +284,10 @@
           "suggestedLocalTool": "Playwright landmark and skip-link runner",
           "expectedEvidence": ["bypass mechanism inventory", "skip-link destination checks", "landmark structure"],
           "limitations": "Automation cannot always identify which blocks repeat or whether a provided mechanism is effective for users.",
+          "executor": {
+            "handler": "local-http",
+            "config": { "path": "/", "method": "GET", "document_checks": ["landmarks"] }
+          },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#bypass-blocks"
         },
         {
@@ -267,6 +320,10 @@
           "suggestedLocalTool": "Playwright link-purpose heuristic runner",
           "expectedEvidence": ["empty/ambiguous link findings", "accessible-name and context capture", "destination inventory"],
           "limitations": "Human judgment is required to determine purpose from context and whether the ambiguity exception applies.",
+          "executor": {
+            "handler": "local-http",
+            "config": { "path": "/", "method": "GET", "document_checks": ["link-text"] }
+          },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#link-purpose-in-context"
         },
         {
@@ -407,6 +464,10 @@
           "suggestedLocalTool": "Playwright form-label and instruction inventory runner",
           "expectedEvidence": ["unlabeled-control findings", "instruction associations", "DOM locator and screenshot"],
           "limitations": "Automation cannot reliably judge whether instructions are sufficient for the expected input.",
+          "executor": {
+            "handler": "local-http",
+            "config": { "path": "/", "method": "GET", "document_checks": ["form-labels"] }
+          },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#labels-or-instructions"
         },
         {
@@ -431,6 +492,10 @@
           "suggestedLocalTool": "Playwright accessibility-tree and ARIA rule runner",
           "expectedEvidence": ["name/role/state/value findings", "state-change accessibility snapshots", "DOM locators"],
           "limitations": "Automation cannot establish support across every assistive-technology and user-agent combination or judge whether exposed semantics are correct in context.",
+          "executor": {
+            "handler": "local-http",
+            "config": { "path": "/", "method": "GET", "document_checks": ["duplicate-ids"] }
+          },
           "officialUrl": "https://www.w3.org/TR/WCAG22/#name-role-value"
         },
         {

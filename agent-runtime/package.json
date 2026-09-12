@@ -4,17 +4,21 @@
   "private": true,
   "type": "module",
   "bin": {
-    "localproof": "./bin/localproof.mjs"
+    "localproof": "./bin/localproof.mjs",
+    "localproof-evidence": "./bin/evidence.mjs"
   },
   "scripts": {
     "plan": "node bin/localproof.mjs plan",
     "run": "node bin/localproof.mjs run",
+    "evidence": "node bin/evidence.mjs",
+    "test": "node --test",
     "tools": "node bin/check-tools.mjs",
     "policy": "node bin/generate-openshell-policy.mjs",
-    "check": "node --check bin/localproof.mjs && node --check bin/generate-openshell-policy.mjs"
+    "check": "node --check bin/localproof.mjs && node --check bin/evidence.mjs && node --check bin/generate-openshell-policy.mjs && node --check lib/evidence.mjs && node --check lib/mongodb.mjs && node --check lib/reporting.mjs && node --test"
   },
   "dependencies": {
     "ajv": "^8.17.1",
+    "mongodb": "^7.6.0",
     "yaml": "^2.8.1"
   }
 }

@@ -2,6 +2,7 @@
   "catalog_version": "0.1.0",
   "title": "Local Application Security Readiness Suites",
   "status": "scaffold",
+  "disclaimer": "Results are local application security readiness observations. They are not a penetration test attestation, exploitability guarantee, or substitute for qualified security testing under an approved scope.",
   "runtime_policy": {
     "remote_api_calls_allowed": false,
     "remote_inference_allowed": false,
@@ -24,16 +25,20 @@
   },
   "sources": [
     {
+      "id": "OWASP-ASVS-5.0.0",
       "name": "OWASP Application Security Verification Standard",
       "version": "5.0.0",
       "url": "https://github.com/OWASP/ASVS/tree/v5.0.0",
       "machine_readable_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0/5.0/docs_en/OWASP_Application_Security_Verification_Standard_5.0.0_en.csv",
+      "retrieved": "2026-09-12",
       "role": "verification requirements"
     },
     {
+      "id": "OWASP-WSTG-4.2",
       "name": "OWASP Web Security Testing Guide",
       "version": "4.2",
       "url": "https://wstg.owasp.org/v4.2/",
+      "retrieved": "2026-09-12",
       "role": "testing procedures"
     }
   ],
@@ -72,6 +77,12 @@
           "suggested_local_tool": "Docker inspect plus local socket and Compose manifest inspection",
           "evidence": ["listening ports", "service-to-container mapping", "administrative interface candidates"],
           "limitations": "Service banners can be absent or misleading; local inventory does not represent external perimeter controls.",
+          "executor": {
+            "handler": "file-presence",
+            "config": {
+              "patterns": ["docker-compose*.yml", "Dockerfile", "**/admin/**", "**/*admin*route*"]
+            }
+          },
           "references": [
             {"id": "WSTG-v42-CONF-05", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/05-Enumerate_Infrastructure_and_Application_Admin_Interfaces/"},
             {"id": "v5.0.0-13.1.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
@@ -107,6 +118,14 @@
           "suggested_local_tool": "OWASP ZAP passive scan plus local TLS inspection",
           "evidence": ["authentication endpoint list", "transport observations", "alternate authentication paths"],
           "limitations": "A local HTTP-only development target cannot demonstrate production TLS configuration.",
+          "executor": {
+            "handler": "local-http",
+            "config": {
+              "path": "/",
+              "method": "GET",
+              "capture_headers": ["strict-transport-security"]
+            }
+          },
           "references": [
             {"id": "WSTG-v42-ATHN-01", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/04-Authentication_Testing/01-Testing_for_Credentials_Transported_over_an_Encrypted_Channel/"},
             {"id": "v5.0.0-6.1.3", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
@@ -173,6 +192,13 @@
           "suggested_local_tool": "local policy and route analyzer",
           "evidence": ["role-operation matrix", "resource and field rules", "documentation gaps"],
           "limitations": "Documented intent may differ from runtime enforcement.",
+          "executor": {
+            "handler": "source-pattern",
+            "config": {
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+              "patterns": ["requireRole", "isAdmin", "checkPermission", "authorize\\(", "hasPermission"]
+            }
+          },
           "references": [
             {"id": "v5.0.0-8.1.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
             {"id": "v5.0.0-8.1.2", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
@@ -224,6 +250,14 @@
           "suggested_local_tool": "OWASP ZAP passive scan or Playwright trace parser",
           "evidence": ["Set-Cookie headers", "Secure HttpOnly SameSite scope", "redacted cookie names"],
           "limitations": "Non-cookie tokens and environment-specific proxy rewriting require separate review.",
+          "executor": {
+            "handler": "local-http",
+            "config": {
+              "path": "/",
+              "method": "GET",
+              "document_checks": ["cookie-flags"]
+            }
+          },
           "references": [
             {"id": "WSTG-v42-SESS-02", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes/"},
             {"id": "v5.0.0-7.2.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
@@ -287,6 +321,13 @@
           "suggested_local_tool": "Semgrep with locally pinned rules plus framework-aware source inspection",
           "evidence": ["validation boundaries", "client-only validation candidates", "file and line references"],
           "limitations": "Static findings require runtime confirmation and framework-specific interpretation.",
+          "executor": {
+            "handler": "source-pattern",
+            "config": {
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+              "patterns": ["require\\([\"']joi[\"']\\)", "from [\"']joi[\"']", "from [\"']zod[\"']", "express-validator", "class-validator", "yup\\."]
+            }
+          },
           "references": [
             {"id": "v5.0.0-2.2.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
             {"id": "v5.0.0-2.2.2", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
@@ -316,6 +357,13 @@
           "suggested_local_tool": "Semgrep with locally pinned query-construction rules",
           "evidence": ["query construction sites", "parameterization evidence", "file and line references"],
           "limitations": "Generated queries, stored procedures, and ORM escape hatches may require manual review.",
+          "executor": {
+            "handler": "source-pattern",
+            "config": {
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+              "patterns": ["\\.query\\(\\s*[`'\"].*\\$\\{", "\\.query\\(\\s*[\"'].*\\+"]
+            }
+          },
           "references": [
             {"id": "WSTG-v42-INPV-05", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection/"},
             {"id": "v5.0.0-1.2.4", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
@@ -330,6 +378,13 @@
           "suggested_local_tool": "Semgrep with locally pinned process-execution rules",
           "evidence": ["command execution sites", "untrusted-data flow candidates", "file and line references"],
           "limitations": "This scaffold does not execute commands or attempt exploitation; data-flow confirmation may need specialist review.",
+          "executor": {
+            "handler": "source-pattern",
+            "config": {
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+              "patterns": ["exec\\(\\s*[`].*\\$\\{", "execSync\\(\\s*[`].*\\$\\{", "spawn\\(.*\\+"]
+            }
+          },
           "references": [
             {"id": "WSTG-v42-INPV-12", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/07-Input_Validation_Testing/12-Testing_for_Command_Injection/"},
             {"id": "v5.0.0-1.2.5", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
@@ -351,6 +406,13 @@
           "suggested_local_tool": "ripgrep plus OWASP ZAP passive scan",
           "evidence": ["debug settings", "directory listing observations", "version disclosure observations"],
           "limitations": "Local staging configuration may differ from production.",
+          "executor": {
+            "handler": "source-pattern",
+            "config": {
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.yaml", "**/*.yml"],
+              "patterns": ["debug\\s*[:=]\\s*true", "NODE_ENV\\s*!==?\\s*[\"']production[\"']", "err\\.stack", "X-Powered-By"]
+            }
+          },
           "references": [
             {"id": "WSTG-v42-CONF-02", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/02-Test_Application_Platform_Configuration/"},
             {"id": "v5.0.0-13.4.2", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
@@ -467,6 +529,13 @@
           "suggested_local_tool": "local GraphQL schema and configuration inspector",
           "evidence": ["GraphQL endpoint", "introspection setting", "depth or cost controls", "source provenance"],
           "limitations": "Passive review cannot prove runtime enforcement; load or denial-of-service testing is excluded.",
+          "executor": {
+            "handler": "source-pattern",
+            "config": {
+              "include": ["**/*.js", "**/*.ts"],
+              "patterns": ["introspection\\s*:\\s*true", "playground\\s*:\\s*true"]
+            }
+          },
           "references": [
             {"id": "WSTG-v42-APIT-01", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/12-API_Testing/01-Testing_GraphQL/"},
             {"id": "v5.0.0-4.3.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
