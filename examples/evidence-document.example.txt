@@ -1,0 +1,11 @@
+EXAMPLE DOCUMENT — NOT A REAL CERTIFICATE
+
+ISO/IEC 27001 Certificate
+Certificate Holder: Example Software Company
+Covered Product: localproof-compliance-console
+Certification Scope: Development and operation of the LocalProof software service
+Certification Body: Example Accredited Certification Body
+Issue Date: 2026-01-15
+Valid From: 2026-01-15
+Valid Until: 2029-01-14
+Certificate Number: EXAMPLE-ONLY-001

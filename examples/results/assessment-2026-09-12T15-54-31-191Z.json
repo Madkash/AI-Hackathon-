@@ -1,0 +1,379 @@
+{
+  "status": "completed",
+  "classification": "readiness-assessment",
+  "target": {
+    "name": "localproof-compliance-console",
+    "version": "0.1.0",
+    "environment": "isolated-local-test",
+    "source_path": "C:/Projects/dell x nvidia hackathon/compliance-console"
+  },
+  "external_network": "deny",
+  "generated_at": "2026-09-12T15:54:31.192Z",
+  "results": [
+    {
+      "suite": "security",
+      "id": "SEC-AS-001",
+      "title": "Inventory application entry points",
+      "control": "WSTG-v42-INFO-06, v5.0.0-13.4.5",
+      "handler": "file-presence",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-observed",
+      "evidence": [],
+      "limitations": [
+        "File presence does not prove that a control operates effectively"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AS-002",
+      "title": "Enumerate local services and administrative interfaces",
+      "control": "WSTG-v42-CONF-05, v5.0.0-13.1.1",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AS-003",
+      "title": "Compare documented and discovered interfaces",
+      "control": "WSTG-v42-INFO-10, v5.0.0-13.4.5",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHN-001",
+      "title": "Review authentication paths and transport",
+      "control": "WSTG-v42-ATHN-01, v5.0.0-6.1.3, v5.0.0-12.2.1",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHN-002",
+      "title": "Check password policy and password field behavior",
+      "control": "WSTG-v42-ATHN-07, v5.0.0-6.2.1, v5.0.0-6.2.4, v5.0.0-6.2.9",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHN-003",
+      "title": "Check account enumeration resistance",
+      "control": "WSTG-v42-IDNT-04, v5.0.0-6.3.8",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHN-004",
+      "title": "Check bounded authentication abuse controls",
+      "control": "WSTG-v42-ATHN-03, v5.0.0-6.3.1",
+      "handler": "unimplemented",
+      "disposition": "blocked",
+      "reason": "Intrusive tests are disabled by policy",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHZ-001",
+      "title": "Build role and permission matrix",
+      "control": "v5.0.0-8.1.1, v5.0.0-8.1.2",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHZ-002",
+      "title": "Verify function-level authorization across test roles",
+      "control": "WSTG-v42-ATHZ-02, v5.0.0-8.2.1, v5.0.0-8.3.1",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHZ-003",
+      "title": "Verify object and field access isolation",
+      "control": "WSTG-v42-ATHZ-04, v5.0.0-8.2.2, v5.0.0-8.2.3",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-SESS-001",
+      "title": "Inspect session cookie attributes",
+      "control": "WSTG-v42-SESS-02, v5.0.0-7.2.1",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-SESS-002",
+      "title": "Verify session rotation after authentication",
+      "control": "WSTG-v42-SESS-03, v5.0.0-7.2.4",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-SESS-003",
+      "title": "Verify logout invalidates the session",
+      "control": "WSTG-v42-SESS-06, v5.0.0-7.4.1",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-SESS-004",
+      "title": "Measure documented inactivity timeout",
+      "control": "WSTG-v42-SESS-07, v5.0.0-7.3.1",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-INPV-001",
+      "title": "Review server-side input validation",
+      "control": "v5.0.0-2.2.1, v5.0.0-2.2.2",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-INPV-002",
+      "title": "Check reflected output encoding with inert markers",
+      "control": "WSTG-v42-INPV-01, v5.0.0-1.2.1, v5.0.0-1.2.3",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-INPV-003",
+      "title": "Review parameterized database access",
+      "control": "WSTG-v42-INPV-05, v5.0.0-1.2.4",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-INPV-004",
+      "title": "Review operating-system command construction",
+      "control": "WSTG-v42-INPV-12, v5.0.0-1.2.5",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-CONF-001",
+      "title": "Inspect production configuration for debug and exposed metadata",
+      "control": "WSTG-v42-CONF-02, v5.0.0-13.4.2, v5.0.0-13.4.3, v5.0.0-13.4.6",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-CONF-002",
+      "title": "Detect secrets in source and build artifacts",
+      "control": "v5.0.0-13.3.1",
+      "handler": "source-pattern",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-observed",
+      "evidence": [],
+      "limitations": [
+        "Source pattern matches require human validation and may include false positives"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-CONF-003",
+      "title": "Create SBOM and compare dependencies with offline advisories",
+      "control": "v5.0.0-15.1.1, v5.0.0-15.1.2, v5.0.0-15.2.1",
+      "handler": "file-presence",
+      "disposition": "ready",
+      "reason": null,
+      "result": "observed",
+      "evidence": [
+        {
+          "type": "file",
+          "path": "package-lock.json"
+        }
+      ],
+      "limitations": [
+        "File presence does not prove that a control operates effectively"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-CONF-004",
+      "title": "Check allowed HTTP methods and security headers",
+      "control": "WSTG-v42-CONF-06, v5.0.0-4.1.4, v5.0.0-13.4.4",
+      "handler": "local-http",
+      "disposition": "ready",
+      "reason": null,
+      "result": "observed",
+      "evidence": [
+        {
+          "type": "local-http",
+          "url": "http://localhost:3001/",
+          "status": 200,
+          "headers": {
+            "content-security-policy": null,
+            "x-content-type-options": null,
+            "referrer-policy": null,
+            "permissions-policy": null
+          },
+          "observations": {}
+        }
+      ],
+      "limitations": [
+        "A single response does not establish control effectiveness across the application"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-API-001",
+      "title": "Validate API inventory and HTTP response media types",
+      "control": "WSTG-v42-INFO-06, v5.0.0-4.1.1",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-API-002",
+      "title": "Apply role and object authorization checks to API operations",
+      "control": "WSTG-v42-ATHZ-04, v5.0.0-8.2.2, v5.0.0-15.3.1",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-API-003",
+      "title": "Review GraphQL exposure and resource controls",
+      "control": "WSTG-v42-APIT-01, v5.0.0-4.3.1, v5.0.0-4.3.2",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    }
+  ]
+}

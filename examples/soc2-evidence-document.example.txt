@@ -1,0 +1,11 @@
+EXAMPLE DOCUMENT - NOT A REAL SOC 2 REPORT
+
+SOC 2 Type II Report
+Service Organization: Example Software Company
+Covered Product: localproof-compliance-console
+System Scope: Development and operation of the LocalProof software service
+Independent Service Auditor: Example CPA Firm LLP
+Report Date: 2026-07-15
+Review Period From: 2025-07-01
+Review Period To: 2026-06-30
+Report Number: EXAMPLE-SOC2-ONLY-001

@@ -1,0 +1,22 @@
+kind: iso27001-certificate
+fields:
+  kind: iso27001-certificate
+  subject: Example Software Company
+  covered_product: localproof-compliance-console
+  scope: Development and operation of the LocalProof software service
+  issuer: Example Accredited Certification Body
+  standard: ISO/IEC 27001:2022
+  issue_date: 2026-01-15
+  valid_from: 2026-01-15
+  valid_until: 2029-01-14
+  certificate_number: EXAMPLE-ONLY-001
+covered_target_names:
+  - localproof-compliance-console
+scope_covers_target: true
+review_status: approved
+verification:
+  issuer_verified: true
+  accreditation_verified: true
+  auditor_eligibility_verified: false
+notes:
+  - Example metadata only; do not use it as certification evidence.

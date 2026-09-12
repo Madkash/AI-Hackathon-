@@ -1,0 +1,36 @@
+rules:
+  - id: localproof.javascript.input-validation.review-request-body
+    message: Review request input handling and confirm server-side validation before use.
+    severity: WARNING
+    languages: [javascript, typescript]
+    pattern-either:
+      - pattern: req.body
+      - pattern: req.query
+      - pattern: request.body
+      - pattern: request.query
+
+  - id: localproof.javascript.sql-template-interpolation
+    message: Review interpolated SQL query construction and confirm parameterized access.
+    severity: ERROR
+    languages: [javascript, typescript]
+    pattern-either:
+      - pattern: $DB.query(`...${$VALUE}...`)
+      - pattern: $DB.raw(`...${$VALUE}...`)
+
+  - id: localproof.javascript.sql-string-concatenation
+    message: Review concatenated SQL query construction and confirm parameterized access.
+    severity: ERROR
+    languages: [javascript, typescript]
+    pattern-either:
+      - pattern: $DB.query($LEFT + $RIGHT)
+      - pattern: $DB.raw($LEFT + $RIGHT)
+
+  - id: localproof.javascript.shell-command-template-interpolation
+    message: Review shell command construction and confirm untrusted data cannot reach process execution.
+    severity: ERROR
+    languages: [javascript, typescript]
+    pattern-either:
+      - pattern: exec(`...${$VALUE}...`)
+      - pattern: execSync(`...${$VALUE}...`)
+      - pattern: $CP.exec(`...${$VALUE}...`)
+      - pattern: $CP.execSync(`...${$VALUE}...`)

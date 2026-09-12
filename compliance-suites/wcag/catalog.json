@@ -1,0 +1,793 @@
+{
+  "catalogVersion": "0.1.0",
+  "disclaimer": "Results are WCAG readiness observations and cannot establish conformance. A knowledgeable human must evaluate complete pages, complete processes, accessibility-supported use, and all applicable Level A and AA success criteria.",
+  "standard": {
+    "name": "Web Content Accessibility Guidelines (WCAG) 2.2",
+    "version": "W3C Recommendation; retrieved 2026-09-12",
+    "targetConformance": "Level AA (all Level A and Level AA success criteria)",
+    "normativeSpecification": "https://www.w3.org/TR/WCAG22/",
+    "conformanceRequirements": "https://www.w3.org/TR/WCAG22/#conformance-reqs",
+    "officialEvaluationGuidance": "https://www.w3.org/WAI/test-evaluate/",
+    "officialToolGuidance": "https://www.w3.org/WAI/test-evaluate/tools/selecting/",
+    "retrieved": "2026-09-12"
+  },
+  "sources": [
+    {
+      "id": "W3C-WCAG22",
+      "name": "Web Content Accessibility Guidelines (WCAG) 2.2",
+      "version": "W3C Recommendation; retrieved 2026-09-12",
+      "url": "https://www.w3.org/TR/WCAG22/",
+      "retrieved": "2026-09-12",
+      "role": "Normative specification and success-criterion anchors for readiness mapping."
+    },
+    {
+      "id": "W3C-WAI-EVALUATE",
+      "name": "W3C WAI test and evaluate guidance",
+      "version": "Web guidance; retrieved 2026-09-12",
+      "url": "https://www.w3.org/WAI/test-evaluate/",
+      "retrieved": "2026-09-12",
+      "role": "Evaluation-process context; human judgment remains required."
+    },
+    {
+      "id": "W3C-WAI-TOOLS",
+      "name": "W3C WAI selecting evaluation tools guidance",
+      "version": "Web guidance; retrieved 2026-09-12",
+      "url": "https://www.w3.org/WAI/test-evaluate/tools/selecting/",
+      "retrieved": "2026-09-12",
+      "role": "Tool-selection context for automated readiness observations."
+    }
+  ],
+  "runtimePolicy": {
+    "remoteApiCalls": "forbidden",
+    "network": "Tests run against an authorized local target and locally installed tools only.",
+    "disclaimer": "Automated checks provide readiness evidence and cannot establish WCAG conformance. A knowledgeable human must evaluate the complete page, complete processes, accessibility-supported use, and every applicable Level A and AA success criterion."
+  },
+  "testEntrySchema": {
+    "required": [
+      "id",
+      "level",
+      "title",
+      "type",
+      "applicability",
+      "inputs",
+      "suggestedLocalTool",
+      "expectedEvidence",
+      "limitations",
+      "officialUrl"
+    ]
+  },
+  "suites": [
+    {
+      "id": "wcag-22-a-aa-locally-automatable-readiness",
+      "title": "WCAG 2.2 Level A/AA locally automatable readiness checks",
+      "purpose": "Collect deterministic or repeatable machine evidence and identify likely failures for human review.",
+      "tests": [
+        {
+          "id": "1.1.1",
+          "level": "A",
+          "title": "Non-text Content",
+          "type": "automated-readiness",
+          "applicability": "Pages containing images, controls, CAPTCHA, charts, or other non-text content.",
+          "inputs": ["rendered DOM", "accessibility tree", "local assets"],
+          "suggestedLocalTool": "Playwright with a local DOM/accessibility rule runner",
+          "expectedEvidence": ["inventory of non-text elements", "accessible-name and alternative-text findings", "DOM locator and screenshot"],
+          "limitations": "Automation can detect absent or suspicious alternatives but cannot determine whether an alternative serves the same purpose.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["image-alt"], "document_checks": ["img-alt"] }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#non-text-content"
+        },
+        {
+          "id": "1.2.1",
+          "level": "A",
+          "title": "Audio-only and Video-only (Prerecorded)",
+          "type": "automated-readiness",
+          "applicability": "Prerecorded audio-only or video-only media.",
+          "inputs": ["media elements", "local media files", "track and transcript references"],
+          "suggestedLocalTool": "Playwright plus local ffprobe metadata inspection",
+          "expectedEvidence": ["media inventory", "linked alternative or audio-track presence", "file metadata"],
+          "limitations": "Presence checks cannot establish that the alternative presents equivalent information.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#audio-only-and-video-only-prerecorded"
+        },
+        {
+          "id": "1.2.2",
+          "level": "A",
+          "title": "Captions (Prerecorded)",
+          "type": "automated-readiness",
+          "applicability": "Prerecorded synchronized media containing audio.",
+          "inputs": ["media elements", "caption tracks", "local media files"],
+          "suggestedLocalTool": "Playwright plus local WebVTT/TTML parser",
+          "expectedEvidence": ["caption-track presence", "caption parse result", "timing coverage summary"],
+          "limitations": "Automation cannot reliably judge caption accuracy, speaker identification, or meaningful sound descriptions.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["video-caption"], "document_checks": ["video-captions"] }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#captions-prerecorded"
+        },
+        {
+          "id": "1.2.5",
+          "level": "AA",
+          "title": "Audio Description (Prerecorded)",
+          "type": "automated-readiness",
+          "applicability": "Prerecorded video in synchronized media.",
+          "inputs": ["video elements", "audio-description track or alternate version", "local media files"],
+          "suggestedLocalTool": "Playwright plus local ffprobe metadata inspection",
+          "expectedEvidence": ["audio-description track or alternate-version presence", "media metadata"],
+          "limitations": "Track presence does not establish that important visual information is adequately described.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["video-description"], "document_checks": ["video-audio-description"] }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#audio-description-prerecorded"
+        },
+        {
+          "id": "1.3.1",
+          "level": "A",
+          "title": "Info and Relationships",
+          "type": "automated-readiness",
+          "applicability": "Markup-based content with headings, lists, tables, forms, regions, or visual grouping.",
+          "inputs": ["rendered DOM", "accessibility tree", "computed styles"],
+          "suggestedLocalTool": "Playwright with a local semantic-structure rule runner",
+          "expectedEvidence": ["heading/list/table/form structure findings", "role relationships", "DOM locators"],
+          "limitations": "Automation cannot fully infer all visually conveyed relationships or determine whether markup represents the intended meaning.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#info-and-relationships"
+        },
+        {
+          "id": "1.3.2",
+          "level": "A",
+          "title": "Meaningful Sequence",
+          "type": "automated-readiness",
+          "applicability": "Content whose meaning can depend on reading or navigation order.",
+          "inputs": ["DOM order", "accessibility tree", "visual bounding boxes"],
+          "suggestedLocalTool": "Playwright order analyzer",
+          "expectedEvidence": ["DOM and visual-order comparison", "focus/read-order trace", "screenshots"],
+          "limitations": "A human must determine whether a particular sequence affects meaning.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#meaningful-sequence"
+        },
+        {
+          "id": "1.3.4",
+          "level": "AA",
+          "title": "Orientation",
+          "type": "automated-readiness",
+          "applicability": "Responsive web content used in portrait and landscape orientations.",
+          "inputs": ["local page routes", "portrait and landscape viewport profiles"],
+          "suggestedLocalTool": "Playwright viewport and orientation runner",
+          "expectedEvidence": ["screenshots in both orientations", "content/function availability comparison", "console errors"],
+          "limitations": "Automation may miss essential orientation requirements and interaction problems that require human use.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#orientation"
+        },
+        {
+          "id": "1.3.5",
+          "level": "AA",
+          "title": "Identify Input Purpose",
+          "type": "automated-readiness",
+          "applicability": "Fields collecting information about the user where an identified input purpose applies.",
+          "inputs": ["form controls", "autocomplete attributes", "accessible names"],
+          "suggestedLocalTool": "Playwright form-purpose rule runner",
+          "expectedEvidence": ["eligible field inventory", "autocomplete token validation", "DOM locators"],
+          "limitations": "A human must confirm that each field's actual purpose matches the programmatic token.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#identify-input-purpose"
+        },
+        {
+          "id": "1.4.2",
+          "level": "A",
+          "title": "Audio Control",
+          "type": "automated-readiness",
+          "applicability": "Pages where audio starts automatically and continues for more than three seconds.",
+          "inputs": ["media elements", "autoplay state", "audio controls"],
+          "suggestedLocalTool": "Playwright media-state runner",
+          "expectedEvidence": ["autoplay observations", "pause/stop/volume control presence", "interaction trace"],
+          "limitations": "Browser autoplay policy can hide application behavior; a human must verify controls are usable and independent of system volume.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["no-autoplay-audio"], "document_checks": ["autoplay-media"] }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#audio-control"
+        },
+        {
+          "id": "1.4.3",
+          "level": "AA",
+          "title": "Contrast (Minimum)",
+          "type": "automated-readiness",
+          "applicability": "Rendered text and images of text, subject to the criterion's exceptions.",
+          "inputs": ["rendered DOM", "computed colors", "font size and weight", "background pixels"],
+          "suggestedLocalTool": "Playwright with a local contrast analyzer",
+          "expectedEvidence": ["contrast ratios", "threshold and text-size classification", "element locators and screenshots"],
+          "limitations": "Complex backgrounds, anti-aliasing, images of text, logos, disabled controls, and exception judgments require review.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#contrast-minimum"
+        },
+        {
+          "id": "1.4.4",
+          "level": "AA",
+          "title": "Resize Text",
+          "type": "automated-readiness",
+          "applicability": "Text other than captions and images of text.",
+          "inputs": ["local page routes", "200 percent text-size profile", "interaction scripts"],
+          "suggestedLocalTool": "Playwright text-resize runner with screenshot comparison",
+          "expectedEvidence": ["before/after screenshots", "clipping and overlap findings", "function availability trace"],
+          "limitations": "Machine checks can detect likely clipping but cannot guarantee all content and functionality remain usable.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["meta-viewport"], "document_checks": ["viewport-zoom"] }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#resize-text"
+        },
+        {
+          "id": "1.4.10",
+          "level": "AA",
+          "title": "Reflow",
+          "type": "automated-readiness",
+          "applicability": "Web content viewed at the equivalent of 320 CSS pixels wide or 256 CSS pixels high, subject to exceptions.",
+          "inputs": ["local page routes", "reflow viewport profiles", "scroll measurements"],
+          "suggestedLocalTool": "Playwright reflow and overflow runner",
+          "expectedEvidence": ["horizontal/vertical overflow measurements", "screenshots", "clipped-content findings"],
+          "limitations": "A human must assess two-dimensional-layout exceptions and whether content or functionality is actually lost.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#reflow"
+        },
+        {
+          "id": "1.4.12",
+          "level": "AA",
+          "title": "Text Spacing",
+          "type": "automated-readiness",
+          "applicability": "Text in markup languages supporting the specified spacing properties.",
+          "inputs": ["rendered DOM", "WCAG text-spacing override", "local page routes"],
+          "suggestedLocalTool": "Playwright text-spacing override runner",
+          "expectedEvidence": ["override CSS applied", "clipping/overlap findings", "screenshots and DOM locators"],
+          "limitations": "A human must verify that no content or functionality is lost, especially in complex or stateful components.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#text-spacing"
+        },
+        {
+          "id": "1.4.13",
+          "level": "AA",
+          "title": "Content on Hover or Focus",
+          "type": "automated-readiness",
+          "applicability": "Additional content that appears on pointer hover or keyboard focus.",
+          "inputs": ["interactive elements", "hover/focus scripts", "rendered overlays"],
+          "suggestedLocalTool": "Playwright hover-and-focus behavior runner",
+          "expectedEvidence": ["triggered-content inventory", "dismissibility/persistence/hoverability observations", "screenshots and trace"],
+          "limitations": "Automation may not discover every trigger or reliably judge exceptions and user experience.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#content-on-hover-or-focus"
+        },
+        {
+          "id": "2.1.2",
+          "level": "A",
+          "title": "No Keyboard Trap",
+          "type": "automated-readiness",
+          "applicability": "Pages with focusable or custom interactive components.",
+          "inputs": ["rendered page", "focusable-element inventory", "keyboard traversal budget"],
+          "suggestedLocalTool": "Playwright keyboard traversal runner",
+          "expectedEvidence": ["focus transition graph", "suspected trap location", "keystroke trace"],
+          "limitations": "Finite automation cannot prove the absence of traps in every state or confirm that nonstandard exit instructions are understandable.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#no-keyboard-trap"
+        },
+        {
+          "id": "2.3.1",
+          "level": "A",
+          "title": "Three Flashes or Below Threshold",
+          "type": "automated-readiness",
+          "applicability": "Pages containing animation, video, canvas, or rapidly changing content.",
+          "inputs": ["captured local frames", "local media files", "flash-analysis parameters"],
+          "suggestedLocalTool": "Local frame capture and general/red-flash threshold analyzer",
+          "expectedEvidence": ["flash frequency and area measurements", "time-coded suspect segments", "captured frames"],
+          "limitations": "Coverage depends on reaching every animated state and faithfully capturing rendered frames.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#three-flashes-or-below-threshold"
+        },
+        {
+          "id": "2.4.1",
+          "level": "A",
+          "title": "Bypass Blocks",
+          "type": "automated-readiness",
+          "applicability": "Pages with blocks of content repeated across pages.",
+          "inputs": ["DOM landmarks", "skip links", "heading structure", "page set"],
+          "suggestedLocalTool": "Playwright landmark and skip-link runner",
+          "expectedEvidence": ["bypass mechanism inventory", "skip-link destination checks", "landmark structure"],
+          "limitations": "Automation cannot always identify which blocks repeat or whether a provided mechanism is effective for users.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["region", "landmark-one-main"], "document_checks": ["landmarks"] }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#bypass-blocks"
+        },
+        {
+          "id": "2.4.2",
+          "level": "A",
+          "title": "Page Titled",
+          "type": "automated-readiness",
+          "applicability": "Every web page in the assessment scope.",
+          "inputs": ["page routes", "document titles", "page content"],
+          "suggestedLocalTool": "Playwright title inventory runner",
+          "expectedEvidence": ["missing/duplicate title findings", "route-to-title inventory"],
+          "limitations": "A human must judge whether each title describes the page's topic or purpose.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": {
+              "url_source": "local_base_url",
+              "path": "/",
+              "local_only": true,
+              "no_update_check": true,
+              "rules": ["document-title"],
+              "document_checks": ["title"]
+            }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#page-titled"
+        },
+        {
+          "id": "2.4.4",
+          "level": "A",
+          "title": "Link Purpose (In Context)",
+          "type": "automated-readiness",
+          "applicability": "Pages containing links.",
+          "inputs": ["link text", "accessible names", "programmatically determined context", "destinations"],
+          "suggestedLocalTool": "Playwright link-purpose heuristic runner",
+          "expectedEvidence": ["empty/ambiguous link findings", "accessible-name and context capture", "destination inventory"],
+          "limitations": "Human judgment is required to determine purpose from context and whether the ambiguity exception applies.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["link-name"], "document_checks": ["link-text"] }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#link-purpose-in-context"
+        },
+        {
+          "id": "2.4.6",
+          "level": "AA",
+          "title": "Headings and Labels",
+          "type": "automated-readiness",
+          "applicability": "Pages containing headings or labels.",
+          "inputs": ["heading text and hierarchy", "labels", "associated controls"],
+          "suggestedLocalTool": "Playwright heading-and-label inventory runner",
+          "expectedEvidence": ["missing/empty label findings", "heading outline", "control associations"],
+          "limitations": "A human must decide whether headings and labels actually describe topic or purpose.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#headings-and-labels"
+        },
+        {
+          "id": "2.4.7",
+          "level": "AA",
+          "title": "Focus Visible",
+          "type": "automated-readiness",
+          "applicability": "Keyboard-operable user interfaces.",
+          "inputs": ["focusable elements", "keyboard traversal", "focused/unfocused screenshots"],
+          "suggestedLocalTool": "Playwright focus-style differential runner",
+          "expectedEvidence": ["focus traversal screenshots", "computed-style differences", "elements with no detected indicator"],
+          "limitations": "Image comparison cannot always determine whether an indicator is perceptible or whether every operating mode was covered.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#focus-visible"
+        },
+        {
+          "id": "2.4.11",
+          "level": "AA",
+          "title": "Focus Not Obscured (Minimum)",
+          "type": "automated-readiness",
+          "applicability": "Pages with keyboard-focusable components and author-created sticky, modal, or overlay content.",
+          "inputs": ["focus traversal", "element bounding boxes", "occlusion map"],
+          "suggestedLocalTool": "Playwright focus occlusion runner",
+          "expectedEvidence": ["focused-element visibility ratio", "occluding element locator", "screenshots"],
+          "limitations": "Automation may miss configurable interface states, user-movable content, or focus paths requiring domain knowledge.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#focus-not-obscured-minimum"
+        },
+        {
+          "id": "2.5.3",
+          "level": "A",
+          "title": "Label in Name",
+          "type": "automated-readiness",
+          "applicability": "User interface components with visible text labels.",
+          "inputs": ["visible label text", "computed accessible name", "control locator"],
+          "suggestedLocalTool": "Playwright visible-label/accessibility-name comparator",
+          "expectedEvidence": ["label/name comparison", "mismatch findings", "DOM locator and screenshot"],
+          "limitations": "Text extraction and reading-order heuristics can be ambiguous; symbol labels and language-specific cases require review.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#label-in-name"
+        },
+        {
+          "id": "2.5.8",
+          "level": "AA",
+          "title": "Target Size (Minimum)",
+          "type": "automated-readiness",
+          "applicability": "Pointer input targets, subject to the criterion's exceptions.",
+          "inputs": ["interactive target bounding boxes", "computed spacing", "inline/text context"],
+          "suggestedLocalTool": "Playwright target-size geometry runner",
+          "expectedEvidence": ["target dimensions and spacing", "overlap calculations", "screenshots and locators"],
+          "limitations": "A human must evaluate exceptions for equivalent controls, inline targets, user-agent control, and essential presentation.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#target-size-minimum"
+        },
+        {
+          "id": "3.1.1",
+          "level": "A",
+          "title": "Language of Page",
+          "type": "automated-readiness",
+          "applicability": "Every web page in the assessment scope.",
+          "inputs": ["document language attributes", "page text sample"],
+          "suggestedLocalTool": "Local HTML language-attribute validator",
+          "expectedEvidence": ["declared language", "validity result", "route and DOM locator"],
+          "limitations": "Automated language detection is probabilistic and a human may need to verify that the declared language matches the content.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": {
+              "url_source": "local_base_url",
+              "path": "/",
+              "local_only": true,
+              "no_update_check": true,
+              "rules": ["html-has-lang", "html-lang-valid"],
+              "document_checks": ["html-lang"]
+            }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#language-of-page"
+        },
+        {
+          "id": "3.2.1",
+          "level": "A",
+          "title": "On Focus",
+          "type": "automated-readiness",
+          "applicability": "Pages with focusable user interface components.",
+          "inputs": ["focusable elements", "navigation/context state", "focus interaction script"],
+          "suggestedLocalTool": "Playwright focus side-effect runner",
+          "expectedEvidence": ["before/after URL and window state", "unexpected context-change trace", "element locator"],
+          "limitations": "Automation may not recognize every form of context change or reach every conditional component.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#on-focus"
+        },
+        {
+          "id": "3.2.2",
+          "level": "A",
+          "title": "On Input",
+          "type": "automated-readiness",
+          "applicability": "User interface controls whose settings can be changed.",
+          "inputs": ["form controls", "context state", "input interaction scripts", "prior-instruction text"],
+          "suggestedLocalTool": "Playwright input side-effect runner",
+          "expectedEvidence": ["control-change trace", "detected context changes", "instruction capture"],
+          "limitations": "A human must determine whether advance advice is sufficient and whether all conditional states were exercised.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#on-input"
+        },
+        {
+          "id": "3.2.3",
+          "level": "AA",
+          "title": "Consistent Navigation",
+          "type": "automated-readiness",
+          "applicability": "Sets of pages with repeated navigation mechanisms.",
+          "inputs": ["representative page set", "landmarks", "navigation items", "DOM order"],
+          "suggestedLocalTool": "Local crawler plus Playwright navigation-structure comparator",
+          "expectedEvidence": ["navigation signatures by page", "order differences", "screenshots and DOM traces"],
+          "limitations": "A human must define the set of pages and distinguish user-initiated changes or legitimate page variations.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#consistent-navigation"
+        },
+        {
+          "id": "3.2.6",
+          "level": "A",
+          "title": "Consistent Help",
+          "type": "automated-readiness",
+          "applicability": "Sets of pages that contain repeated human contact, self-help, or automated contact mechanisms.",
+          "inputs": ["representative page set", "help mechanism locators", "serialized content order"],
+          "suggestedLocalTool": "Local crawler plus Playwright help-order comparator",
+          "expectedEvidence": ["help mechanism inventory", "relative-order comparison", "page variation profile"],
+          "limitations": "A human must confirm which elements qualify as help mechanisms and which pages belong to the same set and variation.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#consistent-help"
+        },
+        {
+          "id": "3.3.2",
+          "level": "A",
+          "title": "Labels or Instructions",
+          "type": "automated-readiness",
+          "applicability": "Content requiring user input.",
+          "inputs": ["form controls", "labels", "descriptions", "required-format indicators"],
+          "suggestedLocalTool": "Playwright form-label and instruction inventory runner",
+          "expectedEvidence": ["unlabeled-control findings", "instruction associations", "DOM locator and screenshot"],
+          "limitations": "Automation cannot reliably judge whether instructions are sufficient for the expected input.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["label", "aria-input-field-name"], "document_checks": ["form-labels"] }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#labels-or-instructions"
+        },
+        {
+          "id": "3.3.7",
+          "level": "A",
+          "title": "Redundant Entry",
+          "type": "automated-readiness",
+          "applicability": "Multi-step processes that ask users to enter information previously supplied in the same process.",
+          "inputs": ["scripted process journeys", "form field semantics", "entered test values"],
+          "suggestedLocalTool": "Playwright stateful form-journey runner",
+          "expectedEvidence": ["field/value history", "re-entry prompts", "auto-population or selection behavior", "journey trace"],
+          "limitations": "A human must judge security, necessity, invalidity, and re-entry exceptions and ensure representative processes were tested.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#redundant-entry"
+        },
+        {
+          "id": "4.1.2",
+          "level": "A",
+          "title": "Name, Role, Value",
+          "type": "automated-readiness",
+          "applicability": "All user interface components, especially custom scripted controls.",
+          "inputs": ["rendered DOM", "accessibility tree", "component state transitions"],
+          "suggestedLocalTool": "Playwright accessibility-tree and ARIA rule runner",
+          "expectedEvidence": ["name/role/state/value findings", "state-change accessibility snapshots", "DOM locators"],
+          "limitations": "Automation cannot establish support across every assistive-technology and user-agent combination or judge whether exposed semantics are correct in context.",
+          "executor": {
+            "handler": "axe-cli",
+            "config": { "url_source": "local_base_url", "path": "/", "local_only": true, "no_update_check": true, "rules": ["duplicate-id", "aria-valid-attr", "aria-roles"], "document_checks": ["duplicate-ids"] }
+          },
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#name-role-value"
+        },
+        {
+          "id": "4.1.3",
+          "level": "AA",
+          "title": "Status Messages",
+          "type": "automated-readiness",
+          "applicability": "Markup-based applications that present status messages without moving focus.",
+          "inputs": ["scripted interactions", "DOM mutation stream", "accessibility tree", "live-region attributes"],
+          "suggestedLocalTool": "Playwright live-region and status-message runner",
+          "expectedEvidence": ["status-message mutations", "role/property capture", "focus state and interaction trace"],
+          "limitations": "A human must confirm that all relevant messages are exposed and that assistive technologies present them appropriately.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#status-messages"
+        }
+      ]
+    },
+    {
+      "id": "wcag-22-a-aa-manual-required",
+      "title": "WCAG 2.2 Level A/AA manual-required checks",
+      "purpose": "Guide knowledgeable human evaluation where intent, meaning, completeness, exceptions, or full user interaction cannot be established by automation.",
+      "tests": [
+        {
+          "id": "1.2.3",
+          "level": "A",
+          "title": "Audio Description or Media Alternative (Prerecorded)",
+          "type": "manual-required",
+          "applicability": "Prerecorded video in synchronized media.",
+          "inputs": ["video", "audio-description track", "media alternative"],
+          "suggestedLocalTool": "Local media player and structured reviewer checklist",
+          "expectedEvidence": ["time-coded review notes", "alternative completeness decision", "reviewer identity"],
+          "limitations": "Requires human comparison of visual information with the audio description or full text alternative.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#audio-description-or-media-alternative-prerecorded"
+        },
+        {
+          "id": "1.2.4",
+          "level": "AA",
+          "title": "Captions (Live)",
+          "type": "manual-required",
+          "applicability": "Live synchronized media containing audio.",
+          "inputs": ["representative live session", "captions", "session recording where authorized"],
+          "suggestedLocalTool": "Local capture/player and caption-review worksheet",
+          "expectedEvidence": ["caption availability", "time-coded accuracy and latency notes", "reviewer decision"],
+          "limitations": "A live human-observed session is needed to judge accuracy, timing, speaker identification, and meaningful sounds.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#captions-live"
+        },
+        {
+          "id": "1.3.3",
+          "level": "A",
+          "title": "Sensory Characteristics",
+          "type": "manual-required",
+          "applicability": "Instructions provided for understanding or operating content.",
+          "inputs": ["visible instructions", "related controls and content"],
+          "suggestedLocalTool": "Browser plus structured content-review checklist",
+          "expectedEvidence": ["instruction excerpts", "referenced UI screenshots", "reviewer decision"],
+          "limitations": "Human judgment is needed to determine whether instructions rely solely on shape, color, size, visual location, orientation, or sound.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#sensory-characteristics"
+        },
+        {
+          "id": "1.4.1",
+          "level": "A",
+          "title": "Use of Color",
+          "type": "manual-required",
+          "applicability": "Content using color to convey information, actions, responses, or distinctions.",
+          "inputs": ["rendered pages and states", "design tokens", "interaction flows"],
+          "suggestedLocalTool": "Browser, grayscale/color simulation, and reviewer checklist",
+          "expectedEvidence": ["screenshots of relevant states", "non-color cue assessment", "reviewer decision"],
+          "limitations": "Automation cannot reliably infer all meaning conveyed by color or the adequacy of additional visual cues.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#use-of-color"
+        },
+        {
+          "id": "1.4.5",
+          "level": "AA",
+          "title": "Images of Text",
+          "type": "manual-required",
+          "applicability": "Images that may contain text, subject to customizable and essential exceptions.",
+          "inputs": ["rendered images", "nearby text", "customization controls", "brand/logotype context"],
+          "suggestedLocalTool": "Local OCR plus browser and reviewer checklist",
+          "expectedEvidence": ["suspected text-bearing images", "exception assessment", "screenshots and reviewer decision"],
+          "limitations": "OCR can only assist discovery; a human must determine whether text could be presented with real text and whether exceptions apply.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#images-of-text"
+        },
+        {
+          "id": "1.4.11",
+          "level": "AA",
+          "title": "Non-text Contrast",
+          "type": "manual-required",
+          "applicability": "User interface components and graphical objects needed to identify controls, states, or content.",
+          "inputs": ["rendered components and states", "graphical objects", "adjacent colors"],
+          "suggestedLocalTool": "Local pixel color sampler plus structured visual review",
+          "expectedEvidence": ["sampled contrast ratios", "component/state screenshots", "essential/exception decision"],
+          "limitations": "Human judgment is needed to identify required visual information, boundaries, states, graphical objects, and exceptions.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#non-text-contrast"
+        },
+        {
+          "id": "2.1.1",
+          "level": "A",
+          "title": "Keyboard",
+          "type": "manual-required",
+          "applicability": "All content functionality, subject to the path-dependent-input exception.",
+          "inputs": ["representative user journeys", "keyboard commands", "all interactive states"],
+          "suggestedLocalTool": "Browser keyboard-only session with local interaction recorder",
+          "expectedEvidence": ["completed/blocked journey record", "keystroke trace", "screenshots and reviewer decision"],
+          "limitations": "A human must discover and attempt all functionality and determine whether any exception applies.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#keyboard"
+        },
+        {
+          "id": "2.1.4",
+          "level": "A",
+          "title": "Character Key Shortcuts",
+          "type": "manual-required",
+          "applicability": "Content implementing shortcuts using only letter, punctuation, number, or symbol characters.",
+          "inputs": ["documented shortcuts", "interactive application states", "speech-input scenario"],
+          "suggestedLocalTool": "Browser plus keyboard/speech-input review checklist",
+          "expectedEvidence": ["shortcut inventory", "turn-off/remap/focus-only behavior", "reviewer decision"],
+          "limitations": "Shortcuts may be undocumented or state-dependent; human investigation is required.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#character-key-shortcuts"
+        },
+        {
+          "id": "2.2.1",
+          "level": "A",
+          "title": "Timing Adjustable",
+          "type": "manual-required",
+          "applicability": "Processes with time limits set by content.",
+          "inputs": ["timed journeys", "timeout configuration", "warning and extension controls"],
+          "suggestedLocalTool": "Browser with local clock/interaction recorder and reviewer checklist",
+          "expectedEvidence": ["observed time limit", "adjust/extend/turn-off behavior", "exception decision"],
+          "limitations": "A human must identify all time limits and determine whether real-time, essential, or longer-than-20-hours exceptions apply.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#timing-adjustable"
+        },
+        {
+          "id": "2.2.2",
+          "level": "A",
+          "title": "Pause, Stop, Hide",
+          "type": "manual-required",
+          "applicability": "Moving, blinking, scrolling, or auto-updating information meeting the criterion's timing and presentation conditions.",
+          "inputs": ["animated and updating states", "pause/stop/hide controls", "update frequency"],
+          "suggestedLocalTool": "Browser with local screen recording and reviewer checklist",
+          "expectedEvidence": ["time-coded behavior", "control operation results", "essentiality decision"],
+          "limitations": "Human judgment is needed to identify distraction, parallel presentation, essentiality, and whether controls satisfy the criterion.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#pause-stop-hide"
+        },
+        {
+          "id": "2.4.3",
+          "level": "A",
+          "title": "Focus Order",
+          "type": "manual-required",
+          "applicability": "Pages navigated sequentially where sequence affects meaning or operation.",
+          "inputs": ["representative journeys", "keyboard focus trace", "visual and logical structure"],
+          "suggestedLocalTool": "Browser keyboard session with local focus-order overlay",
+          "expectedEvidence": ["ordered focus trace", "screenshots", "meaning/operation impact decision"],
+          "limitations": "A human must determine whether the sequence preserves meaning and operability.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#focus-order"
+        },
+        {
+          "id": "2.4.5",
+          "level": "AA",
+          "title": "Multiple Ways",
+          "type": "manual-required",
+          "applicability": "Pages within a set of web pages, excluding pages that are a step in or result of a process.",
+          "inputs": ["defined page set", "navigation mechanisms", "search/site map/index where present"],
+          "suggestedLocalTool": "Local crawler plus reviewer checklist",
+          "expectedEvidence": ["page reachability matrix", "available location mechanisms", "exception decision"],
+          "limitations": "A human must define the page set, identify process exceptions, and judge whether at least two valid ways locate each page.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#multiple-ways"
+        },
+        {
+          "id": "2.5.1",
+          "level": "A",
+          "title": "Pointer Gestures",
+          "type": "manual-required",
+          "applicability": "Functionality using multipoint or path-based pointer gestures.",
+          "inputs": ["touch/pointer journeys", "gesture inventory", "single-pointer alternatives"],
+          "suggestedLocalTool": "Local browser/device emulation plus pointer-interaction recorder",
+          "expectedEvidence": ["gesture and alternative-action trace", "screenshots/video", "essentiality decision"],
+          "limitations": "A human must discover gesture-dependent functionality and determine whether a gesture is essential.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#pointer-gestures"
+        },
+        {
+          "id": "2.5.2",
+          "level": "A",
+          "title": "Pointer Cancellation",
+          "type": "manual-required",
+          "applicability": "Functionality operated with a single pointer.",
+          "inputs": ["pointer interactions", "down/up event behavior", "abort and undo behavior"],
+          "suggestedLocalTool": "Local browser pointer-event recorder and reviewer checklist",
+          "expectedEvidence": ["down/up action trace", "abort/undo result", "exception decision"],
+          "limitations": "A human must judge completion timing, reversal, and whether down-event completion is essential.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#pointer-cancellation"
+        },
+        {
+          "id": "2.5.4",
+          "level": "A",
+          "title": "Motion Actuation",
+          "type": "manual-required",
+          "applicability": "Functionality triggered by device or user motion.",
+          "inputs": ["motion-enabled journeys", "interface alternatives", "disable controls"],
+          "suggestedLocalTool": "Local device/sensor emulator plus reviewer checklist",
+          "expectedEvidence": ["motion trigger trace", "alternative control result", "disable and essentiality decision"],
+          "limitations": "Requires human/device testing to discover behavior and assess supported-interface or essential exceptions.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#motion-actuation"
+        },
+        {
+          "id": "2.5.7",
+          "level": "AA",
+          "title": "Dragging Movements",
+          "type": "manual-required",
+          "applicability": "Functionality that uses dragging movement for operation.",
+          "inputs": ["drag-enabled controls", "single-pointer alternatives", "representative journeys"],
+          "suggestedLocalTool": "Local browser pointer recorder and reviewer checklist",
+          "expectedEvidence": ["drag operation trace", "non-drag alternative result", "essentiality decision"],
+          "limitations": "A human must discover all drag functionality and determine whether alternatives work or dragging is essential.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#dragging-movements"
+        },
+        {
+          "id": "3.1.2",
+          "level": "AA",
+          "title": "Language of Parts",
+          "type": "manual-required",
+          "applicability": "Pages containing passages or phrases in languages different from the page's default language.",
+          "inputs": ["page text", "language attributes", "proper-name and terminology context"],
+          "suggestedLocalTool": "Local language detector plus browser and reviewer checklist",
+          "expectedEvidence": ["suspected language changes", "language markup", "exception and reviewer decision"],
+          "limitations": "Language detection is probabilistic; a human must identify passages and evaluate names, technical terms, indeterminate words, and vernacular exceptions.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#language-of-parts"
+        },
+        {
+          "id": "3.2.4",
+          "level": "AA",
+          "title": "Consistent Identification",
+          "type": "manual-required",
+          "applicability": "Components with the same functionality across a set of web pages.",
+          "inputs": ["representative page set", "component names", "icons", "functional behavior"],
+          "suggestedLocalTool": "Local crawler/component inventory plus reviewer checklist",
+          "expectedEvidence": ["same-function component comparisons", "labels/icons/screenshots", "reviewer decision"],
+          "limitations": "A human must determine whether components have the same functionality and whether their identification is consistent.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#consistent-identification"
+        },
+        {
+          "id": "3.3.1",
+          "level": "A",
+          "title": "Error Identification",
+          "type": "manual-required",
+          "applicability": "User input where errors can be automatically detected.",
+          "inputs": ["invalid-input test cases", "error states", "accessible output"],
+          "suggestedLocalTool": "Playwright form scripts plus structured reviewer checklist",
+          "expectedEvidence": ["invalid-input trace", "error text and association", "reviewer decision"],
+          "limitations": "A human must determine whether each error is identified and described to the user in text.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#error-identification"
+        },
+        {
+          "id": "3.3.3",
+          "level": "AA",
+          "title": "Error Suggestion",
+          "type": "manual-required",
+          "applicability": "Detected input errors for which correction suggestions are known, subject to security or purpose constraints.",
+          "inputs": ["invalid-input test cases", "error messages", "correction guidance"],
+          "suggestedLocalTool": "Playwright form scripts plus content-review checklist",
+          "expectedEvidence": ["error and suggestion pairs", "security/purpose exception decision", "reviewer assessment"],
+          "limitations": "Human judgment is required to assess whether suggestions are known, useful, and safe to provide.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#error-suggestion"
+        },
+        {
+          "id": "3.3.4",
+          "level": "AA",
+          "title": "Error Prevention (Legal, Financial, Data)",
+          "type": "manual-required",
+          "applicability": "Pages causing legal commitments or financial transactions, modifying/deleting user-controlled data, or submitting test responses.",
+          "inputs": ["high-impact process journeys", "submission/reversal behavior", "validation and confirmation screens"],
+          "suggestedLocalTool": "Local scripted journeys plus transactional-review checklist",
+          "expectedEvidence": ["reversibility result", "input validation result", "review/confirm mechanism", "reviewer decision"],
+          "limitations": "A human must identify covered transactions and judge whether at least one required safeguard is effective.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#error-prevention-legal-financial-data"
+        },
+        {
+          "id": "3.3.8",
+          "level": "AA",
+          "title": "Accessible Authentication (Minimum)",
+          "type": "manual-required",
+          "applicability": "Authentication processes, subject to object-recognition and personal-content exceptions.",
+          "inputs": ["authentication journeys", "password-manager/paste behavior", "alternative mechanisms", "challenge content"],
+          "suggestedLocalTool": "Local browser authentication scripts plus cognitive-accessibility checklist",
+          "expectedEvidence": ["authentication-step inventory", "paste/password-manager behavior", "alternative and exception assessment"],
+          "limitations": "A human must determine whether a cognitive function test is required and whether an assistance mechanism or exception satisfies the criterion.",
+          "officialUrl": "https://www.w3.org/TR/WCAG22/#accessible-authentication-minimum"
+        }
+      ]
+    }
+  ]
+}

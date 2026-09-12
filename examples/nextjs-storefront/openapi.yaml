@@ -1,0 +1,11 @@
+openapi: 3.1.0
+info:
+  title: Example Storefront API
+  version: 1.0.0
+paths:
+  /api/products:
+    get:
+      summary: List products
+      responses:
+        "200":
+          description: Product list

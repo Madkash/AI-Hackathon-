@@ -1,0 +1,592 @@
+{
+  "catalog_version": "0.1.0",
+  "title": "Local Application Security Readiness Suites",
+  "status": "scaffold",
+  "disclaimer": "Results are local application security readiness observations. They are not a penetration test attestation, exploitability guarantee, or substitute for qualified security testing under an approved scope.",
+  "runtime_policy": {
+    "remote_api_calls_allowed": false,
+    "remote_inference_allowed": false,
+    "network_default": "deny",
+    "active_tests_default_enabled": false,
+    "active_test_requirements": [
+      "explicit_written_scope",
+      "allowlisted_local_host_and_port",
+      "isolated_non-production_target",
+      "test_accounts_and_reset_plan",
+      "rate_and_concurrency_limits"
+    ],
+    "prohibited": [
+      "destructive_actions",
+      "persistence",
+      "data_exfiltration",
+      "denial_of_service",
+      "testing_public_or_unlisted_hosts"
+    ]
+  },
+  "sources": [
+    {
+      "id": "OWASP-ASVS-5.0.0",
+      "name": "OWASP Application Security Verification Standard",
+      "version": "5.0.0",
+      "url": "https://github.com/OWASP/ASVS/tree/v5.0.0",
+      "machine_readable_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0/5.0/docs_en/OWASP_Application_Security_Verification_Standard_5.0.0_en.csv",
+      "retrieved": "2026-09-12",
+      "role": "verification requirements"
+    },
+    {
+      "id": "OWASP-WSTG-4.2",
+      "name": "OWASP Web Security Testing Guide",
+      "version": "4.2",
+      "url": "https://wstg.owasp.org/v4.2/",
+      "retrieved": "2026-09-12",
+      "role": "testing procedures"
+    }
+  ],
+  "suites": [
+    {
+      "id": "SEC-ATTACK-SURFACE",
+      "title": "Attack Surface",
+      "subagent": "attack-surface-agent",
+      "tests": [
+        {
+          "id": "SEC-AS-001",
+          "title": "Inventory application entry points",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["source_path", "openapi_path_optional", "browser_trace_optional"],
+          "suggested_local_tool": "ripgrep plus local OpenAPI parser and pre-recorded browser trace parser",
+          "evidence": ["endpoint inventory", "methods and parameters", "source file or schema provenance"],
+          "limitations": "Dynamic, generated, role-gated, and event-driven endpoints may be missed.",
+          "executor": {
+            "handler": "file-presence",
+            "config": {
+              "patterns": ["openapi.yaml", "openapi.yml", "openapi.json", "swagger.yaml", "swagger.json", "**/routes/**", "**/app/api/**"]
+            }
+          },
+          "references": [
+            {"id": "WSTG-v42-INFO-06", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/01-Information_Gathering/06-Identify_Application_Entry_Points/"},
+            {"id": "v5.0.0-13.4.5", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-AS-002",
+          "title": "Enumerate local services and administrative interfaces",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["compose_files", "container_metadata", "allowlisted_local_hosts"],
+          "suggested_local_tool": "Docker inspect plus local socket and Compose manifest inspection",
+          "evidence": ["listening ports", "service-to-container mapping", "administrative interface candidates"],
+          "limitations": "Service banners can be absent or misleading; local inventory does not represent external perimeter controls.",
+          "executor": {
+            "handler": "file-presence",
+            "config": {
+              "patterns": ["docker-compose*.yml", "Dockerfile", "**/admin/**", "**/*admin*route*"]
+            }
+          },
+          "references": [
+            {"id": "WSTG-v42-CONF-05", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/05-Enumerate_Infrastructure_and_Application_Admin_Interfaces/"},
+            {"id": "v5.0.0-13.1.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-AS-003",
+          "title": "Compare documented and discovered interfaces",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["endpoint_inventory", "architecture_docs", "openapi_path_optional"],
+          "suggested_local_tool": "local catalog diff",
+          "evidence": ["undocumented endpoints", "stale documented endpoints", "confidence and provenance"],
+          "limitations": "Requires reasonably complete documentation and authenticated traces for each role.",
+          "references": [
+            {"id": "WSTG-v42-INFO-10", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/01-Information_Gathering/10-Map_Application_Architecture/"},
+            {"id": "v5.0.0-13.4.5", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SEC-AUTHENTICATION",
+      "title": "Authentication",
+      "subagent": "authentication-agent",
+      "tests": [
+        {
+          "id": "SEC-AUTHN-001",
+          "title": "Review authentication paths and transport",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["local_base_url", "authentication_docs", "browser_trace"],
+          "suggested_local_tool": "OWASP ZAP passive scan plus local TLS inspection",
+          "evidence": ["authentication endpoint list", "transport observations", "alternate authentication paths"],
+          "limitations": "A local HTTP-only development target cannot demonstrate production TLS configuration.",
+          "executor": {
+            "handler": "zap-baseline",
+            "config": {
+              "url_source": "local_base_url",
+              "local_only": true,
+              "no_update_check": true,
+              "path": "/",
+              "method": "GET",
+              "capture_headers": ["strict-transport-security"]
+            }
+          },
+          "references": [
+            {"id": "WSTG-v42-ATHN-01", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/04-Authentication_Testing/01-Testing_for_Credentials_Transported_over_an_Encrypted_Channel/"},
+            {"id": "v5.0.0-6.1.3", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-12.2.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-AUTHN-002",
+          "title": "Check password policy and password field behavior",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "disposable_test_account", "registration_or_change_password_flow"],
+          "suggested_local_tool": "Playwright against allowlisted local target",
+          "evidence": ["accepted and rejected policy cases", "field attributes", "redacted screenshots"],
+          "limitations": "Does not evaluate password hashing or breached-password data unless source and an offline corpus are supplied.",
+          "references": [
+            {"id": "WSTG-v42-ATHN-07", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/04-Authentication_Testing/07-Testing_for_Weak_Password_Policy/"},
+            {"id": "v5.0.0-6.2.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-6.2.4", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-6.2.9", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-AUTHN-003",
+          "title": "Check account enumeration resistance",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "known_test_identity", "nonexistent_test_identity", "request_limit"],
+          "suggested_local_tool": "local HTTP comparator with bounded requests",
+          "evidence": ["status and response-shape comparison", "coarse timing comparison", "redacted response samples"],
+          "limitations": "Timing results are noisy and require repeated specialist review; this scaffold performs only bounded comparisons.",
+          "references": [
+            {"id": "WSTG-v42-IDNT-04", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account/"},
+            {"id": "v5.0.0-6.3.8", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-AUTHN-004",
+          "title": "Check bounded authentication abuse controls",
+          "safety_level": "intrusive",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "disposable_lockable_account", "owner_defined_attempt_limit", "reset_plan"],
+          "suggested_local_tool": "purpose-built local rate-limit harness",
+          "evidence": ["attempt count", "response transition", "recovery behavior"],
+          "limitations": "Can lock accounts or disrupt authentication; run only in an isolated environment with owner-set bounds.",
+          "references": [
+            {"id": "WSTG-v42-ATHN-03", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/04-Authentication_Testing/03-Testing_for_Weak_Lock_Out_Mechanism/"},
+            {"id": "v5.0.0-6.3.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SEC-AUTHORIZATION",
+      "title": "Authorization",
+      "subagent": "authorization-agent",
+      "tests": [
+        {
+          "id": "SEC-AUTHZ-001",
+          "title": "Build role and permission matrix",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["authorization_docs", "route_inventory", "test_role_definitions"],
+          "suggested_local_tool": "local policy and route analyzer",
+          "evidence": ["role-operation matrix", "resource and field rules", "documentation gaps"],
+          "limitations": "Documented intent may differ from runtime enforcement.",
+          "executor": {
+            "handler": "source-pattern",
+            "config": {
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+              "patterns": ["requireRole", "isAdmin", "checkPermission", "authorize\\(", "hasPermission"]
+            }
+          },
+          "references": [
+            {"id": "v5.0.0-8.1.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-8.1.2", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-AUTHZ-002",
+          "title": "Verify function-level authorization across test roles",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "two_or_more_test_roles", "allowlisted_non_destructive_operations"],
+          "suggested_local_tool": "Playwright or local API client with role matrix",
+          "evidence": ["per-role status and response", "denied-operation proof", "route provenance"],
+          "limitations": "Coverage is limited to supplied roles and non-destructive operations.",
+          "references": [
+            {"id": "WSTG-v42-ATHZ-02", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/05-Authorization_Testing/02-Testing_for_Bypassing_Authorization_Schema/"},
+            {"id": "v5.0.0-8.2.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-8.3.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-AUTHZ-003",
+          "title": "Verify object and field access isolation",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "two_test_users", "owned_test_objects", "read_only_operations"],
+          "suggested_local_tool": "local API client using generated ownership matrix",
+          "evidence": ["owner and non-owner response comparison", "field visibility comparison", "redacted identifiers"],
+          "limitations": "Requires seeded test objects and cannot establish complete multi-tenant isolation from a small sample.",
+          "references": [
+            {"id": "WSTG-v42-ATHZ-04", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References/"},
+            {"id": "v5.0.0-8.2.2", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-8.2.3", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SEC-SESSION",
+      "title": "Session Management",
+      "subagent": "session-agent",
+      "tests": [
+        {
+          "id": "SEC-SESS-001",
+          "title": "Inspect session cookie attributes",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["browser_trace", "local_base_url"],
+          "suggested_local_tool": "OWASP ZAP passive scan or Playwright trace parser",
+          "evidence": ["Set-Cookie headers", "Secure HttpOnly SameSite scope", "redacted cookie names"],
+          "limitations": "Non-cookie tokens and environment-specific proxy rewriting require separate review.",
+          "executor": {
+            "handler": "zap-baseline",
+            "config": {
+              "url_source": "local_base_url",
+              "local_only": true,
+              "no_update_check": true,
+              "path": "/",
+              "method": "GET",
+              "document_checks": ["cookie-flags"]
+            }
+          },
+          "references": [
+            {"id": "WSTG-v42-SESS-02", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes/"},
+            {"id": "v5.0.0-7.2.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-SESS-002",
+          "title": "Verify session rotation after authentication",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "test_account", "login_flow"],
+          "suggested_local_tool": "Playwright with redacted token fingerprinting",
+          "evidence": ["pre-login and post-login token fingerprints", "rotation result"],
+          "limitations": "Token values must never be persisted; federated sign-in may require a local test identity provider.",
+          "references": [
+            {"id": "WSTG-v42-SESS-03", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/06-Session_Management_Testing/03-Testing_for_Session_Fixation/"},
+            {"id": "v5.0.0-7.2.4", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-SESS-003",
+          "title": "Verify logout invalidates the session",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "test_account", "non_mutating_authenticated_request"],
+          "suggested_local_tool": "local HTTP session harness",
+          "evidence": ["authenticated baseline", "logout response", "post-logout denial"],
+          "limitations": "Does not cover all devices or federated sessions unless corresponding test accounts are supplied.",
+          "references": [
+            {"id": "WSTG-v42-SESS-06", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/06-Session_Management_Testing/06-Testing_for_Logout_Functionality/"},
+            {"id": "v5.0.0-7.4.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-SESS-004",
+          "title": "Measure documented inactivity timeout",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "test_account", "documented_timeout", "maximum_wait"],
+          "suggested_local_tool": "local session timer harness",
+          "evidence": ["documented timeout", "observed timeout window", "post-timeout response"],
+          "limitations": "Long waits make this unsuitable for every run; absolute lifetime and SSO behavior need separate scenarios.",
+          "references": [
+            {"id": "WSTG-v42-SESS-07", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/06-Session_Management_Testing/07-Testing_Session_Timeout/"},
+            {"id": "v5.0.0-7.3.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SEC-INPUT-VALIDATION",
+      "title": "Input Validation",
+      "subagent": "input-validation-agent",
+      "tests": [
+        {
+          "id": "SEC-INPV-001",
+          "title": "Review server-side input validation",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["source_path", "openapi_path_optional", "validation_docs_optional"],
+          "suggested_local_tool": "Semgrep with locally pinned rules plus framework-aware source inspection",
+          "evidence": ["validation boundaries", "client-only validation candidates", "file and line references"],
+          "limitations": "Static findings require runtime confirmation and framework-specific interpretation.",
+          "executor": {
+            "handler": "semgrep",
+            "config": {
+              "source_root": ".",
+              "rules_path": "semgrep-rules/localproof-javascript.yml",
+              "rule_source": "local-pinned",
+              "no_remote_rules": true,
+              "no_update_check": true,
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+              "patterns": ["require\\([\"']joi[\"']\\)", "from [\"']joi[\"']", "from [\"']zod[\"']", "express-validator", "class-validator", "yup\\."]
+            }
+          },
+          "references": [
+            {"id": "v5.0.0-2.2.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-2.2.2", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-INPV-002",
+          "title": "Check reflected output encoding with inert markers",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "allowlisted_input_points", "non_executable_marker_set"],
+          "suggested_local_tool": "OWASP ZAP automation framework in bounded local mode",
+          "evidence": ["reflection context", "encoding transformation", "request and redacted response pair"],
+          "limitations": "Inert markers identify reflection and encoding concerns but do not prove exploitability.",
+          "executor": {
+            "handler": "zap-baseline",
+            "config": {
+              "url_source": "allowlisted_input_points",
+              "local_only": true,
+              "no_update_check": true,
+              "request_mode": "bounded-inert-markers",
+              "max_requests": 20
+            }
+          },
+          "references": [
+            {"id": "WSTG-v42-INPV-01", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting/"},
+            {"id": "v5.0.0-1.2.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-1.2.3", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-INPV-003",
+          "title": "Review parameterized database access",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["source_path", "database_access_map"],
+          "suggested_local_tool": "Semgrep with locally pinned query-construction rules",
+          "evidence": ["query construction sites", "parameterization evidence", "file and line references"],
+          "limitations": "Generated queries, stored procedures, and ORM escape hatches may require manual review.",
+          "executor": {
+            "handler": "semgrep",
+            "config": {
+              "source_root": ".",
+              "rules_path": "semgrep-rules/localproof-javascript.yml",
+              "rule_source": "local-pinned",
+              "no_remote_rules": true,
+              "no_update_check": true,
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+              "patterns": ["\\.query\\(\\s*[`'\"].*\\$\\{", "\\.query\\(\\s*[\"'].*\\+"]
+            }
+          },
+          "references": [
+            {"id": "WSTG-v42-INPV-05", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection/"},
+            {"id": "v5.0.0-1.2.4", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-INPV-004",
+          "title": "Review operating-system command construction",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["source_path", "process_execution_inventory"],
+          "suggested_local_tool": "Semgrep with locally pinned process-execution rules",
+          "evidence": ["command execution sites", "untrusted-data flow candidates", "file and line references"],
+          "limitations": "This scaffold does not execute commands or attempt exploitation; data-flow confirmation may need specialist review.",
+          "executor": {
+            "handler": "semgrep",
+            "config": {
+              "source_root": ".",
+              "rules_path": "semgrep-rules/localproof-javascript.yml",
+              "rule_source": "local-pinned",
+              "no_remote_rules": true,
+              "no_update_check": true,
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+              "patterns": ["exec\\(\\s*[`].*\\$\\{", "execSync\\(\\s*[`].*\\$\\{", "spawn\\(.*\\+"]
+            }
+          },
+          "references": [
+            {"id": "WSTG-v42-INPV-12", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/07-Input_Validation_Testing/12-Testing_for_Command_Injection/"},
+            {"id": "v5.0.0-1.2.5", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SEC-CONFIG-DEPS",
+      "title": "Configuration and Dependencies",
+      "subagent": "configuration-dependencies-agent",
+      "tests": [
+        {
+          "id": "SEC-CONF-001",
+          "title": "Inspect production configuration for debug and exposed metadata",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["source_path", "deployment_manifests", "local_base_url_optional"],
+          "suggested_local_tool": "ripgrep plus OWASP ZAP passive scan",
+          "evidence": ["debug settings", "directory listing observations", "version disclosure observations"],
+          "limitations": "Local staging configuration may differ from production.",
+          "executor": {
+            "handler": "source-pattern",
+            "config": {
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.yaml", "**/*.yml"],
+              "patterns": ["debug\\s*[:=]\\s*true", "NODE_ENV\\s*!==?\\s*[\"']production[\"']", "err\\.stack", "X-Powered-By"],
+              "concerning": true
+            }
+          },
+          "references": [
+            {"id": "WSTG-v42-CONF-02", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/02-Test_Application_Platform_Configuration/"},
+            {"id": "v5.0.0-13.4.2", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-13.4.3", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-13.4.6", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-CONF-002",
+          "title": "Detect secrets in source and build artifacts",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["source_path", "build_artifacts_optional"],
+          "suggested_local_tool": "Gitleaks offline with redacted output",
+          "evidence": ["secret type", "file and line", "fingerprint without secret value"],
+          "limitations": "Pattern matching produces false positives and cannot determine whether a credential is valid.",
+          "executor": {
+            "handler": "gitleaks",
+            "config": {
+              "source_root": ".",
+              "scan_mode": "filesystem",
+              "redact": true,
+              "no_update_check": true,
+              "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.yaml", "**/*.yml"],
+              "patterns": ["(api[_-]?key|secret|token|password)\\s*[:=]\\s*[\\\"'][^\\\"']{8,}[\\\"']"]
+            }
+          },
+          "references": [
+            {"id": "v5.0.0-13.3.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-CONF-003",
+          "title": "Create SBOM and compare dependencies with offline advisories",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["source_path_or_container_image", "local_advisory_database", "remediation_policy"],
+          "suggested_local_tool": "Syft plus Grype or Trivy in offline mode",
+          "evidence": ["SBOM", "component versions", "matched advisories", "database timestamp"],
+          "limitations": "The concrete executor creates the local SBOM first; vulnerability matching requires a separate offline Grype or Trivy pass and is limited by the freshness and ecosystem support of the preloaded advisory database.",
+          "executor": {
+            "handler": "syft",
+            "config": {
+              "source_root": ".",
+              "output_format": "spdx-json",
+              "local_only": true,
+              "no_update_check": true,
+              "patterns": ["package-lock.json", "pnpm-lock.yaml", "yarn.lock", "requirements.txt", "poetry.lock", "Pipfile.lock", "pom.xml", "gradle.lockfile", "**/*.spdx.json", "**/*sbom*.json"]
+            }
+          },
+          "references": [
+            {"id": "v5.0.0-15.1.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-15.1.2", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-15.2.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-CONF-004",
+          "title": "Check allowed HTTP methods and security headers",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "allowlisted_local_urls", "declared_methods"],
+          "suggested_local_tool": "local curl-compatible HTTP client or OWASP ZAP baseline",
+          "evidence": ["response headers", "method status matrix", "redirect behavior"],
+          "limitations": "Headers may be added by production gateways absent from the local target.",
+          "executor": {
+            "handler": "zap-baseline",
+            "config": {
+              "url_source": "allowlisted_local_urls",
+              "local_only": true,
+              "no_update_check": true,
+              "path": "/",
+              "method": "GET",
+              "capture_headers": ["content-security-policy", "x-content-type-options", "referrer-policy", "permissions-policy"]
+            }
+          },
+          "references": [
+            {"id": "WSTG-v42-CONF-06", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods/"},
+            {"id": "v5.0.0-4.1.4", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-13.4.4", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SEC-API",
+      "title": "API and Web Services",
+      "subagent": "api-security-agent",
+      "tests": [
+        {
+          "id": "SEC-API-001",
+          "title": "Validate API inventory and HTTP response media types",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "openapi_path", "allowlisted_local_base_url", "non_mutating_operations"],
+          "suggested_local_tool": "local OpenAPI parser and HTTP client",
+          "evidence": ["operation inventory", "documented versus observed status", "Content-Type comparison"],
+          "limitations": "Only declared non-mutating operations run automatically; undocumented and stateful APIs require separate review.",
+          "references": [
+            {"id": "WSTG-v42-INFO-06", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/01-Information_Gathering/06-Identify_Application_Entry_Points/"},
+            {"id": "v5.0.0-4.1.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-API-002",
+          "title": "Apply role and object authorization checks to API operations",
+          "safety_level": "safe-active",
+          "default_enabled": false,
+          "inputs": ["explicit_scope", "openapi_path", "test_role_credentials", "seeded_test_objects"],
+          "suggested_local_tool": "purpose-built local OpenAPI test runner",
+          "evidence": ["operation-role matrix", "owner/non-owner comparisons", "field-level response diff"],
+          "limitations": "Requires accurate role semantics, test data, and safe operation classification.",
+          "references": [
+            {"id": "WSTG-v42-ATHZ-04", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References/"},
+            {"id": "v5.0.0-8.2.2", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-15.3.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        },
+        {
+          "id": "SEC-API-003",
+          "title": "Review GraphQL exposure and resource controls",
+          "safety_level": "passive",
+          "default_enabled": true,
+          "inputs": ["source_path", "graphql_schema_optional", "deployment_configuration"],
+          "suggested_local_tool": "local GraphQL schema and configuration inspector",
+          "evidence": ["GraphQL endpoint", "introspection setting", "depth or cost controls", "source provenance"],
+          "limitations": "Passive review cannot prove runtime enforcement; load or denial-of-service testing is excluded.",
+          "executor": {
+            "handler": "source-pattern",
+            "config": {
+              "include": ["**/*.js", "**/*.ts"],
+              "patterns": ["introspection\\s*:\\s*true", "playground\\s*:\\s*true"],
+              "concerning": true
+            }
+          },
+          "references": [
+            {"id": "WSTG-v42-APIT-01", "url": "https://wstg.owasp.org/v4.2/4-Web_Application_Security_Testing/12-API_Testing/01-Testing_GraphQL/"},
+            {"id": "v5.0.0-4.3.1", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"},
+            {"id": "v5.0.0-4.3.2", "url": "https://github.com/OWASP/ASVS/tree/v5.0.0"}
+          ]
+        }
+      ]
+    }
+  ]
+}

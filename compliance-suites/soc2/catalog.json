@@ -1,0 +1,441 @@
+{
+  "schema_version": "0.1.0",
+  "suite": {
+    "id": "soc2-readiness",
+    "title": "SOC 2 Type II Readiness",
+    "framework_owner": "AICPA",
+    "framework_version": "2017 Trust Services Criteria with revised points of focus (2022)",
+    "purpose": "Local readiness checks and evidence inventory for a future SOC 2 Type II examination.",
+    "certification_claim": false,
+    "runtime_network_policy": "deny_external",
+    "disclaimer": "Results are readiness observations, not a SOC 2 report, audit opinion, attestation, certification, or substitute for examination by an appropriately licensed independent CPA firm. Management defines the system and controls; the service auditor determines scope, procedures, sampling, and conclusions."
+  },
+  "sources": [
+    {
+      "id": "AICPA-TSC-2017-RPOF-2022",
+      "title": "2017 Trust Services Criteria (With Revised Points of Focus - 2022)",
+      "publisher": "AICPA & CIMA",
+      "authority": "official",
+      "version": "2017 criteria; revised points of focus 2022",
+      "url": "https://www.aicpa-cima.com/resources/download/2017-trust-services-criteria-with-revised-points-of-focus-2022",
+      "retrieved": "2026-09-12",
+      "use": "Stable Trust Services Criteria identifiers and category structure."
+    },
+    {
+      "id": "AICPA-DC-2018-RIG-2022",
+      "title": "2018 SOC 2 Description Criteria (With Revised Implementation Guidance - 2022)",
+      "publisher": "AICPA & CIMA",
+      "authority": "official",
+      "version": "2018 criteria; revised implementation guidance 2022",
+      "url": "https://www.aicpa-cima.com/category/resources/technology?type=framework",
+      "retrieved": "2026-09-12",
+      "use": "Readiness review of management's system description."
+    },
+    {
+      "id": "AICPA-SOC-SUITE",
+      "title": "System and Organization Controls: SOC Suite of Services",
+      "publisher": "AICPA & CIMA",
+      "authority": "official",
+      "version": "Web guidance; retrieved 2026-09-12",
+      "url": "https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services",
+      "retrieved": "2026-09-12",
+      "use": "Authoritative boundary: SOC services are CPA assurance services."
+    },
+    {
+      "id": "AICPA-SOC2-GUIDE-2022",
+      "title": "SOC 2 Reporting on an Examination of Controls at a Service Organization Relevant to Security, Availability, Processing Integrity, Confidentiality, or Privacy",
+      "publisher": "AICPA & CIMA",
+      "authority": "authoritative-paid-guide",
+      "version": "2022 guide",
+      "url": "https://www.aicpa-cima.com/cpe-learning/publication/soc-2-reporting-on-an-examination-of-controls-at-a-service-organization-relevant-to-security-availability-processing-integrity-confidentiality-or-privacy",
+      "retrieved": "2026-09-12",
+      "use": "Authoritative examination guidance for CPAs; not embedded or reproduced by this catalog."
+    }
+  ],
+  "applicability": {
+    "required_baseline": {
+      "category": "security",
+      "criteria_prefixes": ["CC1", "CC2", "CC3", "CC4", "CC5", "CC6", "CC7", "CC8", "CC9"]
+    },
+    "additional_categories_selected_by_scope": [
+      {"category": "availability", "criteria_prefix": "A1"},
+      {"category": "processing_integrity", "criteria_prefix": "PI1"},
+      {"category": "confidentiality", "criteria_prefix": "C1"},
+      {"category": "privacy", "criteria_prefixes": ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"]}
+    ],
+    "rule": "Run Common Criteria readiness checks for every target. Run additional-category checks only when management's intended SOC 2 scope includes that category. Final scope and criteria suitability are matters for management and the independent service auditor."
+  },
+  "criteria_groups": [
+    {
+      "id": "SOC2-CC1-CONTROL-ENVIRONMENT",
+      "title": "Governance and control environment",
+      "source_ids": ["CC1.1", "CC1.2", "CC1.3", "CC1.4", "CC1.5"],
+      "readiness_focus": "Integrity, oversight, accountability, competence, and organizational structure.",
+      "primary_check_class": "organizational_evidence",
+      "automation_boundary": "The tool can inventory policies, approvals, role records, and dated evidence; it cannot judge governance effectiveness or auditor sufficiency."
+    },
+    {
+      "id": "SOC2-CC2-COMMUNICATION",
+      "title": "Information and communication",
+      "source_ids": ["CC2.1", "CC2.2", "CC2.3"],
+      "readiness_focus": "Quality and communication of internal and external control information.",
+      "primary_check_class": "hybrid",
+      "automation_boundary": "Local checks can locate current policies, acknowledgements, and external commitments; understanding and effectiveness require interviews and audit procedures."
+    },
+    {
+      "id": "SOC2-CC3-RISK-ASSESSMENT",
+      "title": "Risk assessment",
+      "source_ids": ["CC3.1", "CC3.2", "CC3.3", "CC3.4"],
+      "readiness_focus": "Objectives, risk identification and analysis, fraud risk, and significant change.",
+      "primary_check_class": "organizational_evidence",
+      "automation_boundary": "The tool can test completeness, dates, ownership, and traceability of a risk register; it cannot determine whether management's risk judgments are reasonable."
+    },
+    {
+      "id": "SOC2-CC4-MONITORING",
+      "title": "Monitoring activities",
+      "source_ids": ["CC4.1", "CC4.2"],
+      "readiness_focus": "Ongoing or separate evaluations and communication of deficiencies.",
+      "primary_check_class": "hybrid",
+      "automation_boundary": "Local evidence timelines can show that reviews and remediation records exist; an auditor evaluates design and operating effectiveness."
+    },
+    {
+      "id": "SOC2-CC5-CONTROL-ACTIVITIES",
+      "title": "Control activities",
+      "source_ids": ["CC5.1", "CC5.2", "CC5.3"],
+      "readiness_focus": "Selected control activities, technology controls, and implementation through policies and procedures.",
+      "primary_check_class": "hybrid",
+      "automation_boundary": "The tool can map stated controls to technical configurations and evidence, but cannot conclude the overall control system is effective."
+    },
+    {
+      "id": "SOC2-CC6-LOGICAL-PHYSICAL-ACCESS",
+      "title": "Logical and physical access controls",
+      "source_ids": ["CC6.1", "CC6.2", "CC6.3", "CC6.4", "CC6.5", "CC6.6", "CC6.7", "CC6.8"],
+      "readiness_focus": "Access architecture, provisioning, removal, authorization, boundaries, transmission, and malicious software safeguards.",
+      "primary_check_class": "hybrid",
+      "automation_boundary": "Repository and exported-configuration checks cover part of logical access. Physical safeguards, actual user behavior, and control operation require evidence and auditor testing."
+    },
+    {
+      "id": "SOC2-CC7-SYSTEM-OPERATIONS",
+      "title": "System operations and incident handling",
+      "source_ids": ["CC7.1", "CC7.2", "CC7.3", "CC7.4", "CC7.5"],
+      "readiness_focus": "Configuration, monitoring, anomaly evaluation, incident response, and recovery.",
+      "primary_check_class": "hybrid",
+      "automation_boundary": "Local analyzers can inspect configuration and sampled logs and exercises. They cannot prove complete monitoring coverage or effective response throughout the examination period."
+    },
+    {
+      "id": "SOC2-CC8-CHANGE-MANAGEMENT",
+      "title": "Change management",
+      "source_ids": ["CC8.1"],
+      "readiness_focus": "Authorization, design, development, configuration, testing, approval, and implementation of changes.",
+      "primary_check_class": "hybrid",
+      "automation_boundary": "Local repository history and exported tickets can identify exceptions; auditor-selected samples and contextual review remain necessary."
+    },
+    {
+      "id": "SOC2-CC9-RISK-MITIGATION",
+      "title": "Risk mitigation and vendors",
+      "source_ids": ["CC9.1", "CC9.2"],
+      "readiness_focus": "Risk responses and risks arising from vendors and business partners.",
+      "primary_check_class": "organizational_evidence",
+      "automation_boundary": "The tool can reconcile vendor inventories, reviews, contracts, and risks; management and the auditor evaluate sufficiency."
+    },
+    {
+      "id": "SOC2-A1-AVAILABILITY",
+      "title": "Availability",
+      "source_ids": ["A1.1", "A1.2", "A1.3"],
+      "readiness_focus": "Capacity, environmental protections, backup, recovery, and continuity when availability is in scope.",
+      "primary_check_class": "hybrid",
+      "automation_boundary": "Local capacity and restore tests provide point-in-time evidence only; commitments, historical operation, and auditor evaluation remain outside the tool."
+    },
+    {
+      "id": "SOC2-PI1-PROCESSING-INTEGRITY",
+      "title": "Processing integrity",
+      "source_ids": ["PI1.1", "PI1.2", "PI1.3", "PI1.4", "PI1.5"],
+      "readiness_focus": "Processing objectives and controls over inputs, processing, outputs, and stored information when processing integrity is in scope.",
+      "primary_check_class": "hybrid",
+      "automation_boundary": "Local functional and reconciliation tests can sample stated processing behavior, but cannot establish operation for all transactions or the full period."
+    },
+    {
+      "id": "SOC2-C1-CONFIDENTIALITY",
+      "title": "Confidentiality",
+      "source_ids": ["C1.1", "C1.2"],
+      "readiness_focus": "Identification, protection, retention, and disposal of confidential information when confidentiality is in scope.",
+      "primary_check_class": "hybrid",
+      "automation_boundary": "Local scans can locate classification, encryption, retention, and disposal evidence but cannot establish complete enforcement across the organization."
+    },
+    {
+      "id": "SOC2-P-PRIVACY",
+      "title": "Privacy",
+      "source_ids": ["P1.1", "P2.1", "P3.1", "P3.2", "P4.1", "P4.2", "P4.3", "P5.1", "P5.2", "P6.1", "P6.2", "P6.3", "P6.4", "P6.5", "P6.6", "P6.7", "P7.1", "P8.1"],
+      "readiness_focus": "Notice, choice and consent, collection, use and retention, access, disclosure, data quality, and privacy monitoring when privacy is in scope.",
+      "primary_check_class": "hybrid",
+      "automation_boundary": "Local document and application checks can identify evidence and inconsistencies; legal conclusions, population completeness, and operating effectiveness require qualified human review and audit procedures."
+    }
+  ],
+  "test_scaffolds": [
+    {
+      "id": "SOC2-GOV-001",
+      "title": "Governance evidence inventory",
+      "criteria": ["CC1.1", "CC1.2", "CC1.3", "CC1.4", "CC1.5"],
+      "type": "manual_evidence",
+      "applicability": "all SOC 2 readiness assessments",
+      "inputs": ["approved governance policies", "organization chart", "board or oversight minutes", "role descriptions", "training and acknowledgement exports"],
+      "local_only_tool": "evidence-inventory",
+      "expected_evidence": ["document owner", "approval date", "effective date", "version", "review cadence", "local source path and hash"],
+      "limitations": "Presence and freshness do not demonstrate that leadership, oversight, accountability, or competence operated effectively. Requires interviews, sampling, and service-auditor judgment."
+    },
+    {
+      "id": "SOC2-COM-001",
+      "title": "Policy publication and acknowledgement coverage",
+      "criteria": ["CC2.1", "CC2.2", "CC2.3"],
+      "type": "hybrid",
+      "applicability": "when local policy, personnel, customer-commitment, and acknowledgement exports are available",
+      "inputs": ["policy library", "employee roster export", "acknowledgement records", "customer-facing commitments"],
+      "local_only_tool": "policy-acknowledgement-reconciler",
+      "expected_evidence": ["current policy set", "missing acknowledgements", "stale or conflicting communications", "source hashes"],
+      "limitations": "Cannot determine whether recipients understood communications or whether all relevant external parties received them."
+    },
+    {
+      "id": "SOC2-RISK-001",
+      "title": "Risk register completeness and freshness",
+      "criteria": ["CC3.1", "CC3.2", "CC3.3", "CC3.4", "CC9.1"],
+      "type": "manual_evidence",
+      "applicability": "when a local risk register and control inventory are provided",
+      "inputs": ["risk register", "control inventory", "fraud-risk assessment", "significant-change records"],
+      "local_only_tool": "risk-register-linter",
+      "expected_evidence": ["risk owner", "assessment date", "likelihood", "impact", "response", "mapped controls", "overdue reviews"],
+      "limitations": "Checks structure and traceability only. It cannot decide whether objectives are suitable or risks and responses are complete or reasonable."
+    },
+    {
+      "id": "SOC2-MON-001",
+      "title": "Control monitoring and deficiency lifecycle",
+      "criteria": ["CC4.1", "CC4.2", "CC5.1", "CC5.2", "CC5.3"],
+      "type": "hybrid",
+      "applicability": "when monitoring results, exceptions, remediation records, policies, and control mappings are available",
+      "inputs": ["control inventory", "monitoring records", "deficiency log", "remediation evidence"],
+      "local_only_tool": "control-evidence-timeline",
+      "expected_evidence": ["scheduled versus completed reviews", "identified deficiencies", "owners", "remediation dates", "closure evidence"],
+      "limitations": "Does not determine whether controls are suitably designed or whether auditor samples support operating effectiveness."
+    },
+    {
+      "id": "SOC2-ACCESS-001",
+      "title": "Repository authentication and authorization configuration review",
+      "criteria": ["CC6.1", "CC6.2", "CC6.3", "CC6.6"],
+      "type": "automated_technical",
+      "applicability": "software targets with readable source and local deployment configuration",
+      "inputs": ["source repository", "dependency manifests", "authentication configuration", "route and middleware definitions"],
+      "local_only_tool": "static-access-control-inspector",
+      "expected_evidence": ["authentication entry points", "authorization middleware coverage", "privileged routes", "session configuration", "file and line references"],
+      "limitations": "Static findings are indicators. They do not prove production configuration, identity-provider enforcement, correct business authorization, or operation throughout a period.",
+      "executor": {
+        "handler": "source-pattern",
+        "config": {
+          "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+          "patterns": ["passport\\.(authenticate|use)\\(", "requireAuth", "isAuthenticated", "authorize\\(", "requireRole", "checkPermission", "jwt\\.verify"]
+        }
+      }
+    },
+    {
+      "id": "SOC2-ACCESS-002",
+      "title": "User access population reconciliation",
+      "criteria": ["CC6.2", "CC6.3", "CC6.4", "CC6.5"],
+      "type": "hybrid",
+      "applicability": "when local exports of identities, roles, privileged accounts, personnel status, and access-review decisions are available",
+      "inputs": ["identity export", "role export", "HR status export", "access review records"],
+      "local_only_tool": "access-population-reconciler",
+      "expected_evidence": ["orphan accounts", "departed-user access", "privilege conflicts", "unreviewed accounts", "dated reconciliation artifact"],
+      "limitations": "Export completeness and authenticity must be established. Physical access and source-system enforcement are outside this check."
+    },
+    {
+      "id": "SOC2-ACCESS-003",
+      "title": "Transport and stored-secret configuration review",
+      "criteria": ["CC6.1", "CC6.7", "CC6.8"],
+      "type": "automated_technical",
+      "applicability": "locally runnable web/API targets and source repositories",
+      "inputs": ["local target URL", "source repository", "deployment configuration", "test account if required"],
+      "local_only_tool": "local-tls-header-and-secret-scanner",
+      "expected_evidence": ["local TLS and security-header observations", "plaintext transport findings", "committed-secret indicators", "configuration references"],
+      "limitations": "A local environment may differ from production. Secret pattern matches require review; malware prevention and organization-wide transmission controls are not fully tested.",
+      "executor": {
+        "handler": "source-pattern",
+        "config": {
+          "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.yaml", "**/*.yml"],
+          "patterns": ["(api[_-]?key|secret|token|password)\\s*[:=]\\s*[\\\"'][^\\\"']{8,}[\\\"']"],
+          "concerning": true
+        }
+      }
+    },
+    {
+      "id": "SOC2-OPS-001",
+      "title": "Security logging and alert evidence review",
+      "criteria": ["CC7.1", "CC7.2", "CC7.3"],
+      "type": "hybrid",
+      "applicability": "when application configuration and a bounded local log sample are available",
+      "inputs": ["logging configuration", "alert definitions", "local audit-log sample", "asset inventory"],
+      "local_only_tool": "logging-coverage-analyzer",
+      "expected_evidence": ["security-relevant event coverage", "timestamp and identity fields", "alert linkage", "unmonitored components", "sample hashes"],
+      "limitations": "Sampled logs do not establish complete telemetry, alert accuracy, continuous monitoring, or response effectiveness over the Type II period."
+    },
+    {
+      "id": "SOC2-OPS-002",
+      "title": "Incident response exercise evidence",
+      "criteria": ["CC7.3", "CC7.4", "CC7.5"],
+      "type": "manual_evidence",
+      "applicability": "when incident plans, incident records, exercises, and corrective actions are provided",
+      "inputs": ["incident response plan", "incident register", "exercise reports", "post-incident reviews"],
+      "local_only_tool": "incident-evidence-reconciler",
+      "expected_evidence": ["classification and escalation records", "response timeline", "communications", "recovery evidence", "lessons and tracked actions"],
+      "limitations": "Cannot establish that all incidents were captured or that personnel would respond effectively in an actual event."
+    },
+    {
+      "id": "SOC2-CHANGE-001",
+      "title": "Source change authorization and test traceability",
+      "criteria": ["CC8.1"],
+      "type": "automated_technical",
+      "applicability": "Git repositories with locally exported pull-request, ticket, approval, and CI metadata where available",
+      "inputs": ["Git history", "local change-ticket export", "local approval export", "local CI result export"],
+      "local_only_tool": "git-change-control-analyzer",
+      "expected_evidence": ["change sample", "author", "reviewer", "linked ticket", "test result", "deployment reference", "exceptions"],
+      "limitations": "Git alone cannot prove approval or production deployment. Local exports may omit activity; auditor sampling and population-completeness procedures remain necessary.",
+      "executor": {
+        "handler": "file-presence",
+        "config": {
+          "patterns": ["package-lock.json", "pnpm-lock.yaml", "yarn.lock", ".github/workflows/*.yml", ".github/workflows/*.yaml", "**/test/**", "**/tests/**"]
+        }
+      }
+    },
+    {
+      "id": "SOC2-VENDOR-001",
+      "title": "Vendor inventory and review reconciliation",
+      "criteria": ["CC9.2"],
+      "type": "manual_evidence",
+      "applicability": "when vendor, contract, data-flow, and vendor-review records are locally available",
+      "inputs": ["vendor inventory", "vendor risk assessments", "contracts", "subprocessor list", "data-flow inventory"],
+      "local_only_tool": "vendor-evidence-reconciler",
+      "expected_evidence": ["unreviewed vendors", "expired reviews", "missing owners", "contract-control gaps", "data-flow mismatches"],
+      "limitations": "Cannot verify third-party representations or determine whether vendor risk treatment is sufficient."
+    },
+    {
+      "id": "SOC2-TYPE2-001",
+      "title": "Operating-period evidence continuity",
+      "criteria": ["CC4.1", "CC4.2", "CC5.3"],
+      "type": "manual_evidence",
+      "applicability": "Type II readiness when a proposed examination period and recurring controls are defined",
+      "inputs": ["proposed period", "control frequencies", "dated evidence index", "exceptions and remediation records"],
+      "local_only_tool": "period-evidence-coverage-analyzer",
+      "expected_evidence": ["expected evidence instances", "observed instances", "gaps by control and period", "late execution", "source hashes"],
+      "limitations": "Evidence continuity is not an opinion on operating effectiveness. Only the service auditor sets procedures, selects samples, evaluates exceptions, and issues the SOC 2 Type II report."
+    },
+    {
+      "id": "SOC2-DESC-001",
+      "title": "System description readiness inventory",
+      "criteria": ["DC1", "DC2", "DC3", "DC4", "DC5", "DC6", "DC7", "DC8", "DC9"],
+      "type": "manual_evidence",
+      "applicability": "all SOC 2 readiness assessments",
+      "inputs": ["draft system description", "service commitments", "architecture and data-flow diagrams", "system inventory", "control inventory", "subservice organization list"],
+      "local_only_tool": "system-description-linter",
+      "expected_evidence": ["missing description sections", "unmapped components", "scope inconsistencies", "subservice-organization treatment", "source references"],
+      "limitations": "DC1-DC9 refer to AICPA Description Criteria rather than Trust Services Criteria. The tool does not determine whether the description is fairly presented."
+    },
+    {
+      "id": "SOC2-AVAIL-001",
+      "title": "Capacity and resilience configuration review",
+      "criteria": ["A1.1", "A1.2"],
+      "type": "hybrid",
+      "applicability": "only when availability is in scope and local deployment configuration and capacity evidence exist",
+      "inputs": ["availability commitments", "architecture", "resource limits", "monitoring export", "capacity plan"],
+      "local_only_tool": "availability-config-analyzer",
+      "expected_evidence": ["stated commitments", "single points of failure", "resource thresholds", "capacity-review dates", "configuration references"],
+      "limitations": "A configuration review cannot prove achieved uptime, environmental safeguards, production capacity, or historical operating effectiveness.",
+      "executor": {
+        "handler": "source-pattern",
+        "config": {
+          "include": ["**/docker-compose*.yml", "**/docker-compose*.yaml", "**/*.yaml", "**/*.yml"],
+          "patterns": ["mem_limit\\s*:", "cpus\\s*:", "limits\\s*:", "memory\\s*:"]
+        }
+      }
+    },
+    {
+      "id": "SOC2-AVAIL-002",
+      "title": "Backup restore exercise",
+      "criteria": ["A1.2", "A1.3"],
+      "type": "automated_technical",
+      "applicability": "only when availability is in scope and a disposable local test environment and approved backup are provided",
+      "inputs": ["local encrypted backup", "restore procedure", "disposable target", "expected integrity manifest"],
+      "local_only_tool": "sandboxed-backup-restore-runner",
+      "expected_evidence": ["start and completion timestamps", "restore logs", "integrity comparison", "observed recovery duration", "failures"],
+      "limitations": "A single local exercise does not prove production recovery objectives, environmental protections, or operation throughout the examination period.",
+      "executor": {
+        "handler": "file-presence",
+        "config": {
+          "patterns": ["**/*backup*.sh", "**/*restore*.sh", "**/*backup*.yml", "**/*backup*.yaml", "**/*.dump", "**/pg_dump*", "**/mongodump*"]
+        }
+      }
+    },
+    {
+      "id": "SOC2-PI-001",
+      "title": "Processing input-output integrity sample",
+      "criteria": ["PI1.1", "PI1.2", "PI1.3", "PI1.4", "PI1.5"],
+      "type": "automated_technical",
+      "applicability": "only when processing integrity is in scope and expected behavior and safe local test data are defined",
+      "inputs": ["processing objectives", "local API or CLI contract", "test vectors", "expected outputs", "error-handling rules"],
+      "local_only_tool": "contract-and-reconciliation-test-runner",
+      "expected_evidence": ["accepted and rejected inputs", "processing results", "output reconciliation", "error behavior", "stored-record comparison"],
+      "limitations": "Tests only supplied scenarios in a local environment and do not establish completeness, accuracy, timeliness, authorization, or operation for the full transaction population.",
+      "executor": {
+        "handler": "file-presence",
+        "config": {
+          "patterns": ["**/*.contract.test.*", "**/*contract*.json", "**/test/**", "**/tests/**", "openapi.yaml", "openapi.yml"]
+        }
+      }
+    },
+    {
+      "id": "SOC2-CONF-001",
+      "title": "Confidential-data lifecycle readiness",
+      "criteria": ["C1.1", "C1.2"],
+      "type": "hybrid",
+      "applicability": "only when confidentiality is in scope and classification, storage, retention, and disposal evidence is available",
+      "inputs": ["data classification policy", "data inventory", "storage configuration", "retention schedule", "disposal records"],
+      "local_only_tool": "confidential-data-control-analyzer",
+      "expected_evidence": ["unclassified repositories", "unencrypted local stores", "retention mismatches", "missing disposal evidence", "source references"],
+      "limitations": "Pattern scanning is incomplete and can produce false positives. It cannot prove all confidential information is identified or protected across production.",
+      "executor": {
+        "handler": "source-pattern",
+        "config": {
+          "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.yaml", "**/*.yml"],
+          "patterns": ["bcrypt", "argon2", "createCipheriv", "crypto\\.createHash", "AES-256", "encrypt\\("]
+        }
+      }
+    },
+    {
+      "id": "SOC2-PRIV-001",
+      "title": "Privacy notice, collection, and consent consistency",
+      "criteria": ["P1.1", "P2.1", "P3.1", "P3.2", "P4.1"],
+      "type": "hybrid",
+      "applicability": "only when privacy is in scope and a locally runnable user interface plus privacy documents are provided",
+      "inputs": ["privacy notices", "consent records", "data inventory", "local application", "collection forms"],
+      "local_only_tool": "privacy-notice-flow-analyzer",
+      "expected_evidence": ["declared versus observed fields", "notice availability", "consent-flow observations", "purpose and retention mappings", "screenshots and source references"],
+      "limitations": "Does not provide a legal opinion, verify all collection channels, or establish informed consent and operational compliance over time."
+    },
+    {
+      "id": "SOC2-PRIV-002",
+      "title": "Privacy lifecycle and rights evidence",
+      "criteria": ["P4.2", "P4.3", "P5.1", "P5.2", "P6.1", "P6.2", "P6.3", "P6.4", "P6.5", "P6.6", "P6.7", "P7.1", "P8.1"],
+      "type": "manual_evidence",
+      "applicability": "only when privacy is in scope and local rights-request, disclosure, retention, quality, complaint, and monitoring records are available",
+      "inputs": ["rights-request register", "retention and deletion evidence", "disclosure and breach records", "complaint records", "privacy reviews"],
+      "local_only_tool": "privacy-lifecycle-evidence-reconciler",
+      "expected_evidence": ["request timeliness", "retention exceptions", "disclosure authorizations", "correction records", "complaint outcomes", "monitoring gaps"],
+      "limitations": "Record review cannot establish population completeness, legal compliance, or control effectiveness; qualified privacy and service-auditor review is required."
+    }
+  ],
+  "result_states": ["pass_readiness_check", "fail_readiness_check", "needs_manual_review", "insufficient_evidence", "not_applicable", "not_run"],
+  "prohibited_result_terms": ["certified", "SOC 2 compliant", "audit passed", "attested"],
+  "runtime_requirements": {
+    "external_api_calls": false,
+    "remote_inference": false,
+    "allowed_inputs": "local files, local databases, local container services, and explicitly authorized local test endpoints",
+    "evidence_provenance": ["absolute or workspace-relative source path", "SHA-256 hash", "collection timestamp", "tool version", "test parameters"],
+    "default_behavior": "read-only; active tests require an authorized disposable local target"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "localproof-agent-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "localproof": "./bin/localproof.mjs",
+    "localproof-evidence": "./bin/evidence.mjs",
+    "localproof-rfp-export": "./bin/rfp-export.mjs"
+  },
+  "scripts": {
+    "plan": "node bin/localproof.mjs plan",
+    "run": "node bin/localproof.mjs run",
+    "evidence": "node bin/evidence.mjs",
+    "rfp": "node bin/rfp-export.mjs",
+    "test": "node --test",
+    "tools": "node bin/check-tools.mjs",
+    "policy": "node bin/generate-openshell-policy.mjs",
+    "check": "node --check bin/localproof.mjs && node --check bin/evidence.mjs && node --check bin/rfp-export.mjs && node --check bin/generate-openshell-policy.mjs && node --check lib/evidence.mjs && node --check lib/mongodb.mjs && node --check lib/reporting.mjs && node --check lib/rfp-export.mjs && node --check lib/tool-adapters.mjs && node --test"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "mongodb": "^7.6.0",
+    "yaml": "^2.8.1"
+  }
+}

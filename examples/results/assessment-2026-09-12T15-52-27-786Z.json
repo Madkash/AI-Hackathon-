@@ -1,0 +1,1685 @@
+{
+  "status": "completed",
+  "classification": "readiness-assessment",
+  "target": {
+    "name": "example-nextjs-storefront",
+    "version": "1.0.0",
+    "environment": "isolated-staging",
+    "source_path": "C:/Projects/dell x nvidia hackathon/examples/nextjs-storefront"
+  },
+  "external_network": "deny",
+  "generated_at": "2026-09-12T15:52:27.788Z",
+  "results": [
+    {
+      "suite": "soc2",
+      "id": "SOC2-GOV-001",
+      "title": "Governance evidence inventory",
+      "control": "CC1.1, CC1.2, CC1.3, CC1.4, CC1.5",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-COM-001",
+      "title": "Policy publication and acknowledgement coverage",
+      "control": "CC2.1, CC2.2, CC2.3",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-RISK-001",
+      "title": "Risk register completeness and freshness",
+      "control": "CC3.1, CC3.2, CC3.3, CC3.4, CC9.1",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-MON-001",
+      "title": "Control monitoring and deficiency lifecycle",
+      "control": "CC4.1, CC4.2, CC5.1, CC5.2, CC5.3",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-ACCESS-001",
+      "title": "Repository authentication and authorization configuration review",
+      "control": "CC6.1, CC6.2, CC6.3, CC6.6",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-ACCESS-002",
+      "title": "User access population reconciliation",
+      "control": "CC6.2, CC6.3, CC6.4, CC6.5",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-ACCESS-003",
+      "title": "Transport and stored-secret configuration review",
+      "control": "CC6.1, CC6.7, CC6.8",
+      "handler": "source-pattern",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-observed",
+      "evidence": [],
+      "limitations": [
+        "Source pattern matches require human validation and may include false positives"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-OPS-001",
+      "title": "Security logging and alert evidence review",
+      "control": "CC7.1, CC7.2, CC7.3",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-OPS-002",
+      "title": "Incident response exercise evidence",
+      "control": "CC7.3, CC7.4, CC7.5",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-CHANGE-001",
+      "title": "Source change authorization and test traceability",
+      "control": "CC8.1",
+      "handler": "file-presence",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-observed",
+      "evidence": [],
+      "limitations": [
+        "File presence does not prove that a control operates effectively"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-VENDOR-001",
+      "title": "Vendor inventory and review reconciliation",
+      "control": "CC9.2",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-TYPE2-001",
+      "title": "Operating-period evidence continuity",
+      "control": "CC4.1, CC4.2, CC5.3",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-DESC-001",
+      "title": "System description readiness inventory",
+      "control": "DC1, DC2, DC3, DC4, DC5, DC6, DC7, DC8, DC9",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-AVAIL-001",
+      "title": "Capacity and resilience configuration review",
+      "control": "A1.1, A1.2",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-AVAIL-002",
+      "title": "Backup restore exercise",
+      "control": "A1.2, A1.3",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-PI-001",
+      "title": "Processing input-output integrity sample",
+      "control": "PI1.1, PI1.2, PI1.3, PI1.4, PI1.5",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-CONF-001",
+      "title": "Confidential-data lifecycle readiness",
+      "control": "C1.1, C1.2",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-PRIV-001",
+      "title": "Privacy notice, collection, and consent consistency",
+      "control": "P1.1, P2.1, P3.1, P3.2, P4.1",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "soc2",
+      "id": "SOC2-PRIV-002",
+      "title": "Privacy lifecycle and rights evidence",
+      "control": "P4.2, P4.3, P5.1, P5.2, P6.1, P6.2, P6.3, P6.4, P6.5, P6.6, P6.7, P7.1, P8.1",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-CL4-001",
+      "title": "ISMS context and boundary evidence",
+      "control": "clause-4-context",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-CL4-002",
+      "title": "Climate relevance consideration record",
+      "control": "clause-4-context",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-CL5-001",
+      "title": "Leadership, policy, and assigned responsibilities",
+      "control": "clause-5-leadership",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-CL6-001",
+      "title": "Risk assessment and treatment traceability",
+      "control": "clause-6-planning",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-CL7-001",
+      "title": "Resources, competence, awareness, communication, and controlled documentation",
+      "control": "clause-7-support",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-CL8-001",
+      "title": "Operational execution of risk treatment",
+      "control": "clause-8-operation",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-CL9-001",
+      "title": "Measurement, internal audit, and management review evidence",
+      "control": "clause-9-performance-evaluation",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-CL10-001",
+      "title": "Corrective action and continual improvement trail",
+      "control": "clause-10-improvement",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-ORG-001",
+      "title": "Information asset inventory and ownership consistency",
+      "control": "annex-a-organizational",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-ORG-002",
+      "title": "Access governance and periodic review trail",
+      "control": "annex-a-organizational",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-ORG-003",
+      "title": "Supplier and external-service security oversight",
+      "control": "annex-a-organizational",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-ORG-004",
+      "title": "Incident readiness and case traceability",
+      "control": "annex-a-organizational",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-ORG-005",
+      "title": "Continuity and ICT recovery evidence",
+      "control": "annex-a-organizational",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-ORG-006",
+      "title": "Legal, contractual, privacy, and records obligations register",
+      "control": "annex-a-organizational",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-PPL-001",
+      "title": "Personnel security lifecycle evidence",
+      "control": "annex-a-people",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-PPL-002",
+      "title": "Security awareness and role-based competence coverage",
+      "control": "annex-a-people",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-PPL-003",
+      "title": "Remote-working and security-event reporting readiness",
+      "control": "annex-a-people",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-PHY-001",
+      "title": "Physical access and protected-area evidence",
+      "control": "annex-a-physical",
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-PHY-002",
+      "title": "Equipment, environmental threat, and media lifecycle evidence",
+      "control": "annex-a-physical",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-TEC-001",
+      "title": "Endpoint and secure-configuration baseline drift",
+      "control": "annex-a-technological",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-TEC-002",
+      "title": "Authentication and privileged-access configuration",
+      "control": "annex-a-technological",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-TEC-003",
+      "title": "Known-vulnerability and patch exposure scan",
+      "control": "annex-a-technological",
+      "handler": "file-presence",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-observed",
+      "evidence": [],
+      "limitations": [
+        "File presence does not prove that a control operates effectively"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-TEC-004",
+      "title": "Malware-protection and execution-control evidence",
+      "control": "annex-a-technological",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-TEC-005",
+      "title": "Backup, restore, and redundancy evidence",
+      "control": "annex-a-technological",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-TEC-006",
+      "title": "Logging, monitoring, and time consistency",
+      "control": "annex-a-technological",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-TEC-007",
+      "title": "Network exposure and service segregation",
+      "control": "annex-a-technological",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-TEC-008",
+      "title": "Cryptography and secret-handling configuration",
+      "control": "annex-a-technological",
+      "handler": "source-pattern",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-observed",
+      "evidence": [],
+      "limitations": [
+        "Source pattern matches require human validation and may include false positives"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-TEC-009",
+      "title": "Information deletion, masking, leakage prevention, and test-data safeguards",
+      "control": "annex-a-technological",
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "iso27001",
+      "id": "ISO27-TEC-010",
+      "title": "Secure development, change, and testing workflow",
+      "control": "annex-a-technological",
+      "handler": "file-presence",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-observed",
+      "evidence": [],
+      "limitations": [
+        "File presence does not prove that a control operates effectively"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AS-001",
+      "title": "Inventory application entry points",
+      "control": null,
+      "handler": "file-presence",
+      "disposition": "ready",
+      "reason": null,
+      "result": "observed",
+      "evidence": [
+        {
+          "type": "file",
+          "path": "openapi.yaml"
+        }
+      ],
+      "limitations": [
+        "File presence does not prove that a control operates effectively"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AS-002",
+      "title": "Enumerate local services and administrative interfaces",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AS-003",
+      "title": "Compare documented and discovered interfaces",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHN-001",
+      "title": "Review authentication paths and transport",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHN-002",
+      "title": "Check password policy and password field behavior",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHN-003",
+      "title": "Check account enumeration resistance",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHN-004",
+      "title": "Check bounded authentication abuse controls",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "blocked",
+      "reason": "Intrusive tests are disabled by policy",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHZ-001",
+      "title": "Build role and permission matrix",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHZ-002",
+      "title": "Verify function-level authorization across test roles",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-AUTHZ-003",
+      "title": "Verify object and field access isolation",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-SESS-001",
+      "title": "Inspect session cookie attributes",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-SESS-002",
+      "title": "Verify session rotation after authentication",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-SESS-003",
+      "title": "Verify logout invalidates the session",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-SESS-004",
+      "title": "Measure documented inactivity timeout",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-INPV-001",
+      "title": "Review server-side input validation",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-INPV-002",
+      "title": "Check reflected output encoding with inert markers",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-INPV-003",
+      "title": "Review parameterized database access",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-INPV-004",
+      "title": "Review operating-system command construction",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-CONF-001",
+      "title": "Inspect production configuration for debug and exposed metadata",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-CONF-002",
+      "title": "Detect secrets in source and build artifacts",
+      "control": null,
+      "handler": "source-pattern",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-observed",
+      "evidence": [],
+      "limitations": [
+        "Source pattern matches require human validation and may include false positives"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-CONF-003",
+      "title": "Create SBOM and compare dependencies with offline advisories",
+      "control": null,
+      "handler": "file-presence",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-observed",
+      "evidence": [],
+      "limitations": [
+        "File presence does not prove that a control operates effectively"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-CONF-004",
+      "title": "Check allowed HTTP methods and security headers",
+      "control": null,
+      "handler": "local-http",
+      "disposition": "blocked",
+      "reason": "Active testing is not enabled in the approved target YAML",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "security",
+      "id": "SEC-API-001",
+      "title": "Validate API inventory and HTTP response media types",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-API-002",
+      "title": "Apply role and object authorization checks to API operations",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "security",
+      "id": "SEC-API-003",
+      "title": "Review GraphQL exposure and resource controls",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.1.1",
+      "title": "Non-text Content",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.2.1",
+      "title": "Audio-only and Video-only (Prerecorded)",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.2.2",
+      "title": "Captions (Prerecorded)",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.2.5",
+      "title": "Audio Description (Prerecorded)",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.3.1",
+      "title": "Info and Relationships",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.3.2",
+      "title": "Meaningful Sequence",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.3.4",
+      "title": "Orientation",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.3.5",
+      "title": "Identify Input Purpose",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.4.2",
+      "title": "Audio Control",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.4.3",
+      "title": "Contrast (Minimum)",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.4.4",
+      "title": "Resize Text",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.4.10",
+      "title": "Reflow",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.4.12",
+      "title": "Text Spacing",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.4.13",
+      "title": "Content on Hover or Focus",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "2.1.2",
+      "title": "No Keyboard Trap",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "2.3.1",
+      "title": "Three Flashes or Below Threshold",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "2.4.1",
+      "title": "Bypass Blocks",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "2.4.2",
+      "title": "Page Titled",
+      "control": null,
+      "handler": "local-http",
+      "disposition": "blocked",
+      "reason": "Active testing is not enabled in the approved target YAML",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.4.4",
+      "title": "Link Purpose (In Context)",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "2.4.6",
+      "title": "Headings and Labels",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "2.4.7",
+      "title": "Focus Visible",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "2.4.11",
+      "title": "Focus Not Obscured (Minimum)",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "2.5.3",
+      "title": "Label in Name",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "2.5.8",
+      "title": "Target Size (Minimum)",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "3.1.1",
+      "title": "Language of Page",
+      "control": null,
+      "handler": "local-http",
+      "disposition": "blocked",
+      "reason": "Active testing is not enabled in the approved target YAML",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "3.2.1",
+      "title": "On Focus",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "3.2.2",
+      "title": "On Input",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "3.2.3",
+      "title": "Consistent Navigation",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "3.2.6",
+      "title": "Consistent Help",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "3.3.2",
+      "title": "Labels or Instructions",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "3.3.7",
+      "title": "Redundant Entry",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "4.1.2",
+      "title": "Name, Role, Value",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "4.1.3",
+      "title": "Status Messages",
+      "control": null,
+      "handler": "unimplemented",
+      "disposition": "ready",
+      "reason": null,
+      "result": "not-implemented",
+      "evidence": [],
+      "limitations": [
+        "No local executor is registered for this scaffolded test"
+      ]
+    },
+    {
+      "suite": "wcag",
+      "id": "1.2.3",
+      "title": "Audio Description or Media Alternative (Prerecorded)",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "1.2.4",
+      "title": "Captions (Live)",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "1.3.3",
+      "title": "Sensory Characteristics",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "1.4.1",
+      "title": "Use of Color",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "1.4.5",
+      "title": "Images of Text",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "1.4.11",
+      "title": "Non-text Contrast",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.1.1",
+      "title": "Keyboard",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.1.4",
+      "title": "Character Key Shortcuts",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.2.1",
+      "title": "Timing Adjustable",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.2.2",
+      "title": "Pause, Stop, Hide",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.4.3",
+      "title": "Focus Order",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.4.5",
+      "title": "Multiple Ways",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.5.1",
+      "title": "Pointer Gestures",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.5.2",
+      "title": "Pointer Cancellation",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.5.4",
+      "title": "Motion Actuation",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "2.5.7",
+      "title": "Dragging Movements",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "3.1.2",
+      "title": "Language of Parts",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "3.2.4",
+      "title": "Consistent Identification",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "3.3.1",
+      "title": "Error Identification",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "3.3.3",
+      "title": "Error Suggestion",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "3.3.4",
+      "title": "Error Prevention (Legal, Financial, Data)",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    },
+    {
+      "suite": "wcag",
+      "id": "3.3.8",
+      "title": "Accessible Authentication (Minimum)",
+      "control": null,
+      "handler": "manual",
+      "disposition": "manual-review",
+      "reason": "This requirement cannot be established by an automated software check",
+      "result": "not-run",
+      "evidence": []
+    }
+  ]
+}
