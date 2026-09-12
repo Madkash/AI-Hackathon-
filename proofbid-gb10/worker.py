@@ -21,7 +21,7 @@ def run_verification_checks(result):
     except Exception:
         return
     for req in result.get('requirements', []):
-        text = (req.get('text') or '').lower()
+        text = (req.get('requirement') or '').lower()
         for entry in manifest.get('checks', []):
             if not entry.get('testable'):
                 continue

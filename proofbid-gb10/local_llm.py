@@ -92,10 +92,14 @@ def analyze_local(text, product, documents, product_source='product.json', rfp_s
     normalized = ' '.join(text.split())
     for row in result['requirements']:
         row['source_span'] = {'normalized_start': normalized.find(row['requirement']), 'quote': row['requirement']}
-        try:
-            assessment = check_evidence(row['requirement'], documents)
-        except AgentUnavailable as exc:
-            raise AgentUnavailable('[evidence/' + row['id'] + '] ' + str(exc)) from exc
+        assessment = None
+        for attempt in range(2):
+            try:
+                assessment = check_evidence(row['requirement'], documents)
+                break
+            except AgentUnavailable as exc:
+                if attempt == 1:
+                    raise AgentUnavailable('[evidence/' + row['id'] + '] ' + str(exc)) from exc
         row['ai_assessment'] = assessment
         for c in assessment['citations']:
             row['evidence'].append({'kind': 'AI-selected document quote', 'source': documents[c['document']]['name'],

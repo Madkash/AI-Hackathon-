@@ -63,6 +63,7 @@ def parse_envelope(raw, provider, model, primary):
     final = payloads[0].get('text')
     if not isinstance(final, str):
         raise BridgeFailure('invalid_json')
+        final = final.strip()
     final = final.strip()
     if final.startswith('```json') and final.endswith('```'):
         final = final[7:-3].strip()
@@ -70,8 +71,15 @@ def parse_envelope(raw, provider, model, primary):
         final = final[3:-3].strip()
     try:
         return json.loads(final)
-    except ValueError as exc:
-        raise BridgeFailure('invalid_json') from exc
+    except ValueError:
+        start = final.find('{')
+        end = final.rfind('}')
+        if start != -1 and end > start:
+            try:
+                return json.loads(final[start:end + 1])
+            except ValueError as exc:
+                raise BridgeFailure('invalid_json') from exc
+        raise BridgeFailure('invalid_json')
     
 def main():
     provider, model, primary = preflight()
