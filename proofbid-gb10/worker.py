@@ -8,6 +8,7 @@ import time
 from pymongo import ReturnDocument
 from store import db, initialize
 from local_llm import analyze_local
+from local_agent import AgentUnavailable
 
 def main():
     if os.environ.get('PROOFBID_TRANSPORT') != 'openshell':
@@ -35,8 +36,9 @@ def main():
                 db.results.replace_one({'_id': ident}, result, upsert=True)
                 db.jobs.update_one({'_id': ident}, {'$set': {'state': 'completed', 'result_id': ident}, '$unset': {'input': ''}})
             except Exception as exc:
-                logging.error('Job %s failed: %s', ident, type(exc).__name__)
-                db.jobs.update_one({'_id': ident}, {'$set': {'state': 'failed', 'error': 'Analysis failed (' + type(exc).__name__ + '). Check model and sandbox readiness. No fallback used.'}, '$unset': {'input': ''}})
+                message = str(exc)[:800] if isinstance(exc, AgentUnavailable) else 'Analysis failed (' + type(exc).__name__ + '). Check the input and service status.'
+                logging.error('Job %s failed: %s', ident, message)
+                db.jobs.update_one({'_id': ident}, {'$set': {'state': 'failed', 'error': message}, '$unset': {'input': ''}})
         except Exception as exc:
             logging.error('Queue unavailable: %s', type(exc).__name__)
             time.sleep(5)
