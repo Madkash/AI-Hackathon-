@@ -113,7 +113,7 @@ def analyze_local(text, product, documents, product_source='product.json', rfp_s
     result['method'] = 'Local Nemotron 3 Nano 30B extraction and document assessment; source quotations validated. VERIFIED means a deterministic static configuration check passed. All rows require human review. No sandbox or runtime attestation.'
     if os.environ.get('PROOFBID_TRANSPORT') == 'openshell':
         result['runtime'].update({'engine': 'OpenClaw through OpenShell exec', 'endpoint': 'NemoClaw-managed inference route',
-            'sandbox': os.environ.get('PROOFBID_SANDBOX', 'proofbid'), 'sandbox_execution': True,
+            'sandbox': os.environ.get('PROOFBID_SANDBOX', 'cody'), 'sandbox_execution': True,
             'sandbox_verified': False})
         result['method'] = 'OpenClaw executed AI turns inside OpenShell using the NemoClaw-configured model route. Schema and quotations checked by ProofBid. VERIFIED covers static configuration only; isolation and hardware are not attested by this result.'
     return result

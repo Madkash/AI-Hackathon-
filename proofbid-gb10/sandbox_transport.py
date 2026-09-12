@@ -8,7 +8,7 @@ from jsonschema import validate, ValidationError
 from local_agent import AgentUnavailable
 
 def query(prompt, schema):
-    name = os.environ.get('PROOFBID_SANDBOX', 'proofbid')
+    name = os.environ.get('PROOFBID_SANDBOX', 'cody')
     if not re.fullmatch(r'[a-z][a-z0-9-]{0,62}', name):
         raise AgentUnavailable('Invalid sandbox name.')
     command = ['openshell', 'sandbox', 'exec', '-n', name, '--no-tty', '--timeout', '660', '--',
