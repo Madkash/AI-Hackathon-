@@ -1,0 +1,42 @@
+services:
+  console:
+    build:
+      context: ..
+      dockerfile: compliance-console/Dockerfile
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017
+      MONGODB_DATABASE: compliance_agent
+      TARGETS_ROOT: /workspace/targets
+      DISCOVERY_OUTPUT_DIR: /data/discovery
+      DISCOVERY_TOOL_PATH: /workspace/skills/discover-software/scripts/discover-software.mjs
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../examples:/workspace/targets:ro
+      - discovery-data:/data/discovery
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - compliance-local
+
+  mongodb:
+    image: mongo:8
+    command: ["mongod", "--bind_ip_all"]
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    networks:
+      - compliance-local
+
+networks:
+  compliance-local:
+    internal: true
+
+volumes:
+  mongodb-data:
+  discovery-data:

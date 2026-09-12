@@ -1,0 +1,434 @@
+{
+  "schemaVersion": "1.0.0",
+  "suite": {
+    "id": "iso27001-readiness",
+    "title": "ISO/IEC 27001:2022 Readiness Checks",
+    "purpose": "Local evidence collection and technical readiness checks for an information security management system. This suite is not the ISO/IEC standard and cannot determine or grant certification.",
+    "standard": {
+      "reference": "ISO/IEC 27001:2022",
+      "edition": 3,
+      "publicationDate": "2022-10",
+      "amendments": [
+        {
+          "reference": "ISO/IEC 27001:2022/Amd 1:2024",
+          "title": "Climate action changes",
+          "publicationDate": "2024-02"
+        }
+      ]
+    },
+    "catalogVersion": "2026-09-12",
+    "copyrightApproach": "Contains original readiness checks and high-level thematic mappings only. It does not reproduce ISO requirement or control text. A licensed copy of the applicable standard and a qualified auditor are required for an authoritative assessment.",
+    "certificationBoundary": "Only a competent independent certification body can issue an ISO/IEC 27001 certificate. Automated results are readiness evidence, not findings of conformity or nonconformity.",
+    "runtimePolicy": {
+      "inference": "local-only",
+      "externalNetwork": "denied",
+      "remoteApis": "prohibited",
+      "allowedTargets": "explicitly approved local files, repositories, hosts, ports, and databases only"
+    }
+  },
+  "sources": [
+    {
+      "id": "iso-27001",
+      "publisher": "ISO/IEC",
+      "reference": "ISO/IEC 27001:2022",
+      "title": "Information security, cybersecurity and privacy protection — Information security management systems — Requirements",
+      "version": "Edition 3; 2022-10",
+      "url": "https://www.iso.org/standard/27001",
+      "use": "Official identity, status, edition, scope summary, and certification context; protected normative text is not included."
+    },
+    {
+      "id": "iso-27001-amd1",
+      "publisher": "ISO/IEC",
+      "reference": "ISO/IEC 27001:2022/Amd 1:2024",
+      "title": "Climate action changes",
+      "version": "Edition 3 amendment; 2024-02",
+      "url": "https://www.iso.org/standard/88435.html",
+      "use": "Official amendment identity and applicability metadata."
+    },
+    {
+      "id": "iso-27002",
+      "publisher": "ISO/IEC",
+      "reference": "ISO/IEC 27002:2022",
+      "title": "Information security, cybersecurity and privacy protection — Information security controls",
+      "version": "Edition 3; 2022-02; corrected 2022-03",
+      "url": "https://www.iso.org/standard/75652.html",
+      "use": "Official public description of implementation guidance and the organizational, people, physical, and technological control themes."
+    },
+    {
+      "id": "iso-27006-1",
+      "publisher": "ISO/IEC",
+      "reference": "ISO/IEC 27006-1:2024",
+      "title": "Requirements for bodies providing audit and certification of information security management systems — Part 1: General",
+      "version": "Edition 1; 2024-03",
+      "url": "https://www.iso.org/standard/82908.html",
+      "use": "Official certification-body competence, consistency, and impartiality context."
+    },
+    {
+      "id": "iso-certification",
+      "publisher": "ISO",
+      "reference": "ISO certification guidance",
+      "title": "Certification and accreditation",
+      "version": "Web guidance; retrieved 2026-09-12",
+      "url": "https://www.iso.org/certification.html",
+      "use": "Distinguishes independent certification from accreditation of certification bodies."
+    },
+    {
+      "id": "iso-copyright",
+      "publisher": "ISO",
+      "reference": "ISO copyright guidance",
+      "title": "Copyright",
+      "version": "Web guidance; retrieved 2026-09-12",
+      "url": "https://www.iso.org/copyright.html",
+      "use": "Defines the content-handling boundary for this original, non-normative catalog."
+    }
+  ],
+  "resultStates": [
+    "pass-readiness-check",
+    "potential-gap",
+    "manual-review-required",
+    "not-applicable",
+    "not-tested",
+    "insufficient-evidence",
+    "tool-error"
+  ],
+  "tests": [
+    {
+      "id": "ISO27-CL4-001",
+      "title": "ISMS context and boundary evidence",
+      "type": "manual-evidence",
+      "theme": "clause-4-context",
+      "applicability": "All organizations seeking readiness assessment.",
+      "inputs": ["ISMS scope statement", "organization and system boundaries", "interested-party register", "legal and contractual obligations register"],
+      "localOnlyTool": "evidence-indexer: index and cross-reference approved local documents without external access",
+      "expectedEvidence": ["Defined ISMS scope", "Included systems, teams, sites, and dependencies", "Relevant stakeholder and obligation records", "Document owner and approval metadata"],
+      "limitations": "The tool can detect missing or inconsistent records but cannot decide whether the chosen scope is suitable or certify conformity."
+    },
+    {
+      "id": "ISO27-CL4-002",
+      "title": "Climate relevance consideration record",
+      "type": "manual-evidence",
+      "theme": "clause-4-context",
+      "applicability": "All assessments using the 2024 amendment.",
+      "inputs": ["Context review", "interested-party register", "risk register", "management review records"],
+      "localOnlyTool": "document-query: locate an explicit, dated consideration and linked decisions in local records",
+      "expectedEvidence": ["Recorded determination of relevance", "Related stakeholder requirements where applicable", "Owner and review date"],
+      "limitations": "A text match does not establish that the consideration was complete or reasonable."
+    },
+    {
+      "id": "ISO27-CL5-001",
+      "title": "Leadership, policy, and assigned responsibilities",
+      "type": "manual-evidence",
+      "theme": "clause-5-leadership",
+      "applicability": "All organizations.",
+      "inputs": ["Information security policy", "role descriptions", "responsibility matrix", "leadership approvals", "communications"],
+      "localOnlyTool": "governance-evidence-checker: inspect local approvals, ownership, versions, and policy references",
+      "expectedEvidence": ["Approved security policy", "Named accountability", "Defined responsibilities", "Evidence of leadership direction and communication"],
+      "limitations": "Documents cannot prove leadership behavior, organizational commitment, or employee understanding."
+    },
+    {
+      "id": "ISO27-CL6-001",
+      "title": "Risk assessment and treatment traceability",
+      "type": "mixed",
+      "theme": "clause-6-planning",
+      "applicability": "All organizations; methods and selected treatments vary by context.",
+      "inputs": ["Risk method", "risk register", "risk treatment plan", "control applicability record", "risk acceptance records", "security objectives"],
+      "localOnlyTool": "risk-traceability-checker: validate local record completeness, links, owners, dates, and orphaned treatments",
+      "expectedEvidence": ["Repeatable risk method", "Recorded risks and decisions", "Treatment ownership and status", "Rationale for selected or omitted controls", "Measurable objectives"],
+      "limitations": "Automation cannot determine whether risk judgments, acceptance decisions, or the selected controls are adequate."
+    },
+    {
+      "id": "ISO27-CL7-001",
+      "title": "Resources, competence, awareness, communication, and controlled documentation",
+      "type": "mixed",
+      "theme": "clause-7-support",
+      "applicability": "All organizations.",
+      "inputs": ["Training and competence records", "awareness evidence", "communication plan", "document repository", "retention and change history"],
+      "localOnlyTool": "support-record-auditor: inspect approved local records for owners, review dates, approvals, completion, and version history",
+      "expectedEvidence": ["Relevant competence records", "Security awareness participation", "Defined communications", "Controlled and retrievable ISMS documents"],
+      "limitations": "Completion records do not prove competence or awareness; interviews and sampling remain necessary."
+    },
+    {
+      "id": "ISO27-CL8-001",
+      "title": "Operational execution of risk treatment",
+      "type": "mixed",
+      "theme": "clause-8-operation",
+      "applicability": "Organizations with approved risk treatments and operational security processes.",
+      "inputs": ["Operational plans", "tickets", "change records", "risk reassessments", "outsourced-process records"],
+      "localOnlyTool": "operation-sampler: correlate local plans with sampled tickets, system records, and reassessment dates",
+      "expectedEvidence": ["Planned activities performed", "Changes controlled", "Outsourced processes overseen", "Risk assessments updated when required"],
+      "limitations": "Sampling can miss failures and cannot establish sustained effectiveness across the full certification period."
+    },
+    {
+      "id": "ISO27-CL9-001",
+      "title": "Measurement, internal audit, and management review evidence",
+      "type": "manual-evidence",
+      "theme": "clause-9-performance-evaluation",
+      "applicability": "All operational ISMS programs.",
+      "inputs": ["Metrics and monitoring results", "internal audit program and reports", "auditor independence records", "management review minutes", "action logs"],
+      "localOnlyTool": "assurance-calendar-checker: verify local schedules, coverage, approvals, independence declarations, and action traceability",
+      "expectedEvidence": ["Defined monitoring methods", "Completed internal audits", "Management reviews", "Tracked decisions and follow-up actions"],
+      "limitations": "The tool cannot judge audit competence, independence in practice, or the quality of management review."
+    },
+    {
+      "id": "ISO27-CL10-001",
+      "title": "Corrective action and continual improvement trail",
+      "type": "mixed",
+      "theme": "clause-10-improvement",
+      "applicability": "Organizations with incidents, audit findings, exceptions, or improvement opportunities.",
+      "inputs": ["Findings", "incident records", "root-cause analyses", "corrective actions", "effectiveness reviews", "improvement backlog"],
+      "localOnlyTool": "corrective-action-tracer: find unowned, overdue, recurring, or unverified actions in local systems",
+      "expectedEvidence": ["Cause analysis", "Assigned remediation", "Completion evidence", "Effectiveness review", "Updates to risks or controls where relevant"],
+      "limitations": "Automated status checks cannot prove that remediation addressed the underlying cause."
+    },
+    {
+      "id": "ISO27-ORG-001",
+      "title": "Information asset inventory and ownership consistency",
+      "type": "mixed",
+      "theme": "annex-a-organizational",
+      "applicability": "Where information, systems, repositories, services, or devices are within ISMS scope.",
+      "inputs": ["Asset inventory", "repository inventory", "container manifests", "service catalog", "owner directory"],
+      "localOnlyTool": "asset-reconciler: compare local inventories with discovered repositories, services, databases, and containers",
+      "expectedEvidence": ["Identified assets", "Assigned owners", "Classification or criticality", "Lifecycle status", "Unregistered-asset exceptions"],
+      "limitations": "Discovery is limited to authorized sources and may not find offline, SaaS, shadow, or physical assets."
+    },
+    {
+      "id": "ISO27-ORG-002",
+      "title": "Access governance and periodic review trail",
+      "type": "mixed",
+      "theme": "annex-a-organizational",
+      "applicability": "Systems with identities, roles, privileged access, or external users.",
+      "inputs": ["Identity export", "role matrix", "joiner-mover-leaver records", "access-review records", "exception approvals"],
+      "localOnlyTool": "access-review-analyzer: correlate approved local identity and HR exports and flag stale, orphaned, conflicting, or excessive access",
+      "expectedEvidence": ["Authorized identities", "Role and privilege rationale", "Periodic review records", "Timely access changes", "Exception handling"],
+      "limitations": "Entitlement risk is context-dependent; findings require system-owner and HR validation."
+    },
+    {
+      "id": "ISO27-ORG-003",
+      "title": "Supplier and external-service security oversight",
+      "type": "manual-evidence",
+      "theme": "annex-a-organizational",
+      "applicability": "Where suppliers or external services can affect in-scope information or operations.",
+      "inputs": ["Supplier inventory", "contracts", "risk reviews", "assurance reports", "service-change records", "exit plans"],
+      "localOnlyTool": "supplier-evidence-indexer: cross-reference local supplier records, review dates, scopes, obligations, and unresolved findings",
+      "expectedEvidence": ["Risk-tiered supplier inventory", "Security obligations", "Due-diligence evidence", "Ongoing review", "Change and exit considerations"],
+      "limitations": "No external verification is performed; artifact authenticity and supplier practice require human confirmation."
+    },
+    {
+      "id": "ISO27-ORG-004",
+      "title": "Incident readiness and case traceability",
+      "type": "mixed",
+      "theme": "annex-a-organizational",
+      "applicability": "All organizations operating information systems.",
+      "inputs": ["Incident plan", "roles and contact lists", "incident tickets", "exercise results", "lessons learned", "evidence handling procedure"],
+      "localOnlyTool": "incident-readiness-checker: validate local playbook coverage and trace sampled alerts through triage, response, closure, and lessons",
+      "expectedEvidence": ["Defined response process", "Assigned roles", "Recorded decisions", "Exercises or actual cases", "Post-incident improvements"],
+      "limitations": "Document and ticket review cannot prove readiness under real incident conditions."
+    },
+    {
+      "id": "ISO27-ORG-005",
+      "title": "Continuity and ICT recovery evidence",
+      "type": "mixed",
+      "theme": "annex-a-organizational",
+      "applicability": "Services requiring continued operation or recoverability.",
+      "inputs": ["Business impact analysis", "continuity plan", "recovery procedures", "recovery objectives", "exercise results", "dependency map"],
+      "localOnlyTool": "recovery-evidence-checker: compare local plans, declared objectives, dependencies, and recorded exercise outcomes",
+      "expectedEvidence": ["Prioritized services", "Recovery targets", "Documented procedures", "Exercise results", "Tracked corrective actions"],
+      "limitations": "The suite does not trigger failover or destructive recovery tests unless separately authorized."
+    },
+    {
+      "id": "ISO27-ORG-006",
+      "title": "Legal, contractual, privacy, and records obligations register",
+      "type": "manual-evidence",
+      "theme": "annex-a-organizational",
+      "applicability": "Where legal, regulatory, contractual, privacy, intellectual-property, or recordkeeping duties apply.",
+      "inputs": ["Obligations register", "contracts", "privacy records", "retention schedule", "license inventory", "compliance reviews"],
+      "localOnlyTool": "obligation-mapper: map approved local obligations to owners, systems, evidence, and review dates",
+      "expectedEvidence": ["Applicable obligations", "Accountable owners", "Implementation evidence", "Retention rules", "Periodic compliance review"],
+      "limitations": "This is not legal advice and cannot establish legal applicability or compliance."
+    },
+    {
+      "id": "ISO27-PPL-001",
+      "title": "Personnel security lifecycle evidence",
+      "type": "manual-evidence",
+      "theme": "annex-a-people",
+      "applicability": "Employees, contractors, and relevant third parties with in-scope responsibilities or access.",
+      "inputs": ["Role risk criteria", "screening records", "employment terms", "confidentiality agreements", "role-change and termination checklists"],
+      "localOnlyTool": "personnel-lifecycle-checker: inspect minimally necessary local metadata for completeness and timely lifecycle actions",
+      "expectedEvidence": ["Risk-appropriate checks", "Documented security responsibilities", "Confidentiality commitments", "Completed role-change and exit actions"],
+      "limitations": "Sensitive HR data must be minimized and access-controlled; legality and adequacy require HR and legal review."
+    },
+    {
+      "id": "ISO27-PPL-002",
+      "title": "Security awareness and role-based competence coverage",
+      "type": "mixed",
+      "theme": "annex-a-people",
+      "applicability": "Personnel whose actions can affect information security.",
+      "inputs": ["Training catalog", "role mapping", "completion exports", "exercise results", "policy acknowledgement records"],
+      "localOnlyTool": "training-coverage-analyzer: compare local role requirements with assigned, completed, expired, and overdue learning records",
+      "expectedEvidence": ["Baseline awareness", "Role-specific training", "Completion and refresh records", "Follow-up on failed or missed activities"],
+      "limitations": "Attendance and quiz results do not establish behavior or real-world competence."
+    },
+    {
+      "id": "ISO27-PPL-003",
+      "title": "Remote-working and security-event reporting readiness",
+      "type": "manual-evidence",
+      "theme": "annex-a-people",
+      "applicability": "Remote or hybrid personnel and anyone expected to report suspected security events.",
+      "inputs": ["Remote-work rules", "device and access standards", "reporting instructions", "awareness records", "sample reports"],
+      "localOnlyTool": "policy-evidence-checker: inspect local policy coverage, communications, acknowledgement, and reporting-channel evidence",
+      "expectedEvidence": ["Defined remote safeguards", "Accessible reporting route", "Workforce communication", "Evidence reports are handled"],
+      "limitations": "The tool cannot assess home environments or prove that personnel will recognize and report events."
+    },
+    {
+      "id": "ISO27-PHY-001",
+      "title": "Physical access and protected-area evidence",
+      "type": "manual-evidence",
+      "theme": "annex-a-physical",
+      "applicability": "Facilities and locations containing in-scope information or equipment.",
+      "inputs": ["Site scope", "access-control procedures", "visitor records", "physical access reviews", "facility risk assessments"],
+      "localOnlyTool": "physical-evidence-indexer: sample approved local access and visitor records against site procedures and review schedules",
+      "expectedEvidence": ["Defined protected areas", "Authorized entry", "Visitor handling", "Periodic review", "Exception records"],
+      "limitations": "Requires on-site observation and interviews; local record review cannot validate actual physical safeguards."
+    },
+    {
+      "id": "ISO27-PHY-002",
+      "title": "Equipment, environmental threat, and media lifecycle evidence",
+      "type": "mixed",
+      "theme": "annex-a-physical",
+      "applicability": "Physical equipment, storage media, utilities, cabling, and facilities in scope.",
+      "inputs": ["Equipment inventory", "maintenance logs", "environmental monitoring exports", "media register", "disposal certificates", "clear-desk rules"],
+      "localOnlyTool": "physical-asset-reconciler: correlate local inventories, maintenance, monitoring, movement, reuse, and disposal records",
+      "expectedEvidence": ["Protected and maintained equipment", "Environmental risk treatment", "Tracked media", "Approved reuse or disposal", "Exceptions addressed"],
+      "limitations": "Automated analysis cannot inspect premises, detect unrecorded media, or validate disposal practices firsthand."
+    },
+    {
+      "id": "ISO27-TEC-001",
+      "title": "Endpoint and secure-configuration baseline drift",
+      "type": "automated-technical",
+      "theme": "annex-a-technological",
+      "applicability": "Authorized local endpoint, server, container, and application configuration exports.",
+      "inputs": ["Approved configuration baselines", "system configuration exports", "container definitions", "application settings"],
+      "localOnlyTool": "configuration-diff: compare local snapshots with organization-approved baselines",
+      "expectedEvidence": ["Timestamped configuration snapshot", "Baseline version", "Drift findings", "Approved exceptions"],
+      "limitations": "Readiness depends on the quality and scope of the organization-approved baseline; no universal ISO configuration is implied."
+    },
+    {
+      "id": "ISO27-TEC-002",
+      "title": "Authentication and privileged-access configuration",
+      "type": "automated-technical",
+      "theme": "annex-a-technological",
+      "applicability": "Locally accessible applications, identity configurations, and test accounts within approved scope.",
+      "inputs": ["Local target URL", "test accounts", "role model", "authentication configuration", "session settings"],
+      "localOnlyTool": "auth-config-tester: inspect configuration and perform bounded local authentication/session tests",
+      "expectedEvidence": ["Authentication settings", "Privileged-role assignments", "Session behavior", "Failed-login handling", "Timestamped test traces"],
+      "limitations": "Tests use authorized accounts only and do not prove organization-wide identity governance or resistance to every attack."
+    },
+    {
+      "id": "ISO27-TEC-003",
+      "title": "Known-vulnerability and patch exposure scan",
+      "type": "automated-technical",
+      "theme": "annex-a-technological",
+      "applicability": "Source trees, dependency manifests, operating-system package inventories, and container images supplied locally.",
+      "inputs": ["Dependency lockfiles", "local advisory database snapshot", "package inventory", "container image or SBOM", "approved risk exceptions"],
+      "localOnlyTool": "offline-vulnerability-scanner: match local packages against a preloaded, versioned advisory database",
+      "expectedEvidence": ["Tool and advisory snapshot versions", "Affected components", "Fix availability", "Exploitability context", "Exception status"],
+      "limitations": "Offline advisory data can become stale; package matching produces false positives and does not establish exploitability.",
+      "executor": {
+        "handler": "file-presence",
+        "config": {
+          "patterns": ["package-lock.json", "pnpm-lock.yaml", "yarn.lock", "requirements.txt", "poetry.lock", "Pipfile.lock", "pom.xml", "gradle.lockfile", "**/*.spdx.json", "**/*sbom*.json"]
+        }
+      }
+    },
+    {
+      "id": "ISO27-TEC-004",
+      "title": "Malware-protection and execution-control evidence",
+      "type": "mixed",
+      "theme": "annex-a-technological",
+      "applicability": "Systems where malicious code or unauthorized execution presents a relevant risk.",
+      "inputs": ["Protection configuration", "signature or model version", "scan logs", "application-control policy", "exception records"],
+      "localOnlyTool": "endpoint-protection-evidence-parser: inspect local configuration and sampled logs without uploading files",
+      "expectedEvidence": ["Enabled protections", "Update status", "Scan and alert records", "Handled exceptions", "Coverage inventory"],
+      "limitations": "The suite does not execute live malware and cannot guarantee detection of unknown threats."
+    },
+    {
+      "id": "ISO27-TEC-005",
+      "title": "Backup, restore, and redundancy evidence",
+      "type": "mixed",
+      "theme": "annex-a-technological",
+      "applicability": "Information and services with backup, restoration, or availability requirements.",
+      "inputs": ["Backup configuration", "job logs", "restore-test records", "recovery targets", "redundancy architecture"],
+      "localOnlyTool": "backup-evidence-checker: evaluate local job history, retention, failures, and recorded restore tests",
+      "expectedEvidence": ["Protected backup scope", "Successful jobs", "Retention evidence", "Restore-test results", "Failures and remediation"],
+      "limitations": "No destructive restore or failover is attempted unless separately authorized; logs alone may not prove recoverability."
+    },
+    {
+      "id": "ISO27-TEC-006",
+      "title": "Logging, monitoring, and time consistency",
+      "type": "automated-technical",
+      "theme": "annex-a-technological",
+      "applicability": "Locally available application, identity, operating-system, database, and network logs.",
+      "inputs": ["Logging configuration", "sample logs", "alert rules", "retention settings", "local time-source configuration"],
+      "localOnlyTool": "log-coverage-analyzer: test expected local events, required fields, retention metadata, alert routing, and clock consistency",
+      "expectedEvidence": ["Event coverage", "Actor and timestamp fields", "Protected retention", "Alert evidence", "Clock offset report"],
+      "limitations": "A sample cannot demonstrate continuous coverage, alert quality, or response effectiveness over time."
+    },
+    {
+      "id": "ISO27-TEC-007",
+      "title": "Network exposure and service segregation",
+      "type": "automated-technical",
+      "theme": "annex-a-technological",
+      "applicability": "Explicitly authorized local hosts, containers, ports, and network configuration.",
+      "inputs": ["Approved host and port scope", "network diagrams", "firewall exports", "container networks", "service inventory"],
+      "localOnlyTool": "bounded-local-network-inspector: enumerate only approved local endpoints and compare exposure with declared architecture",
+      "expectedEvidence": ["Observed services", "Declared owner and purpose", "Unexpected exposure", "Segmentation configuration", "Timestamped scan scope"],
+      "limitations": "No internet scanning, denial-of-service behavior, or scope expansion is allowed; architecture effectiveness requires expert review."
+    },
+    {
+      "id": "ISO27-TEC-008",
+      "title": "Cryptography and secret-handling configuration",
+      "type": "automated-technical",
+      "theme": "annex-a-technological",
+      "applicability": "Software, configuration, repositories, and local endpoints using encryption, keys, tokens, or certificates.",
+      "inputs": ["Cryptography policy", "source and configuration", "certificate metadata", "secret-store metadata", "key lifecycle records"],
+      "localOnlyTool": "crypto-secret-inspector: detect exposed secrets and compare local configuration metadata with organization-approved policy",
+      "expectedEvidence": ["Algorithms and protocol settings", "Certificate validity metadata", "Secret exposure findings", "Key ownership and rotation records"],
+      "limitations": "The tool must redact secret values; configuration review cannot prove correct cryptographic implementation or key custody.",
+      "executor": {
+        "handler": "source-pattern",
+        "config": {
+          "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.yaml", "**/*.yml"],
+          "patterns": ["(api[_-]?key|secret|token|password)\\s*[:=]\\s*[\\\"'][^\\\"']{8,}[\\\"']"]
+        }
+      }
+    },
+    {
+      "id": "ISO27-TEC-009",
+      "title": "Information deletion, masking, leakage prevention, and test-data safeguards",
+      "type": "mixed",
+      "theme": "annex-a-technological",
+      "applicability": "Systems processing sensitive information or using production-like test data.",
+      "inputs": ["Data inventory", "retention and deletion rules", "masking configuration", "DLP configuration", "test-data procedure", "approved local samples"],
+      "localOnlyTool": "data-handling-checker: trace approved local samples and configurations for retention, masking, deletion, and leakage-control evidence",
+      "expectedEvidence": ["Data classification", "Deletion workflow", "Masked sensitive fields", "DLP coverage", "Protected test data", "Exception records"],
+      "limitations": "Sampling cannot prove all copies were deleted or all leakage paths are controlled; sensitive data must be minimized."
+    },
+    {
+      "id": "ISO27-TEC-010",
+      "title": "Secure development, change, and testing workflow",
+      "type": "mixed",
+      "theme": "annex-a-technological",
+      "applicability": "Organizations developing or changing software and information systems.",
+      "inputs": ["Development policy", "repository history", "review rules", "CI configuration", "security test results", "change tickets", "environment separation evidence"],
+      "localOnlyTool": "secure-sdlc-analyzer: inspect local repository and pipeline artifacts for review, testing, approval, and deployment traceability",
+      "expectedEvidence": ["Defined security requirements", "Peer review", "Security testing", "Controlled changes", "Separated environments", "Protected source access"],
+      "limitations": "Repository evidence cannot prove process adherence outside the sampled projects or that testing is technically sufficient.",
+      "executor": {
+        "handler": "file-presence",
+        "config": {
+          "patterns": [".github/workflows/*.yml", ".github/workflows/*.yaml", ".gitlab-ci.yml", "Jenkinsfile", "**/test/**", "**/tests/**", "SECURITY.md"]
+        }
+      }
+    }
+  ]
+}

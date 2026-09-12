@@ -1,0 +1,23 @@
+schema_version: "0.1-draft"
+target:
+  name: "localproof-compliance-console"
+  version: "0.1.0"
+  environment: "isolated-local-test"
+  source_path: "C:/Projects/dell x nvidia hackathon/compliance-console"
+interfaces:
+  web:
+    base_url: "http://localhost:3001"
+    status: "verified-for-local-test"
+scope:
+  active_testing: true
+  allowed_hosts:
+    - "localhost"
+  allowed_ports:
+    - 3001
+  excluded_paths: []
+  maximum_requests_per_second: 2
+  maximum_concurrent_requests: 1
+data_handling:
+  external_network: "deny"
+  use_synthetic_test_data: true
+  secrets_in_manifest: "forbidden"

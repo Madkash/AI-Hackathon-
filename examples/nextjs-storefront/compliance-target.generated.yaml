@@ -1,0 +1,74 @@
+schema_version: "0.1-draft"
+target:
+  name: "example-nextjs-storefront"
+  version: "1.0.0"
+  environment: "isolated-staging"
+  source_path: "C:/Projects/dell x nvidia hackathon/examples/nextjs-storefront"
+components:
+  -
+    id: "application"
+    type: "web-application"
+    framework: "nextjs"
+    confidence: 0.96
+    provenance: "package.json"
+  -
+    id: "container"
+    type: "container-image"
+    confidence: 0.98
+    provenance: "Dockerfile"
+  -
+    id: "api"
+    type: "rest-api"
+    confidence: 0.98
+    provenance: "openapi.yaml"
+deployment:
+  method: "docker-compose"
+  compose_file: "docker-compose.yml"
+  commands:
+    start:
+      value: "docker compose -f docker-compose.yml up -d"
+      status: "proposed"
+      provenance: "docker-compose.yml"
+    stop:
+      value: "docker compose -f docker-compose.yml down"
+      status: "proposed"
+      provenance: "docker-compose.yml"
+interfaces:
+  web:
+    base_url: "http://localhost:3000"
+    status: "unverified"
+    provenance: "docker-compose.yml"
+  api:
+    specification: "openapi.yaml"
+    status: "discovered"
+environment_variable_names:
+  - "SESSION_SECRET"
+  - "TEST_USER_PASSWORD"
+  - "TEST_USER_USERNAME"
+assessments:
+  soc2_readiness: true
+  iso27001_readiness: true
+  penetration_test: true
+  wcag: true
+scope:
+  active_testing: false
+  allowed_hosts:
+    - "localhost"
+  allowed_ports:
+    - 3000
+  excluded_paths:
+    []
+  maximum_requests_per_second: 2
+  maximum_concurrent_requests: 1
+data_handling:
+  external_network: "deny"
+  use_synthetic_test_data: true
+  secrets_in_manifest: "forbidden"
+discovery:
+  generated_at: "2026-09-12T15:35:55.414Z"
+  generated_by: "discover-software.mjs"
+  inspected_file_count: 5
+  execution_performed: false
+  unresolved:
+    - "Confirm authorized hosts, paths, request limits, and test accounts"
+    - "Verify proposed startup and shutdown commands in an isolated environment"
