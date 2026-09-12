@@ -1,11 +1,8 @@
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import YAML from "yaml";
-
-const execFileAsync = promisify(execFile);
+import { execFileAsync } from "./exec.mjs";
 
 function compact(value) {
   return typeof value === "string" ? value.trim().replace(/\s+/g, " ") : value ?? null;

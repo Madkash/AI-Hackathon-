@@ -1,11 +1,8 @@
-import { execFile } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
-import { promisify } from "node:util";
-
-const execFileAsync = promisify(execFile);
+import { execLocalToolAsync } from "./exec.mjs";
 
 const DEFAULT_TIMEOUT_MS = 60_000;
 const MAX_TIMEOUT_MS = 120_000;
@@ -286,7 +283,7 @@ async function executeTool(tool, config = {}) {
     let stderr = "";
 
     try {
-      const result = await execFileAsync(command, args, {
+      const result = await execLocalToolAsync(command, args, {
         cwd,
         env: localToolEnvironment(definition.env),
         timeout,

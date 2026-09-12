@@ -3,19 +3,16 @@
 import fs from "node:fs/promises";
 import crypto from "node:crypto";
 import net from "node:net";
-import { execFile } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
-import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 import Ajv from "ajv/dist/2020.js";
 import YAML from "yaml";
 import { evaluateCoverage, loadEvidenceLibrary } from "../lib/evidence.mjs";
+import { execLocalToolAsync } from "../lib/exec.mjs";
 import { closeDatabase, persistAssessment } from "../lib/mongodb.mjs";
 import { buildAssessmentReport } from "../lib/reporting.mjs";
 import { runToolAdapter } from "../lib/tool-adapters.mjs";
-
-const execFileAsync = promisify(execFile);
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, "..", "..");
 const catalogRoot = path.join(repositoryRoot, "compliance-suites");
@@ -490,7 +487,7 @@ async function runLocalCommand(config, target) {
   let stderr = "";
 
   try {
-    const result = await execFileAsync(command, args, {
+    const result = await execLocalToolAsync(command, args, {
       cwd,
       env: localCommandEnvironment(),
       timeout,
