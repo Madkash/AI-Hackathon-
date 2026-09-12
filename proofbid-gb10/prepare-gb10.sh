@@ -14,11 +14,5 @@ npm run build
 if [[ ! -f .runtime.env ]]; then .venv/bin/python initialize.py; fi
 docker compose up -d --wait mongo
 source .runtime.env
-# Use exec/stdin transfer to avoid host filesystem mounts or Docker socket mounts.
-openshell sandbox exec -n "$PROOFBID_SANDBOX" -- mkdir -p /sandbox/proofbid
-for file in agent_bridge.py configure_agent.py; do
-  openshell sandbox exec -n "$PROOFBID_SANDBOX" -- python3 -c \
-    'import pathlib,sys; p=pathlib.Path("/sandbox/proofbid")/sys.argv[1]; p.write_bytes(sys.stdin.buffer.read())' "$file" < "$file"
-done
-openshell sandbox exec -n "$PROOFBID_SANDBOX" -- python3 /sandbox/proofbid/configure_agent.py
+bash refresh-bridge.sh
 echo 'Application prepared. Run bash start-gb10.sh. Read LOGIN.txt locally for the browser password.'

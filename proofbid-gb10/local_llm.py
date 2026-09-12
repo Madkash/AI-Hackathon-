@@ -78,15 +78,24 @@ def analyze_local(text, product, documents, product_source='product.json', rfp_s
     if len(text) > 24000 or sum(len(d['text']) for d in documents) > 24000:
         raise ValueError('AI limit: 24,000 RFP characters and 24,000 total supplier-document characters. Split input; no truncation.')
     started = time.monotonic()
-    ensure_local_model(MODEL)
-    candidates, additions = extract_rfp_requirements(text)
+    try:
+        ensure_local_model(MODEL)
+    except AgentUnavailable as exc:
+        raise AgentUnavailable('[host/model-check] ' + str(exc)) from exc
+    try:
+        candidates, additions = extract_rfp_requirements(text)
+    except AgentUnavailable as exc:
+        raise AgentUnavailable('[extraction] ' + str(exc)) from exc
     if progress:
         progress(0, len(candidates))
     result = analyze(text, product, documents, product_source, rfp_source, requirements=candidates)
     normalized = ' '.join(text.split())
     for row in result['requirements']:
         row['source_span'] = {'normalized_start': normalized.find(row['requirement']), 'quote': row['requirement']}
-        assessment = check_evidence(row['requirement'], documents)
+        try:
+            assessment = check_evidence(row['requirement'], documents)
+        except AgentUnavailable as exc:
+            raise AgentUnavailable('[evidence/' + row['id'] + '] ' + str(exc)) from exc
         row['ai_assessment'] = assessment
         for c in assessment['citations']:
             row['evidence'].append({'kind': 'AI-selected document quote', 'source': documents[c['document']]['name'],
