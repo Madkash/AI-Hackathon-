@@ -6,9 +6,37 @@ import logging
 import os
 from pathlib import Path
 import subprocess
+import time
 from pymongo import ReturnDocument
 from store import db, initialize
 from local_llm import analyze_local
+
+CHECKS_DIR = Path(__file__).parent / 'checks'
+
+
+def run_verification_checks(result):
+    """Attach live PASS/FAIL evidence from manifest-mapped scripts. Never fails the job."""
+    try:
+        manifest = json.loads((CHECKS_DIR / 'manifest.json').read_text())
+    except Exception:
+        return
+    for req in result.get('requirements', []):
+        text = (req.get('text') or '').lower()
+        for entry in manifest.get('checks', []):
+            if not entry.get('testable'):
+                continue
+            if any(k in text for k in entry.get('keywords', [])):
+                try:
+                    proc = subprocess.run(['bash', str(CHECKS_DIR / entry['script'])],
+                                          capture_output=True, text=True, timeout=60)
+                    verdict = proc.stdout.strip().splitlines()[-1] if proc.stdout.strip() else 'FAIL | no output'
+                    passed = proc.returncode == 0
+                except subprocess.TimeoutExpired:
+                    verdict = 'FAIL | check timed out (60s)'
+                    passed = False
+                req['live_check'] = {'script': entry['script'], 'verdict': verdict, 'passed': passed}
+                break
+
 
 def main():
     if os.environ.get('PROOFBID_TRANSPORT') != 'openshell':
@@ -37,11 +65,12 @@ def main():
                 db.results.replace_one({'_id': ident}, result, upsert=True)
                 db.jobs.update_one({'_id': ident}, {'$set': {'state': 'completed', 'result_id': ident}, '$unset': {'input': ''}})
             except Exception as exc:
-                logging.error('Job %s failed: %s', ident, type(exc).__name__)
-                db.jobs.update_one({'_id': ident}, {'$set': {'state': 'failed', 'error': 'Analysis failed (' + type(exc).__name__ + '). Check model and sandbox readiness. No fallback used.'}, '$unset': {'input': ''}})
+                logging.exception('Job %s failed', ident)
+                db.jobs.update_one({'_id': ident}, {'$set': {'state': 'failed', 'error': 'Analysis failed (' + type(exc).__name__ + ': ' + str(exc)[:300] + '). Check model and sandbox readiness. No fallback used.'}, '$unset': {'input': ''}})
         except Exception as exc:
             logging.error('Queue unavailable: %s', type(exc).__name__)
             time.sleep(5)
+
 
 if __name__ == '__main__':
     main()
