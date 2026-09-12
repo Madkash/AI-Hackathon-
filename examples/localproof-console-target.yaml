@@ -6,14 +6,14 @@ target:
   source_path: "C:/Projects/dell x nvidia hackathon/compliance-console"
 interfaces:
   web:
-    base_url: "http://localhost:3001"
+    base_url: "http://localhost:3000"
     status: "verified-for-local-test"
 scope:
   active_testing: true
   allowed_hosts:
     - "localhost"
   allowed_ports:
-    - 3001
+    - 3000
   excluded_paths: []
   maximum_requests_per_second: 2
   maximum_concurrent_requests: 1
