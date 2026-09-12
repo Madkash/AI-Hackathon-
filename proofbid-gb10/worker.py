@@ -5,7 +5,6 @@ import json
 import logging
 import os
 from pathlib import Path
-import time
 import subprocess
 from pymongo import ReturnDocument
 from store import db, initialize
