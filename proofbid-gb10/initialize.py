@@ -18,7 +18,7 @@ def write_private(path, text):
 write_private(env_path, 'MONGO_ROOT_PASSWORD=' + secrets.token_hex(32) + '\nPROOFBID_DB_PASSWORD=' + db_password + '\n')
 settings = {'PROOFBID_PASSWORD': password,
     'PROOFBID_MONGO_URI': 'mongodb://proofbid:' + db_password + '@127.0.0.1:27018/proofbid?authSource=proofbid',
-    'PROOFBID_TRANSPORT': 'openshell', 'PROOFBID_SANDBOX': 'proofbid',
+    'PROOFBID_TRANSPORT': 'openshell', 'PROOFBID_SANDBOX': 'cody',
     'PROOFBID_MODEL': 'nemotron-3-nano:30b', 'PROOFBID_STATE': str(root/'.state')}
 write_private(runtime_path, ''.join('export ' + k + '=' + shlex.quote(v) + '\n' for k,v in settings.items()))
 write_private(root/'LOGIN.txt', 'Username: proofbid\nPassword: ' + password + '\nUse only localhost or an SSH tunnel.\n')

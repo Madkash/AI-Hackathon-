@@ -37,18 +37,20 @@ After reviewing the installer and accepting NVIDIA's third-party software terms,
 NEMOCLAW_AGENT=openclaw \
 NEMOCLAW_PROVIDER=ollama \
 NEMOCLAW_MODEL=nemotron-3-nano:30b \
-NEMOCLAW_SANDBOX_NAME=proofbid \
+NEMOCLAW_SANDBOX_NAME=cody \
 NEMOCLAW_ACCEPT_THIRD_PARTY_SOFTWARE=1 \
 bash installers/nemoclaw.sh
 ```
 
-Follow onboarding until it reports the `proofbid` sandbox ready. Select the LOCAL 30B tag explicitly. If the installed model is absent, download it on the GB10 with `ollama pull nemotron-3-nano:30b`. Your Windows model installation does not automatically exist on the GB10. Keep cloud disabled in the Ollama service (`OLLAMA_NO_CLOUD=1`), not just in the application shell. Do not expose unauthenticated Ollama on 0.0.0.0; let the NVIDIA installer configure its managed route.
+Follow onboarding until it reports the `cody` sandbox ready. If `cody` already exists, use that sandbox instead of creating another one. Select the LOCAL 30B tag explicitly. If the installed model is absent, download it on the GB10 with `ollama pull nemotron-3-nano:30b`. Your Windows model installation does not automatically exist on the GB10. Keep cloud disabled in the Ollama service (`OLLAMA_NO_CLOUD=1`), not just in the application shell. Do not expose unauthenticated Ollama on 0.0.0.0; let the NVIDIA installer configure its managed route.
 
 Current instructions: [NemoClaw quickstart](https://docs.nvidia.com/nemoclaw/latest/user-guide/openclaw/get-started/quickstart), [Ollama setup](https://docs.nvidia.com/nemoclaw/latest/user-guide/openclaw/inference/local-inference/set-up-ollama).
 
 NVIDIA releases and CLI contracts change rapidly. Use the installer's maintained release selection, and retain the installed versions after validation. This package does not pin an invented compatible NVIDIA release. Do not upgrade a working competition installation immediately before demonstrating it.
 
 ## 3. Prepare and start ProofBid
+
+The sandbox name defaults to `cody`. For an existing installation, edit `.runtime.env` so it contains `export PROOFBID_SANDBOX=cody` before running preparation. Existing environment files are preserved, so updating the source does not change a previously saved sandbox name. The `/sandbox/proofbid` paths are application directories inside `cody`, not sandbox names; keep those paths unchanged.
 
 ```bash
 bash prepare-gb10.sh
@@ -78,8 +80,8 @@ Open each requirement's evidence, record review notes, and mark it reviewed. Rev
 ```bash
 source .runtime.env
 .venv/bin/python doctor.py
-nemoclaw proofbid status
-openshell sandbox exec -n proofbid -- openclaw agent exec --help
+nemoclaw cody status
+openshell sandbox exec -n cody -- openclaw agent exec --help
 ```
 
 The doctor checks host architecture, local model metadata, database connectivity and required host CLI flags. It does NOT prove live inference, GPU residency or isolation. The browser sample exercises the application path. Record `ollama ps` during inference to inspect runtime placement and retain the installed version outputs with your deployment evidence.
