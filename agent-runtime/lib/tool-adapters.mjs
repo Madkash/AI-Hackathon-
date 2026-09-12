@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -144,7 +145,8 @@ function resolveUnderAnyRoot(sourceRoot, requested, extraRoots, label) {
   const candidates = path.isAbsolute(value)
     ? [path.resolve(value)]
     : roots.map((root) => path.resolve(root, value));
-  const resolved = candidates.find((candidate) => roots.some((root) => isInside(root, candidate))) ?? candidates[0];
+  const allowedCandidates = candidates.filter((candidate) => roots.some((root) => isInside(root, candidate)));
+  const resolved = allowedCandidates.find((candidate) => existsSync(candidate)) ?? allowedCandidates[0] ?? candidates[0];
   if (!roots.some((root) => isInside(root, resolved))) {
     throw new Error(`${label} must be a local path inside an approved root`);
   }

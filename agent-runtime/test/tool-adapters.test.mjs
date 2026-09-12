@@ -177,6 +177,22 @@ test("runSemgrep summarizes JSON findings and redacts obvious secrets", async (t
   assert.ok(result.evidence[0].command.args.includes("--metrics=off"));
 });
 
+test("runSemgrep resolves relative rules from approved catalog roots", async (t) => {
+  const { root, fakeTool } = await workspace(t);
+  const catalogRoot = path.join(root, "..", "catalog-security");
+  const rulesPath = path.join(catalogRoot, "semgrep-rules", "localproof-javascript.yml");
+  await fs.mkdir(path.dirname(rulesPath), { recursive: true });
+  await fs.writeFile(rulesPath, "rules: []\n", "utf8");
+
+  const result = await runSemgrep(fakeConfig(root, fakeTool, "semgrep", {
+    rulesPath: "semgrep-rules/localproof-javascript.yml",
+    approvedConfigRoots: [catalogRoot],
+  }));
+
+  assert.equal(result.result, "not-observed");
+  assert.ok(result.evidence[0].command.args.includes(path.resolve(rulesPath)));
+});
+
 test("runGitleaks uses redacted JSON detect output and reports clean scans as observed", async (t) => {
   const { root, fakeTool } = await workspace(t);
 

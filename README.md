@@ -15,7 +15,15 @@ This is untested GB10 deployment source, not production-validated software. Targ
 
 LocalProof is an always-on, local-only software compliance readiness agent for the Dell Pro Max with GB10. OpenClaw plans work, NemoClaw supplies the local inference and deployment integration, and OpenShell enforces filesystem, process, and network boundaries.
 
-The primary interface is headless:
+The primary interface is headless. Start the local console target first:
+
+```bash
+cd compliance-console
+npm ci
+npm run dev -- --port 3000
+```
+
+Then plan and run the readiness checks from another terminal:
 
 ```bash
 cd agent-runtime

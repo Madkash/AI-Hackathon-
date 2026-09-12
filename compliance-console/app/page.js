@@ -21,10 +21,83 @@ const sourceMix = [
   { label: "Attestations", value: 18, tone: "amber" },
 ];
 
-const heatmapCells = [
-  "green", "green", "blue", "green", "amber", "green", "green", "blue",
-  "green", "amber", "red", "green", "blue", "green", "amber", "green",
-  "blue", "green", "green", "red", "amber", "green", "blue", "green",
+const fallbackSoftwareOptions = [
+  {
+    id: "nextjs-storefront",
+    name: "Example Next.js Storefront",
+    folder: "nextjs-storefront",
+    framework: "Next.js",
+    signals: ["package.json", "Dockerfile", "openapi.yaml"],
+  },
+];
+
+const rfpDocumentCategories = [
+  {
+    id: "company",
+    label: "Company and product overview",
+    examples: "supplier profile, platform overview, architecture brief",
+    keywords: ["company", "supplier", "product", "overview", "platform", "architecture", "data-flow", "data flow"],
+  },
+  {
+    id: "security",
+    label: "Security overview",
+    examples: "security whitepaper, secure SDLC, shared responsibility",
+    keywords: ["security", "whitepaper", "sdlc", "secure-development", "secure development", "shared-responsibility"],
+  },
+  {
+    id: "soc2",
+    label: "SOC 2 report",
+    examples: "SOC 2 Type II report, bridge letter",
+    keywords: ["soc2", "soc-2", "soc 2", "type ii", "type-ii", "bridge-letter"],
+  },
+  {
+    id: "iso27001",
+    label: "ISO 27001 certificate",
+    examples: "ISO 27001 certificate, statement of applicability",
+    keywords: ["iso27001", "iso-27001", "iso 27001", "soa", "statement-of-applicability"],
+  },
+  {
+    id: "pentest",
+    label: "Penetration test summary",
+    examples: "pentest attestation, remediation letter",
+    keywords: ["pentest", "pen-test", "penetration", "remediation-letter", "attestation"],
+  },
+  {
+    id: "vulnerability",
+    label: "Vulnerability management",
+    examples: "scanner summary, SBOM, remediation SLA",
+    keywords: ["vulnerability", "cve", "scanner", "scan", "sbom", "grype", "trivy", "remediation", "patch"],
+  },
+  {
+    id: "privacy",
+    label: "Privacy and data handling",
+    examples: "DPA, subprocessor list, data retention policy",
+    keywords: ["privacy", "dpa", "gdpr", "subprocessor", "retention", "data-processing"],
+  },
+  {
+    id: "access",
+    label: "Access control",
+    examples: "SSO, MFA, RBAC, admin access policy",
+    keywords: ["sso", "mfa", "rbac", "iam", "access", "admin", "oidc", "least-privilege"],
+  },
+  {
+    id: "resilience",
+    label: "Resilience and incident response",
+    examples: "BCP, DR plan, incident response, RTO/RPO",
+    keywords: ["incident", "bcp", "business-continuity", "disaster", "recovery", "dr", "rto", "rpo"],
+  },
+  {
+    id: "insurance",
+    label: "Insurance",
+    examples: "cyber liability, E&O, certificate of insurance",
+    keywords: ["insurance", "liability", "e&o", "errors", "omissions", "coi"],
+  },
+  {
+    id: "accessibility",
+    label: "Accessibility",
+    examples: "VPAT, WCAG report, accessibility statement",
+    keywords: ["vpat", "wcag", "accessibility", "a11y"],
+  },
 ];
 
 const requirementRows = [
@@ -33,8 +106,12 @@ const requirementRows = [
     domain: "Identity",
     requirement: "Federated SSO, MFA, and least privilege administration",
     answer: "Supported",
+    answerText: "We support federated SSO through OIDC, require MFA for administrative access, and maintain least-privilege admin role assignments.",
     evidence: "OIDC policy, admin role matrix",
+    document: "OIDC access policy",
+    documentHref: `${proofBidUrl}/documents/oidc-access-policy`,
     notes: "Ready for buyer packet.",
+    decision: "pending",
     confidence: 92,
     tone: "green",
   },
@@ -43,8 +120,12 @@ const requirementRows = [
     domain: "Vuln mgmt",
     requirement: "CVE triage, patch SLA, and remediation evidence",
     answer: "Partial",
+    answerText: "We run recurring vulnerability scans and track remediation through an internal queue. Critical and high remediation SLA evidence should be attached before final submission.",
     evidence: "Scanner summary, remediation queue",
+    document: "Vulnerability scanner summary",
+    documentHref: `${proofBidUrl}/documents/vulnerability-scanner-summary`,
     notes: "Add high-severity SLA attachment.",
+    decision: "pending",
     confidence: 68,
     tone: "amber",
   },
@@ -53,8 +134,12 @@ const requirementRows = [
     domain: "Data",
     requirement: "Encryption in transit, at rest, and key ownership",
     answer: "Supported",
+    answerText: "Data is encrypted in transit with TLS and encrypted at rest using managed keys documented in the platform KMS architecture.",
     evidence: "TLS config, KMS architecture",
+    document: "KMS architecture brief",
+    documentHref: `${proofBidUrl}/documents/kms-architecture-brief`,
     notes: "Use buyer-safe encryption summary.",
+    decision: "pending",
     confidence: 86,
     tone: "blue",
   },
@@ -63,8 +148,12 @@ const requirementRows = [
     domain: "Resilience",
     requirement: "RTO, RPO, incident escalation, and exercise cadence",
     answer: "Needs owner",
+    answerText: "Disaster recovery procedures are drafted, but RTO/RPO commitments and incident escalation cadence require operations owner approval.",
     evidence: "DR runbook pending approval",
+    document: "DR runbook draft",
+    documentHref: `${proofBidUrl}/documents/dr-runbook-draft`,
     notes: "Needs ops owner signoff.",
+    decision: "pending",
     confidence: 51,
     tone: "red",
   },
@@ -75,7 +164,7 @@ const answerTones = {
   Partial: "amber",
   "Needs owner": "red",
   "Not applicable": "blue",
-  Drafting: "violet",
+  Drafting: "amber",
 };
 
 const seedMessages = [
@@ -152,6 +241,126 @@ function clampPercent(value) {
   return Math.min(100, Math.max(0, number));
 }
 
+function normalizedName(value) {
+  return String(value || "").toLowerCase().replace(/[_\s]+/g, "-");
+}
+
+function formatFileSize(bytes) {
+  const size = Number(bytes);
+  if (!Number.isFinite(size) || size <= 0) return "0 KB";
+  if (size >= 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  return `${Math.max(1, Math.round(size / 1024))} KB`;
+}
+
+function createEmptyInventory() {
+  return {
+    categories: rfpDocumentCategories.map((category) => ({ ...category, files: [] })),
+    extraFiles: [],
+    duplicateNames: [],
+    fileCount: 0,
+    totalSize: 0,
+  };
+}
+
+function categorizeDocumentFiles(files) {
+  const inventory = createEmptyInventory();
+  const nameCounts = new Map();
+  const categoryMap = new Map(inventory.categories.map((category) => [category.id, category]));
+  const matchOrder = [
+    "soc2",
+    "iso27001",
+    "pentest",
+    "vulnerability",
+    "privacy",
+    "accessibility",
+    "insurance",
+    "resilience",
+    "access",
+    "security",
+    "company",
+  ].map((id) => rfpDocumentCategories.find((category) => category.id === id)).filter(Boolean);
+
+  files.forEach((file) => {
+    const record = {
+      name: file.name,
+      path: file.webkitRelativePath || file.name,
+      size: file.size || 0,
+      type: file.type || "document",
+    };
+    const haystack = normalizedName(`${record.path} ${record.name}`);
+    const key = normalizedName(record.name);
+    nameCounts.set(key, (nameCounts.get(key) || 0) + 1);
+
+    const category = matchOrder.find((candidate) => (
+      candidate.keywords.some((keyword) => haystack.includes(normalizedName(keyword)))
+    ));
+
+    if (category) {
+      categoryMap.get(category.id)?.files.push(record);
+    } else {
+      inventory.extraFiles.push(record);
+    }
+
+    inventory.fileCount += 1;
+    inventory.totalSize += record.size;
+  });
+
+  inventory.duplicateNames = [...nameCounts.entries()]
+    .filter(([, count]) => count > 1)
+    .map(([name, count]) => ({ name, count }));
+
+  return inventory;
+}
+
+function summarizeDocumentInventory(inventory) {
+  const categories = inventory?.categories || [];
+  const missing = categories.filter((category) => category.files.length === 0).length;
+  const duplicated = categories.filter((category) => category.files.length > 1).length;
+  const ready = categories.length - missing;
+  return {
+    ready,
+    missing,
+    duplicated,
+    extra: inventory?.extraFiles?.length || 0,
+    total: categories.length,
+    files: inventory?.fileCount || 0,
+    size: inventory?.totalSize || 0,
+  };
+}
+
+function categoryStatus(category) {
+  if (!category.files.length) return { label: "Missing", tone: "red" };
+  if (category.files.length > 1) return { label: "Duplicate", tone: "amber" };
+  return { label: "Ready", tone: "green" };
+}
+
+function requirementTone(row) {
+  const confidence = clampPercent(row.confidence);
+  const hasEvidence = Boolean(String(row.evidence || "").trim());
+  if (row.decision === "accepted") return "green";
+  if (row.decision === "rejected") return "red";
+  if (row.decision === "changes") return "amber";
+  if (!row.decision || row.decision === "pending") return "amber";
+  if (row.answer === "Not applicable") return "blue";
+  if (row.answer === "Needs owner" || !hasEvidence || confidence < 55) return "red";
+  if (row.answer === "Partial" || row.answer === "Drafting" || confidence < 75) return "amber";
+  return "green";
+}
+
+function heatmapStatus(tone) {
+  if (tone === "green") return "Ready";
+  if (tone === "amber") return "Review";
+  if (tone === "red") return "Gap";
+  return "N/A";
+}
+
+function decisionLabel(decision) {
+  if (decision === "accepted") return "Accepted";
+  if (decision === "rejected") return "Denied";
+  if (decision === "changes") return "Proposed changes";
+  return "Pending review";
+}
+
 function shortDate(value) {
   if (!value) return "Unscheduled";
   const date = new Date(`${value}T12:00:00`);
@@ -190,6 +399,12 @@ function downloadFile(filename, type, content) {
 
 export default function Dashboard() {
   const [target, setTarget] = useState("nextjs-storefront");
+  const [softwareOptions, setSoftwareOptions] = useState(fallbackSoftwareOptions);
+  const [softwareError, setSoftwareError] = useState("");
+  const [documentInventory, setDocumentInventory] = useState(createEmptyInventory);
+  const [documentFolderName, setDocumentFolderName] = useState("");
+  const [rfpRequest, setRfpRequest] = useState("");
+  const [analysisStarted, setAnalysisStarted] = useState(false);
   const [rfpProfile, setRfpProfile] = useState(defaultRfpProfile);
   const [responseRows, setResponseRows] = useState(requirementRows);
   const [assessment, setAssessment] = useState(null);
@@ -222,6 +437,41 @@ export default function Dashboard() {
     };
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    fetch("/api/software", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!active) return;
+        if (!Array.isArray(data.software) || data.software.length === 0) {
+          setSoftwareOptions(fallbackSoftwareOptions);
+          setSoftwareError(data.error || "");
+          return;
+        }
+        setSoftwareOptions(data.software);
+        setSoftwareError("");
+        if (!data.software.some((software) => software.id === target)) {
+          setTarget(data.software[0].id);
+        }
+      })
+      .catch(() => {
+        if (!active) return;
+        setSoftwareOptions(fallbackSoftwareOptions);
+        setSoftwareError("Software inventory is unavailable, so the demo target is selected.");
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [target]);
+
+  function handleDocumentFolder(event) {
+    const files = Array.from(event.target.files || []);
+    setDocumentInventory(categorizeDocumentFiles(files));
+    setDocumentFolderName(files[0]?.webkitRelativePath?.split(/[\\/]/)[0] || "");
+  }
+
   async function runDiscovery(event) {
     event.preventDefault();
     setRunning(true);
@@ -237,6 +487,17 @@ export default function Dashboard() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Discovery failed");
       setDiscovery(data);
+
+      const assessmentResponse = await fetch("/api/assessment", { cache: "no-store" });
+      if (assessmentResponse.ok) {
+        setAssessment(await assessmentResponse.json());
+        setAssessmentError("");
+      }
+
+      setAnalysisStarted(true);
+      window.setTimeout(() => {
+        document.getElementById("dashboard")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 0);
     } catch (caught) {
       setError(caught.message);
     } finally {
@@ -268,6 +529,28 @@ export default function Dashboard() {
     }));
   }
 
+  function setReviewDecision(id, decision) {
+    setResponseRows((current) => current.map((row) => {
+      if (row.id !== id) return row;
+      if (decision === "accepted") return { ...row, decision, answer: "Supported", confidence: Math.max(row.confidence, 80) };
+      if (decision === "rejected") return { ...row, decision, answer: "Needs owner", confidence: Math.min(row.confidence, 45) };
+      return { ...row, decision, answer: row.answer === "Supported" ? "Drafting" : row.answer };
+    }));
+  }
+
+  function applyProposedChanges(id) {
+    setResponseRows((current) => current.map((row) => {
+      if (row.id !== id) return row;
+      return {
+        ...row,
+        answer: "Supported",
+        confidence: Math.max(row.confidence, 80),
+        decision: "accepted",
+        notes: row.notes?.trim() ? row.notes : "Accepted after manual answer update.",
+      };
+    }));
+  }
+
   const services = assessment?.services || { app: "checking", mongodb: "checking", inference: "checking" };
   const latestTarget = assessment?.latest_target;
   const forecast = assessment?.forecast || { score: 0, label: "Loading", summary: "Loading latest local readiness state." };
@@ -275,6 +558,8 @@ export default function Dashboard() {
   const findings = assessment?.concerns || [];
   const resultCounts = countEntries(assessment?.counts?.by_result);
   const dispositionCounts = countEntries(assessment?.counts?.by_disposition);
+  const selectedSoftware = softwareOptions.find((software) => software.id === target) || softwareOptions[0] || fallbackSoftwareOptions[0];
+  const documentSummary = summarizeDocumentInventory(documentInventory);
   const coveredFrameworks = useMemo(
     () => frameworkCards.filter((card) => card.evidence?.covered).length,
     [frameworkCards],
@@ -287,17 +572,81 @@ export default function Dashboard() {
     ? Math.round(responseRows.reduce((sum, row) => sum + clampPercent(row.confidence), 0) / responseRows.length)
     : 0;
   const evidenceMatch = Math.round((averageConfidence * 0.7) + (frameworkCoverage * 0.3));
-  const openRows = responseRows.filter((row) => row.answer !== "Supported" && row.answer !== "Not applicable").length;
+  const openRows = responseRows.filter((row) => row.decision !== "accepted" && row.answer !== "Not applicable").length;
   const rfpSignals = [
     { label: "RFP rows", value: responseRows.length, detail: `${openRows} need review` },
-    { label: "Evidence match", value: `${evidenceMatch}%`, detail: "local + supplier docs" },
+    { label: "Evidence match", value: `${evidenceMatch}%`, detail: `${documentSummary.ready}/${documentSummary.total} doc groups` },
     { label: "Draft confidence", value: `${averageConfidence}%`, detail: rfpProfile.responseStyle },
     { label: "Buyer due", value: shortDate(rfpProfile.dueDate), detail: rfpProfile.classification },
   ];
+  const intakeSignals = [
+    { label: "Software", value: selectedSoftware?.name || "No target", detail: selectedSoftware?.framework || "Unknown" },
+    { label: "Documents", value: `${documentSummary.ready}/${documentSummary.total}`, detail: `${documentSummary.missing} missing` },
+    { label: "Duplicates", value: documentSummary.duplicated, detail: `${documentSummary.extra} extra files` },
+    { label: "RFP request", value: rfpRequest.trim() ? "Loaded" : "Optional", detail: rfpRequest.trim() ? "buyer request attached" : "can run without it" },
+  ];
+  const complianceChecklist = [
+    {
+      label: "Target software selected",
+      detail: selectedSoftware ? `${selectedSoftware.folder} | ${selectedSoftware.framework}` : "No software selected",
+      tone: selectedSoftware ? "green" : "red",
+      status: selectedSoftware ? "Ready" : "Missing",
+    },
+    {
+      label: "RFP evidence folder categorized",
+      detail: `${documentSummary.ready} ready, ${documentSummary.missing} missing, ${documentSummary.duplicated} duplicate groups`,
+      tone: documentSummary.missing ? "amber" : "green",
+      status: documentSummary.missing ? "Partial" : "Ready",
+    },
+    {
+      label: "Buyer request loaded",
+      detail: rfpRequest.trim() ? `${rfpRequest.trim().length} characters available for response drafting` : "Proceeding without buyer-supplied request text",
+      tone: rfpRequest.trim() ? "green" : "blue",
+      status: rfpRequest.trim() ? "Ready" : "Optional",
+    },
+    {
+      label: "LocalProof discovery",
+      detail: discovery ? discovery.file : "Discovery has not produced a target proposal yet",
+      tone: discovery ? "green" : "amber",
+      status: discovery ? "Ready" : "Pending",
+    },
+    {
+      label: "Compliance readiness snapshot",
+      detail: `${assessment?.counts?.total ?? 0} checks in the current dashboard snapshot`,
+      tone: readinessTone(forecast.label),
+      status: forecast.label || "Loading",
+    },
+    {
+      label: "RFP answer review",
+      detail: `${openRows} rows still need review before final buyer export`,
+      tone: openRows ? "amber" : "green",
+      status: openRows ? "Review" : "Ready",
+    },
+  ];
+  const heatmapCells = useMemo(() => responseRows.map((row) => {
+    const tone = requirementTone(row);
+    const status = heatmapStatus(tone);
+    const confidence = clampPercent(row.confidence);
+    const evidence = row.evidence?.trim() || "No evidence linked";
+    const notes = row.notes?.trim() || "No reviewer notes";
+    return {
+      id: row.id,
+      domain: row.domain,
+      requirement: row.requirement,
+      answer: row.answer,
+      answerText: row.answerText,
+      evidence,
+      notes,
+      confidence,
+      tone,
+      status,
+      tooltip: `${row.id} (${row.domain}) - ${status}. ${decisionLabel(row.decision)}, ${confidence}% confidence. Evidence: ${evidence}. Notes: ${notes}`,
+    };
+  }), [responseRows]);
 
   function exportMarkdown() {
     const rows = responseRows.map((row) => (
-      `| ${escapeMarkdownCell(row.id)} | ${escapeMarkdownCell(row.domain)} | ${escapeMarkdownCell(row.requirement)} | ${escapeMarkdownCell(row.answer)} | ${escapeMarkdownCell(row.evidence)} | ${clampPercent(row.confidence)}% | ${escapeMarkdownCell(row.notes)} |`
+      `| ${escapeMarkdownCell(row.id)} | ${escapeMarkdownCell(row.domain)} | ${escapeMarkdownCell(heatmapStatus(requirementTone(row)))} | ${escapeMarkdownCell(decisionLabel(row.decision))} | ${escapeMarkdownCell(row.requirement)} | ${escapeMarkdownCell(row.answerText)} | [${escapeMarkdownCell(row.document)}](${row.documentHref}) | ${clampPercent(row.confidence)}% | ${escapeMarkdownCell(row.notes)} |`
     ));
     const lines = [
       `# ${rfpProfile.buyer} - ${rfpProfile.project}`,
@@ -318,10 +667,12 @@ export default function Dashboard() {
       `Source revision: ${latestTarget?.version || "unknown"}`,
       `Generated: ${formatDate(assessment?.generated_at)}`,
       `Checks observed: ${assessment?.counts?.total ?? 0}`,
+      `Document groups ready: ${documentSummary.ready}/${documentSummary.total}`,
+      `Document gaps: ${documentSummary.missing} missing, ${documentSummary.duplicated} duplicate groups, ${documentSummary.extra} extra files`,
       "",
       "## Requirement Matrix",
-      "| ID | Domain | Requirement | Answer | Evidence | Confidence | Notes |",
-      "| --- | --- | --- | --- | --- | ---: | --- |",
+      "| ID | Domain | Status | Decision | Request | Answer | Source Document | Confidence | Notes |",
+      "| --- | --- | --- | --- | --- | --- | --- | ---: | --- |",
       ...rows,
       "",
       "## Buyer-Visible Gaps",
@@ -336,7 +687,7 @@ export default function Dashboard() {
   }
 
   function exportCsv() {
-    const header = ["buyer", "project", "id", "domain", "requirement", "answer", "evidence", "confidence", "notes"];
+    const header = ["buyer", "project", "id", "domain", "status", "decision", "request", "answer", "source_document", "source_url", "confidence", "notes"];
     const lines = [
       header.join(","),
       ...responseRows.map((row) => [
@@ -344,9 +695,12 @@ export default function Dashboard() {
         rfpProfile.project,
         row.id,
         row.domain,
+        heatmapStatus(requirementTone(row)),
+        decisionLabel(row.decision),
         row.requirement,
-        row.answer,
-        row.evidence,
+        row.answerText,
+        row.document,
+        row.documentHref,
         `${clampPercent(row.confidence)}%`,
         row.notes,
       ].map(escapeCsv).join(",")),
@@ -364,6 +718,10 @@ export default function Dashboard() {
         averageConfidence,
         openRows,
         forecastLabel: forecast.label,
+        documentGroupsReady: documentSummary.ready,
+        missingDocumentGroups: documentSummary.missing,
+        duplicateDocumentGroups: documentSummary.duplicated,
+        extraDocumentFiles: documentSummary.extra,
       },
       localProof: {
         target: latestTarget?.name || null,
@@ -372,12 +730,38 @@ export default function Dashboard() {
         runId: assessment?.run_id || null,
         counts: assessment?.counts || null,
       },
+      intake: {
+        software: selectedSoftware,
+        documentFolder: documentFolderName || null,
+        documents: documentInventory.categories.map((category) => ({
+          id: category.id,
+          label: category.label,
+          status: categoryStatus(category).label,
+          files: category.files.map((file) => ({
+            name: file.name,
+            path: file.path,
+            size: file.size,
+          })),
+        })),
+        extraFiles: documentInventory.extraFiles.map((file) => ({
+          name: file.name,
+          path: file.path,
+          size: file.size,
+        })),
+        rfpRequest: rfpRequest.trim() || null,
+      },
       rows: responseRows.map((row) => ({
         id: row.id,
         domain: row.domain,
+        status: heatmapStatus(requirementTone(row)),
+        tone: requirementTone(row),
+        decision: decisionLabel(row.decision),
         requirement: row.requirement,
         answer: row.answer,
+        answerText: row.answerText,
         evidence: row.evidence,
+        sourceDocument: row.document,
+        sourceUrl: row.documentHref,
         confidence: clampPercent(row.confidence),
         notes: row.notes,
       })),
@@ -404,7 +788,9 @@ export default function Dashboard() {
         </div>
 
         <nav aria-label="Primary navigation">
-          <a className="navItem active" href="#dashboard"><Icon name="command" />Dashboard</a>
+          <a className="navItem active" href="#intake"><Icon name="settings" />Intake</a>
+          <a className="navItem" href="#dashboard"><Icon name="command" />Dashboard</a>
+          <a className="navItem" href="#checklist"><Icon name="evidence" />Checklist</a>
           <a className="navItem" href="#export"><Icon name="export" />Export</a>
           <a className="navItem" href="#matrix"><Icon name="matrix" />Matrix</a>
           <a className="navItem" href="#chat"><Icon name="chat" />Chat</a>
@@ -434,7 +820,147 @@ export default function Dashboard() {
           </div>
         </header>
 
-        <div className="content" id="dashboard">
+        <div className="content">
+          <section className="intakePanel" id="intake">
+            <div className="intakeHeader">
+              <div>
+                <span className="sectionLabel">LOCAL INTAKE</span>
+                <h2>Scope the RFP response</h2>
+                <p>{selectedSoftware?.name || "Select a software target"} with {documentSummary.ready} evidence groups ready for review.</p>
+              </div>
+              <div className="intakeStatus">
+                <strong>{analysisStarted ? "Analysis loaded" : "Ready to run"}</strong>
+                <span>{documentSummary.missing ? `${documentSummary.missing} evidence groups missing` : "Evidence checklist complete"}</span>
+              </div>
+            </div>
+
+            <form className="intakeGrid" onSubmit={runDiscovery}>
+              <section className="slotPanel softwareSlot">
+                <div className="slotHeading">
+                  <span className="sectionLabel">TARGET SOFTWARE</span>
+                  <strong>{selectedSoftware?.framework || "Unknown"}</strong>
+                </div>
+                <label htmlFor="softwareTarget">Recognized software</label>
+                <select
+                  id="softwareTarget"
+                  value={target}
+                  onChange={(event) => setTarget(event.target.value)}
+                >
+                  {softwareOptions.map((software) => (
+                    <option key={software.id} value={software.id}>
+                      {software.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="softwareMeta">
+                  <span>Folder: {selectedSoftware?.folder || target}</span>
+                  <span>Signals: {(selectedSoftware?.signals || []).join(", ") || "none"}</span>
+                </div>
+                {softwareError && <div className="message error" role="alert">{softwareError}</div>}
+              </section>
+
+              <section className="slotPanel documentSlot">
+                <div className="slotHeading">
+                  <span className="sectionLabel">TARGET DOCUMENTS</span>
+                  <strong>{documentSummary.files} files</strong>
+                </div>
+                <label className="folderDrop">
+                  <input
+                    type="file"
+                    multiple
+                    directory=""
+                    webkitdirectory=""
+                    onChange={handleDocumentFolder}
+                  />
+                  <span>Target folder with relevant documents</span>
+                  <strong>{documentFolderName || "Choose folder"}</strong>
+                  <small>{documentSummary.files ? `${formatFileSize(documentSummary.size)} indexed locally` : "Folder names and file names are used for categorization."}</small>
+                </label>
+              </section>
+
+              <section className="slotPanel rfpSlot">
+                <div className="slotHeading">
+                  <span className="sectionLabel">OPTIONAL RFP</span>
+                  <strong>{rfpRequest.trim() ? "Loaded" : "Open"}</strong>
+                </div>
+                <label htmlFor="rfpRequest">Buyer request</label>
+                <textarea
+                  id="rfpRequest"
+                  value={rfpRequest}
+                  onChange={(event) => setRfpRequest(event.target.value)}
+                  placeholder="Paste the buyer's RFP request, questionnaire text, or due-diligence prompt."
+                />
+              </section>
+
+              <section className="slotPanel runSlot">
+                <div className="intakeMetrics" aria-label="Intake metrics">
+                  {intakeSignals.map((signal) => (
+                    <div className="metricItem compact" key={signal.label}>
+                      <span>{signal.label}</span>
+                      <strong>{signal.value}</strong>
+                      <small>{signal.detail}</small>
+                    </div>
+                  ))}
+                </div>
+                <button className="primaryRun" type="submit" disabled={running || !target.trim()}>
+                  {running ? "Running analysis..." : "Run analysis"}
+                </button>
+                {error && <div className="message error" role="alert">{error}</div>}
+              </section>
+            </form>
+
+            <section className="documentReview" aria-label="RFP document checklist">
+              <div className="panelHeading">
+                <div>
+                  <span className="sectionLabel">DOCUMENT CHECKLIST</span>
+                  <h2>RFP evidence folder</h2>
+                </div>
+                <span className={`readOnly ${documentSummary.missing ? "amber" : "green"}`}>
+                  {documentSummary.missing ? "Partial" : "Ready"}
+                </span>
+              </div>
+              <div className="documentGrid">
+                {documentInventory.categories.map((category) => {
+                  const status = categoryStatus(category);
+                  return (
+                    <article className={`docCategory ${status.tone}`} key={category.id}>
+                      <div>
+                        <strong>{category.label}</strong>
+                        <span>{category.examples}</span>
+                      </div>
+                      <b>{status.label}</b>
+                      {category.files.length > 0 && (
+                        <ul>
+                          {category.files.slice(0, 3).map((file) => (
+                            <li key={file.path}>{file.name}</li>
+                          ))}
+                          {category.files.length > 3 && <li>{category.files.length - 3} more</li>}
+                        </ul>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+              {(documentInventory.extraFiles.length > 0 || documentInventory.duplicateNames.length > 0) && (
+                <div className="documentExceptions">
+                  {documentInventory.extraFiles.length > 0 && (
+                    <div>
+                      <strong>Extra files</strong>
+                      <span>{documentInventory.extraFiles.slice(0, 4).map((file) => file.name).join(", ")}</span>
+                    </div>
+                  )}
+                  {documentInventory.duplicateNames.length > 0 && (
+                    <div>
+                      <strong>Duplicate names</strong>
+                      <span>{documentInventory.duplicateNames.slice(0, 4).map((file) => `${file.name} x${file.count}`).join(", ")}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </section>
+          </section>
+
+          <div className={`postAnalysis ${analysisStarted ? "visible" : ""}`} id="dashboard">
           <section className="dashboardHero">
             <div className="heroCopy">
               <span className="sectionLabel">ACTIVE RESPONSE</span>
@@ -461,6 +987,27 @@ export default function Dashboard() {
               </div>
               <small>RFP readiness</small>
               <a className="primaryButton" href={proofBidUrl} target="_blank" rel="noreferrer">Open ProofBid</a>
+            </div>
+          </section>
+
+          <section className="panel checklistPanel" id="checklist">
+            <div className="panelHeading">
+              <div>
+                <span className="sectionLabel">COMPLIANCE CHECKLIST</span>
+                <h2>Response readiness</h2>
+              </div>
+              <span className="readOnly">{complianceChecklist.filter((item) => item.tone === "green").length}/{complianceChecklist.length} ready</span>
+            </div>
+            <div className="checklistGrid">
+              {complianceChecklist.map((item) => (
+                <article className={`checkItem ${item.tone}`} key={item.label}>
+                  <b>{item.status}</b>
+                  <div>
+                    <strong>{item.label}</strong>
+                    <span>{item.detail}</span>
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
 
@@ -554,17 +1101,35 @@ export default function Dashboard() {
             <article className="panel compactPanel">
               <div className="panelHeading tight">
                 <div><span className="sectionLabel">HEATMAP</span><h2>Requirement density</h2></div>
-                <span className="readOnly">24 cells</span>
+                <span className="readOnly">{heatmapCells.length} rows</span>
               </div>
-              <div className="heatmap" aria-label="Requirement heatmap">
-                {heatmapCells.map((tone, index) => (
-                  <span className={tone} key={`${tone}-${index}`} title={`Clause ${index + 1}`} />
+              <div
+                aria-label={`Requirement heatmap with ${heatmapCells.length} rows`}
+                className="heatmap"
+                style={{ "--heat-columns": Math.min(8, Math.max(4, heatmapCells.length)) }}
+              >
+                {heatmapCells.map((cell) => (
+                  <button
+                    aria-label={cell.tooltip}
+                    className={`heatCell ${cell.tone}`}
+                    key={cell.id}
+                    title={cell.tooltip}
+                    type="button"
+                  >
+                    <span className="heatTooltip" role="tooltip">
+                      <strong>{cell.id} | {cell.status}</strong>
+                      <small>{cell.domain}</small>
+                      <small>{cell.answer} | {cell.confidence}% confidence</small>
+                      <em>{cell.evidence}</em>
+                    </span>
+                  </button>
                 ))}
               </div>
               <div className="legend">
                 <span><i className="green" />Ready</span>
                 <span><i className="amber" />Review</span>
                 <span><i className="red" />Gap</span>
+                <span><i className="blue" />N/A</span>
               </div>
             </article>
 
@@ -616,40 +1181,75 @@ export default function Dashboard() {
             </div>
             <div className="requirementTable">
               {responseRows.map((row) => (
-                <article className="requirementRow editableRequirement" key={row.id}>
-                  <div className="reqId"><strong>{row.id}</strong><span>{row.domain}</span></div>
-                  <label className="matrixField wide">
-                    <span>Requirement</span>
-                    <input value={row.requirement} onChange={(event) => updateResponseRow(row.id, "requirement", event.target.value)} />
-                  </label>
-                  <label className="matrixField">
-                    <span>Answer</span>
-                    <select value={row.answer} onChange={(event) => updateResponseRow(row.id, "answer", event.target.value)}>
-                      {Object.keys(answerTones).map((answer) => <option key={answer}>{answer}</option>)}
-                    </select>
-                  </label>
-                  <label className="matrixField evidenceField">
-                    <span>Evidence</span>
-                    <input value={row.evidence} onChange={(event) => updateResponseRow(row.id, "evidence", event.target.value)} />
-                  </label>
-                  <label className="matrixField confidenceField">
-                    <span>Confidence</span>
-                    <input
-                      min="0"
-                      max="100"
-                      type="number"
-                      value={row.confidence}
-                      onChange={(event) => updateResponseRow(row.id, "confidence", event.target.value)}
-                    />
-                  </label>
-                  <label className="matrixField notesField">
-                    <span>Notes</span>
-                    <input value={row.notes} onChange={(event) => updateResponseRow(row.id, "notes", event.target.value)} />
-                  </label>
-                  <div className="confidenceCell compactConfidence">
-                    <div className="miniTrack"><span className={row.tone} style={{ width: `${row.confidence}%` }} /></div>
-                    <span>{row.confidence}%</span>
+                <article className={`reviewRow ${row.decision}`} key={row.id}>
+                  <div className="requestCell">
+                    <div className="reqId"><strong>{row.id}</strong><span>{row.domain}</span></div>
+                    <label className="requestEditor">
+                      <span>Request</span>
+                      <textarea
+                        value={row.requirement}
+                        onChange={(event) => updateResponseRow(row.id, "requirement", event.target.value)}
+                      />
+                    </label>
                   </div>
+
+                  <div className="answerCell">
+                    <div className="answerHeader">
+                      <span aria-live="polite" className={`decisionBadge ${requirementTone(row)}`}>{decisionLabel(row.decision)}</span>
+                      <div className="confidenceCell compactConfidence">
+                        <div className="miniTrack"><span className={requirementTone(row)} style={{ width: `${row.confidence}%` }} /></div>
+                        <span>{row.confidence}%</span>
+                      </div>
+                    </div>
+                    <p className="answerText">{row.answerText}</p>
+                    <a className="sourceLink" href={row.documentHref} target="_blank" rel="noreferrer">
+                      Source: {row.document}
+                    </a>
+                    <small>{row.evidence}</small>
+                  </div>
+
+                  <div className="decisionButtons" aria-label={`Review controls for ${row.id}`}>
+                    <button
+                      aria-pressed={row.decision === "rejected"}
+                      className={`decisionButton reject ${row.decision === "rejected" ? "selected" : ""}`}
+                      onClick={() => setReviewDecision(row.id, "rejected")}
+                      type="button"
+                    >
+                      Reject
+                    </button>
+                    <button
+                      aria-pressed={row.decision === "changes"}
+                      className={`decisionButton changes ${row.decision === "changes" ? "selected" : ""}`}
+                      onClick={() => setReviewDecision(row.id, "changes")}
+                      type="button"
+                    >
+                      Make changes
+                    </button>
+                    <button
+                      aria-pressed={row.decision === "accepted"}
+                      className={`decisionButton accept ${row.decision === "accepted" ? "selected" : ""}`}
+                      onClick={() => setReviewDecision(row.id, "accepted")}
+                      type="button"
+                    >
+                      Accept
+                    </button>
+                  </div>
+
+                  {row.decision === "changes" && (
+                    <div className="manualEdit">
+                      <label>
+                        <span>Proposed answer</span>
+                        <textarea
+                          value={row.answerText}
+                          onChange={(event) => updateResponseRow(row.id, "answerText", event.target.value)}
+                        />
+                      </label>
+                      <div className="manualEditActions">
+                        <span>Applying changes updates the answer above and marks this row accepted.</span>
+                        <button type="button" onClick={() => applyProposedChanges(row.id)}>Apply changes</button>
+                      </div>
+                    </div>
+                  )}
                 </article>
               ))}
             </div>
@@ -750,6 +1350,7 @@ export default function Dashboard() {
             <span>All response work stays on the local GB10 stack.</span>
             <span>Readiness forecast only; not certification, attestation, or legal advice.</span>
           </footer>
+          </div>
         </div>
       </section>
     </main>
