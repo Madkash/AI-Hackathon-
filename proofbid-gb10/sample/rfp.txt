@@ -1,0 +1,9 @@
+Healthcare Network — Supplier Technology RFP
+1. The solution must support PostgreSQL 14 or later.
+2. Vendor must provide evidence of SOC 2 Type II.
+3. Audit logs must be retained for 365 days.
+4. The solution must support Oracle database.
+5. The solution must enforce TLS 1.2 or greater.
+6. Administrators must use MFA.
+7. The solution must support RBAC.
+8. Specify minimum RAM requirements.

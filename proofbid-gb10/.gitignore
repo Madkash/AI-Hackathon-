@@ -1,0 +1,11 @@
+.env
+.runtime.env
+LOGIN.txt
+.venv/
+.state/
+__pycache__/
+installers/
+data/
+*.log
+node_modules/
+web/gb10.js
