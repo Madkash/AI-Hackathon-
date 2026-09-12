@@ -1,0 +1,9 @@
+FICTIONAL DEMO EVIDENCE — not an actual supplier report.
+Product: Northstar Platform
+Audit log retention is 365 days.
+PostgreSQL versions 14 through 16 are supported.
+TLS 1.3 is configured for client connections.
+Administrator MFA is enabled.
+RBAC is available.
+SOC 2 Type II: sample report placeholder only; an actual report must be reviewed by a human.
+Minimum RAM: 16 GB.
