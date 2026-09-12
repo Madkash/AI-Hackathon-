@@ -52,18 +52,34 @@ def parse_envelope(raw, provider, model, primary):
         envelope = json.loads(raw)
     except ValueError as exc:
         raise BridgeFailure('invalid_envelope') from exc
-    if not isinstance(envelope, dict) or envelope.get('status') != 'ok':
+    if not isinstance(envelope, dict) or (envelope.get('status') != 'ok' and envelope.get('ok') is not True):
         raise BridgeFailure('invalid_envelope')
-    meta = (((envelope.get('result') or {}).get('meta') or {}).get('agentMeta') or {})
-    if meta.get('model') not in (model, primary):
+
+    result = envelope.get('result') if isinstance(envelope.get('result'), dict) else {}
+    meta = (((result.get('meta') or {}).get('agentMeta') or {})
+            if isinstance(result.get('meta'), dict) else {})
+    reported_provider = meta.get('provider') or envelope.get('provider')
+    reported_model = meta.get('model') or envelope.get('model')
+    if reported_provider and reported_provider != provider:
         raise BridgeFailure('unexpected_model')
-    payloads = (envelope.get('result') or {}).get('payloads') or []
-    if not payloads or not isinstance(payloads[0], dict):
+    if reported_model not in (model, primary):
+        raise BridgeFailure('unexpected_model')
+
+    tool_summary = envelope.get('toolSummary') or result.get('toolSummary') or meta.get('toolSummary')
+    if isinstance(tool_summary, dict) and tool_summary.get('calls'):
+        raise BridgeFailure('tool_invocation')
+    if isinstance(tool_summary, list) and tool_summary:
+        raise BridgeFailure('tool_invocation')
+
+    payloads = result.get('payloads') or []
+    if payloads and isinstance(payloads[0], dict):
+        final = payloads[0].get('text')
+    else:
+        final = envelope.get('final') or result.get('final')
+    if final is None:
         raise BridgeFailure('invalid_envelope')
-    final = payloads[0].get('text')
     if not isinstance(final, str):
         raise BridgeFailure('invalid_json')
-        final = final.strip()
     final = final.strip()
     if final.startswith('```json') and final.endswith('```'):
         final = final[7:-3].strip()
