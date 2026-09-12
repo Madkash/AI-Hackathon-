@@ -23,7 +23,8 @@ function download(name, content, type) {
 function App() {
   const [text,setText]=useState(''), [title,setTitle]=useState('Pasted RFP');
   const [docs,setDocs]=useState([]), [product,setProduct]=useState({}), [productSource,setProductSource]=useState('No configuration');
-  const [message,setMessage]=useState('Upload your RFP, supplier evidence and JSON configuration.');
+  const [configurationDocument,setConfigurationDocument]=useState(null);
+  const [message,setMessage]=useState('Upload your RFP and supplier evidence. Product configuration is optional.');
   const [result,setResult]=useState(null), [selected,setSelected]=useState(null), [filter,setFilter]=useState('ALL');
   const [busy,setBusy]=useState(false), [history,setHistory]=useState([]), [note,setNote]=useState('');
   const [job,setJob]=useState(sessionStorage.getItem('proofbid-job'));
@@ -65,9 +66,9 @@ function App() {
     <section className="input-card"><h2>Start an analysis</h2><div className="upload-grid">
       <label className="upload">Buyer RFP<input disabled={disabled} type="file" accept=".txt,.md,.pdf" onChange={e=>{const f=e.target.files[0];if(f)task(async()=>{setText(await fileText(f));setTitle(f.name);});}}/></label>
       <label className="upload">Supplier documents ({docs.length})<input disabled={disabled} type="file" multiple accept=".txt,.md,.pdf" onChange={e=>{const files=[...e.target.files];task(async()=>{if(files.length>30)throw new Error('Maximum 30 documents');const next=[];for(const f of files)next.push({name:f.name,text:await fileText(f)});setDocs(next);});}}/></label>
-      <label className="upload">Configuration: {productSource}<input disabled={disabled} type="file" accept=".json" onChange={e=>{const f=e.target.files[0];if(f)task(async()=>{const p=JSON.parse(await fileText(f));if(!p||Array.isArray(p)||typeof p!=='object')throw new Error('Configuration must be an object');setProduct(p);setProductSource(f.name);});}}/></label>
+      <label className="upload">Product configuration (optional): {productSource}<input disabled={disabled} type="file" accept=".json,.txt,.md,.pdf,.csv" onChange={e=>{const f=e.target.files[0];if(f)task(async()=>{const content=await fileText(f);if(f.name.toLowerCase().endsWith('.json')){let p;try{p=JSON.parse(content);}catch{throw new Error('The selected JSON file is not valid JSON. Choose a valid JSON file or upload it as TXT, Markdown, PDF or CSV.');}if(!p||Array.isArray(p)||typeof p!=='object')throw new Error('JSON configuration must contain an object');setProduct(p);setConfigurationDocument(null);setMessage('Structured JSON configuration loaded.');}else{setProduct({});setConfigurationDocument({name:f.name,text:content});setMessage('Unstructured configuration loaded as supplier evidence.');}setProductSource(f.name);});}}/></label>
     </div><label className="field-label" htmlFor="rfp">RFP text — review before submitting</label><textarea id="rfp" rows={6} disabled={disabled} value={text} onChange={e=>setText(e.target.value)}/>
-    <button className="primary" disabled={disabled} onClick={()=>task(async()=>{const j=await api('/api/analyze',{text,title,documents:docs,product,product_source:productSource});sessionStorage.setItem('proofbid-job',j.job_id);setJob(j.job_id);})}>Analyze with local AI</button></section>
+    <button className="primary" disabled={disabled} onClick={()=>task(async()=>{const documents=configurationDocument?[...docs,configurationDocument]:docs;if(documents.length>30)throw new Error('Maximum 30 documents total, including the optional configuration file.');const j=await api('/api/analyze',{text,title,documents,product,product_source:productSource});sessionStorage.setItem('proofbid-job',j.job_id);setJob(j.job_id);})}>Analyze with local AI</button></section>
     <p role="status" aria-live="polite">{message}</p>
     {result&&<section><div className="result-heading"><h2>{result.title}</h2><div><button className="secondary" onClick={exportCsv}>Export matrix</button> <button className="primary" onClick={exportDraft}>Download draft</button></div></div>
       {result.demo&&<p className="demo-banner">FICTIONAL SAMPLE — not actual certification evidence</p>}
