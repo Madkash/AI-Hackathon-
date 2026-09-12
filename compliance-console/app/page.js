@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+const proofBidUrl = "http://127.0.0.1:8765";
 
 function Icon({ name }) {
   const paths = {
-    overview: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z",
-    targets: "M12 3a9 9 0 1 0 9 9M12 7a5 5 0 1 0 5 5M12 11a1 1 0 1 0 1 1",
-    evidence: "M6 3h9l3 3v15H6zM15 3v4h4M9 12h6M9 16h6",
+    command: "M4 5h16M4 12h16M4 19h10",
+    rfp: "M6 3h9l3 3v15H6zM15 3v4h4M9 12h6M9 16h4",
+    readiness: "M12 3a9 9 0 1 0 9 9M12 7a5 5 0 1 0 5 5M12 11a1 1 0 1 0 1 1",
+    evidence: "M4 19V5M4 19h17M8 16v-5M13 16V7M18 16v-3",
     findings: "M12 3 2.8 19h18.4L12 3zM12 9v5M12 17.5v.1",
-    reports: "M4 19V5M4 19h17M8 16v-5M13 16V7M18 16v-3",
     settings: "M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM19 12l2-1-2-3-2 .4-1-2.4h-4L10 6 8 8l.4 2L6 11v2l2 1 .4 2L8 18l2 2 2.4-1h4L18 18l-1-2 2-.4 2-3-2-1z",
   };
   return (
@@ -19,7 +21,7 @@ function Icon({ name }) {
 }
 
 function serviceClass(status) {
-  if (status === "available") return "online";
+  if (status === "available" || status === "configured-by-nemoclaw") return "online";
   if (status === "unavailable") return "offline";
   return "waiting";
 }
@@ -42,6 +44,13 @@ function readableKey(key) {
 
 function countEntries(counts) {
   return Object.entries(counts || {}).sort((left, right) => right[1] - left[1]);
+}
+
+function readinessTone(label) {
+  const text = String(label || "").toLowerCase();
+  if (text.includes("ready")) return "green";
+  if (text.includes("review")) return "amber";
+  return "red";
 }
 
 export default function Dashboard() {
@@ -102,31 +111,35 @@ export default function Dashboard() {
   const findings = assessment?.concerns || [];
   const resultCounts = countEntries(assessment?.counts?.by_result);
   const dispositionCounts = countEntries(assessment?.counts?.by_disposition);
+  const coveredFrameworks = useMemo(
+    () => frameworkCards.filter((card) => card.evidence?.covered).length,
+    [frameworkCards],
+  );
 
   return (
     <main className="shell">
       <aside className="sidebar">
         <div className="brand">
-          <div className="brandMark">LP</div>
+          <div className="brandMark">PB</div>
           <div>
-            <strong>LocalProof</strong>
-            <span>Compliance Console</span>
+            <strong>ProofBid</strong>
+            <span>Assurance Console</span>
           </div>
         </div>
 
         <nav aria-label="Primary navigation">
-          <a className="navItem active" href="#overview"><Icon name="overview" />Overview</a>
-          <a className="navItem" href="#discovery"><Icon name="targets" />Targets</a>
+          <a className="navItem active" href="#command"><Icon name="command" />Command</a>
+          <a className="navItem" href="#rfp"><Icon name="rfp" />RFP Workspace</a>
+          <a className="navItem" href="#readiness"><Icon name="readiness" />Readiness</a>
           <a className="navItem" href="#evidence"><Icon name="evidence" />Evidence</a>
           <a className="navItem" href="#findings"><Icon name="findings" />Findings</a>
-          <a className="navItem" href="#reports"><Icon name="reports" />Reports</a>
         </nav>
 
         <div className="sidebarFooter">
           <a className="navItem" href="#settings"><Icon name="settings" />Settings</a>
           <div className="localBadge">
             <span className="statusDot" />
-            <div><strong>Local runtime</strong><span>External egress denied</span></div>
+            <div><strong>GB10 local stack</strong><span>RFP + readiness</span></div>
           </div>
         </div>
       </aside>
@@ -134,36 +147,100 @@ export default function Dashboard() {
       <section className="workspace">
         <header className="topbar">
           <div>
-            <span className="eyebrow">ASSESSMENT WORKSPACE</span>
-            <h1>Compliance overview</h1>
+            <span className="eyebrow">SUPPLIER ASSURANCE</span>
+            <h1>Unified response console</h1>
           </div>
           <div className="runtimePills" aria-label="Service status">
+            <span><i className="online" />ProofBid</span>
             <span><i className={serviceClass(services.mongodb)} />MongoDB</span>
-            <span><i className={serviceClass(services.inference === "configured-by-nemoclaw" ? "available" : services.inference)} />GB10 local inference</span>
+            <span><i className={serviceClass(services.inference)} />GB10 inference</span>
           </div>
         </header>
 
-        <div className="content" id="overview">
-          <section className={`heroPanel ${assessment?.fallback ? "fallback" : ""}`}>
+        <div className="content" id="command">
+          <section className="heroPanel">
             <div>
-              <span className="sectionLabel">CURRENT TARGET</span>
-              <h2>{latestTarget?.name || "Loading latest assessment"}</h2>
+              <span className="sectionLabel">COMMAND CENTER</span>
+              <h2>From buyer requirement to defensible response.</h2>
               <p>
-                Readiness forecast
-                {" · "}
-                source revision <code>{latestTarget?.version || "unknown"}</code>
+                ProofBid builds the RFP answer matrix. LocalProof checks whether the software and evidence support the claims.
+              </p>
+              <div className="heroActions">
+                <a className="primaryButton" href={proofBidUrl} target="_blank" rel="noreferrer">Open ProofBid</a>
+                <a className="secondaryButton" href="#readiness">Review readiness</a>
+              </div>
+            </div>
+            <div className="scoreWrap">
+              <div className={`scoreRing ${readinessTone(forecast.label)}`} aria-label={`Readiness forecast score ${forecast.score} percent`}>
+                <strong>{forecast.score}</strong><span>/100</span>
+              </div>
+              <span>{forecast.label}</span>
+            </div>
+          </section>
+
+          <section className="systemGrid" aria-label="Unified system overview">
+            <article>
+              <span>01</span>
+              <h3>RFP analysis</h3>
+              <p>Upload buyer requirements, supplier documents, and product configuration in the ProofBid GB10 workspace.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>Local evidence</h3>
+              <p>Run LocalProof discovery and readiness checks against authorized local targets and persisted evidence.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>RFP-safe export</h3>
+              <p>Package readiness summaries for buyers without raw findings, secrets, source paths, or exploit detail.</p>
+            </article>
+          </section>
+
+          <section className="unifiedGrid">
+            <section className="panel rfpPanel" id="rfp">
+              <div className="panelHeading">
+                <div>
+                  <span className="sectionLabel">PROOFBID</span>
+                  <h2>RFP response workspace</h2>
+                </div>
+                <span className="liveTag"><i />Port 8765</span>
+              </div>
+              <p>ProofBid is the intake and review surface for buyer requirements, supplier documents, citations, review notes, CSV matrices, and draft responses.</p>
+
+              <div className="workflowRail">
+                <div><strong>Ingest</strong><span>RFP, supplier evidence, product JSON</span></div>
+                <div><strong>Analyze</strong><span>Local GB10 model maps requirements to evidence</span></div>
+                <div><strong>Review</strong><span>Operator marks rows reviewed and exports drafts</span></div>
+              </div>
+
+              <div className="actionStrip">
+                <a className="primaryButton" href={proofBidUrl} target="_blank" rel="noreferrer">Launch ProofBid</a>
+                <span>Authenticated FastAPI service, local loopback only.</span>
+              </div>
+            </section>
+
+            <section className={`panel targetPanel ${assessment?.fallback ? "fallback" : ""}`} id="readiness">
+              <div className="panelHeading">
+                <div>
+                  <span className="sectionLabel">LOCALPROOF</span>
+                  <h2>Readiness forecast</h2>
+                </div>
+                <span className="readOnly">Read only</span>
+              </div>
+              <h3>{latestTarget?.name || "Loading latest assessment"}</h3>
+              <p>
+                Source revision <code>{latestTarget?.version || "unknown"}</code>
                 {" · "}
                 generated {formatDate(assessment?.generated_at)}
               </p>
               {assessment?.note && <p className="fallbackNotice">{assessment.note}</p>}
               {assessmentError && <p className="fallbackNotice error">{assessmentError}</p>}
-            </div>
-            <div className="scoreWrap">
-              <div className="scoreRing" aria-label={`Readiness forecast score ${forecast.score} percent`}>
-                <strong>{forecast.score}</strong><span>/100</span>
+              <div className="runMeta">
+                <div><span>Run</span><strong>{assessment?.run_id || "pending"}</strong></div>
+                <div><span>Checks</span><strong>{assessment?.counts?.total ?? 0}</strong></div>
+                <div><span>Covered suites</span><strong>{coveredFrameworks}/{frameworkCards.length || 4}</strong></div>
               </div>
-              <span>{forecast.label}</span>
-            </div>
+            </section>
           </section>
 
           <section className="frameworkGrid" aria-label="Assessment frameworks">
@@ -185,15 +262,15 @@ export default function Dashboard() {
           </section>
 
           <div className="twoColumn">
-            <section className="panel discoveryPanel" id="discovery">
+            <section className="panel discoveryPanel">
               <div className="panelHeading">
                 <div>
-                  <span className="sectionLabel">PHASE 1</span>
-                  <h2>Discover software</h2>
+                  <span className="sectionLabel">DISCOVERY</span>
+                  <h2>Authorize a target</h2>
                 </div>
-                <span className="readOnly">Read only</span>
+                <span className="readOnly">Local scope</span>
               </div>
-              <p>Inspect an authorized local project and propose how the assessment stack should open it.</p>
+              <p>Inspect an authorized local project and propose how the assessment stack should build, open, and test it.</p>
 
               <form onSubmit={runDiscovery}>
                 <label htmlFor="target">Target folder</label>
@@ -206,7 +283,7 @@ export default function Dashboard() {
                     autoComplete="off"
                   />
                   <button type="submit" disabled={running || !target.trim()}>
-                    {running ? "Inspecting…" : "Run discovery"}
+                    {running ? "Inspecting..." : "Run discovery"}
                   </button>
                 </div>
                 <small>Resolved only inside the configured local targets directory.</small>
@@ -226,16 +303,10 @@ export default function Dashboard() {
 
             <section className="panel" id="evidence">
               <div className="panelHeading">
-                <div><span className="sectionLabel">LATEST RUN</span><h2>Assessment state</h2></div>
+                <div><span className="sectionLabel">ASSESSMENT STATE</span><h2>Evidence posture</h2></div>
                 <span className="liveTag"><i />{assessment?.fallback ? "Fallback" : "MongoDB"}</span>
               </div>
               <p>{forecast.summary}</p>
-
-              <div className="runMeta">
-                <div><span>Run</span><strong>{assessment?.run_id || "pending"}</strong></div>
-                <div><span>Total checks</span><strong>{assessment?.counts?.total ?? 0}</strong></div>
-                <div><span>Generated</span><strong>{formatDate(assessment?.generated_at)}</strong></div>
-              </div>
 
               <div className="countColumns">
                 <div>
@@ -253,15 +324,15 @@ export default function Dashboard() {
               </div>
 
               <div className="stackRoute">
-                <span>OpenClaw</span><b>→</b><span>OpenShell</span><b>→</b><span>GB10</span>
+                <span>ProofBid</span><b>→</b><span>LocalProof</span><b>→</b><span>RFP-safe export</span>
               </div>
             </section>
           </div>
 
           <section className="panel findingsPanel" id="findings">
             <div className="panelHeading">
-              <div><span className="sectionLabel">PRIORITY QUEUE</span><h2>Top points of concern</h2></div>
-              <button className="secondaryButton" type="button">Readiness forecast</button>
+              <div><span className="sectionLabel">REVIEW QUEUE</span><h2>Top points of concern</h2></div>
+              <a className="secondaryButton" href="#rfp">Back to RFP workspace</a>
             </div>
             <div className="findingList">
               {findings.length > 0 ? findings.map((finding) => (
@@ -279,8 +350,8 @@ export default function Dashboard() {
           </section>
 
           <footer>
-            <span>All assessment data remains on this device.</span>
-            <span>Readiness forecast only; not a certification or attestation.</span>
+            <span>ProofBid and LocalProof are presented as one local assurance workflow.</span>
+            <span>Readiness forecast only; not certification, attestation, or legal advice.</span>
           </footer>
         </div>
       </section>

@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "LocalProof Compliance Console",
-  description: "Local software compliance readiness powered by OpenClaw and NVIDIA GB10.",
+  title: "ProofBid Assurance Console",
+  description: "Unified local RFP response and compliance readiness console powered by OpenClaw and NVIDIA GB10.",
 };
 
 export default function RootLayout({ children }) {
