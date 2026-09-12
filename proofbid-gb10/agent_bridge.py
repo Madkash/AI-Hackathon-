@@ -52,24 +52,27 @@ def parse_envelope(raw, provider, model, primary):
         envelope = json.loads(raw)
     except ValueError as exc:
         raise BridgeFailure('invalid_envelope') from exc
-    if not isinstance(envelope, dict) or envelope.get('ok') is not True or envelope.get('status') != 'ok':
+    if not isinstance(envelope, dict) or envelope.get('status') != 'ok':
         raise BridgeFailure('invalid_envelope')
-    if envelope.get('provider') != provider or envelope.get('model') not in (model, primary):
+    meta = (((envelope.get('result') or {}).get('meta') or {}).get('agentMeta') or {})
+    if meta.get('model') not in (model, primary):
         raise BridgeFailure('unexpected_model')
-    summary = envelope.get('toolSummary') or {}
-    if not isinstance(summary, dict) or summary.get('calls', 0) != 0:
-        raise BridgeFailure('tool_invocation')
-    final = envelope.get('final')
+    payloads = (envelope.get('result') or {}).get('payloads') or []
+    if not payloads or not isinstance(payloads[0], dict):
+        raise BridgeFailure('invalid_envelope')
+    final = payloads[0].get('text')
     if not isinstance(final, str):
         raise BridgeFailure('invalid_json')
     final = final.strip()
     if final.startswith('```json') and final.endswith('```'):
         final = final[7:-3].strip()
+    elif final.startswith('```') and final.endswith('```'):
+        final = final[3:-3].strip()
     try:
         return json.loads(final)
     except ValueError as exc:
         raise BridgeFailure('invalid_json') from exc
-
+    
 def main():
     provider, model, primary = preflight()
     if '--check' in sys.argv:
@@ -90,7 +93,8 @@ def main():
     try:
         msg.write(prompt)
         msg.close()
-        command = ['openclaw', 'agent', '--model', primary,
+        command = ['openclaw', 'agent', '--agent', 'main',
+                   '--session-id', 'proofbid-run',
                    '--message-file', msg.name, '--json']
         raw = checked_command(command, timeout=630)
     finally:
