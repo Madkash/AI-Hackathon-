@@ -1,0 +1,8 @@
+{
+  "product_name": "Northstar Platform (fictional demo)",
+  "security": {"admin_mfa": true, "minimum_tls": "1.3", "rbac": true},
+  "logging": {"enabled": true, "retention_days": 180},
+  "databases": {"postgresql": {"min_version": 14, "max_version": 16}, "mysql": {"min_version": 8, "max_version": 8}},
+  "specs": {"minimum_ram_gb": 16},
+  "demo_fixture": true
+}
