@@ -75,16 +75,19 @@ Upload sample/rfp.txt, sample/supplier.txt and sample/product.json. Click Analyz
 
 Open each requirement's evidence, record review notes, and mark it reviewed. Review events are saved with the single operator identity. A review mark does not alter the machine status or authenticate compliance. Export CSV or Markdown. The source RFP can be edited before submission; correcting the extracted requirement list as a separate intermediate phase is not implemented.
 
-## Diagnostics (provided, not run here)
+## Diagnostics
+
+For a job that reports AgentUnavailable, use [REPAIR-STEPS.md](REPAIR-STEPS.md). This update reports safe failure categories and checks the sandbox bridge during preparation/startup.
 
 ```bash
 source .runtime.env
 .venv/bin/python doctor.py
+.venv/bin/python doctor.py --inference
 nemoclaw cody status
 openshell sandbox exec -n cody -- openclaw agent exec --help
 ```
 
-The doctor checks host architecture, local model metadata, database connectivity and required host CLI flags. It does NOT prove live inference, GPU residency or isolation. The browser sample exercises the application path. Record `ollama ps` during inference to inspect runtime placement and retain the installed version outputs with your deployment evidence.
+The doctor checks host architecture, local model metadata, database connectivity and the sandbox bridge CLI. With `--inference`, it additionally sends one small real request through OpenClaw. Neither mode proves GPU residency or sandbox isolation. The browser sample exercises the full analysis path. Record `ollama ps` during inference to inspect runtime placement and retain the installed version outputs with your deployment evidence.
 
 The bridge expects Python 3 and current OpenClaw `agent exec` inside the sandbox. If preparation cannot read the generated OpenClaw JSON config, or onboarding uses a different provider alias/endpoint, stop and inspect that installed release; do not change the guard to accept arbitrary URLs.
 
